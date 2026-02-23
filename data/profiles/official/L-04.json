@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "case_id": "L-04"
+  },
+  "user_profile": {
+    "primary_archetype": "lover",
+    "music_seed": {
+      "top_genre": "cinematic_pop",
+      "bpm": 70,
+      "mood_tag": "warm_romantic"
+    },
+    "story_thread_hint": "tide_pool_detail"
+  }
+}

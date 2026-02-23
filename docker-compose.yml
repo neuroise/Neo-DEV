@@ -1,0 +1,96 @@
+# NEUROISE Playground - Docker Compose
+#
+# Development setup for Mac/Linux (no GPU required)
+# For DGX Spark production, use docker-compose.prod.yml
+#
+# Usage:
+#   docker compose up -d              # Start all services
+#   docker compose logs -f app        # Follow app logs
+#   docker compose exec ollama ollama pull llama3.2:8b  # Pull model
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # Main Application (Streamlit)
+  # ============================================================================
+  app:
+    build:
+      context: .
+      target: dev
+    container_name: neuroise-app
+    ports:
+      - "8501:8501"
+    volumes:
+      # Mount source for hot reload
+      - .:/app
+      # Persist data
+      - ./data:/app/data
+    environment:
+      - PYTHONPATH=/app
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_FILE_WATCHER_TYPE=poll
+      # LLM API keys (from .env file)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      # Ollama connection
+      - OLLAMA_HOST=http://ollama:11434
+    depends_on:
+      - ollama
+    networks:
+      - neuroise-net
+    restart: unless-stopped
+
+  # ============================================================================
+  # Ollama - Local LLM Server
+  # ============================================================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: neuroise-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      # Persist downloaded models
+      - ollama-data:/root/.ollama
+    # On Mac with Apple Silicon, Ollama uses Metal automatically.
+    # On Linux with GPU, uncomment the deploy section:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    networks:
+      - neuroise-net
+    restart: unless-stopped
+
+  # ============================================================================
+  # Model Puller - Downloads models on startup (one-shot)
+  # ============================================================================
+  model-puller:
+    image: ollama/ollama:latest
+    container_name: neuroise-model-puller
+    depends_on:
+      - ollama
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        # Wait for Ollama to be ready
+        sleep 10
+        # Pull recommended models
+        ollama pull llama3.2:8b || true
+        echo "Model pulling complete"
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    networks:
+      - neuroise-net
+    restart: "no"
+
+networks:
+  neuroise-net:
+    driver: bridge
+
+volumes:
+  ollama-data:
+    driver: local

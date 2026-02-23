@@ -1,0 +1,19 @@
+# NEUROISE Video Generation Service
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+
+# Video generation
+diffusers>=0.32.0
+accelerate>=1.2.0
+transformers>=4.46.0
+sentencepiece
+ftfy
+
+# TurboWan (installed from git if needed)
+# pip install git+https://github.com/turbodiffusion/turbodiffusion.git
+# turbodiffusion
+
+# Video export
+imageio[ffmpeg]>=2.35.0
+
+# Already in NGC base image: torch, torchvision

@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "case_id": "R-01"
+  },
+  "user_profile": {
+    "primary_archetype": "rebel",
+    "music_seed": {
+      "top_genre": "hybrid_acoustic_driving",
+      "bpm": 120,
+      "mood_tag": "kinetic_ocean"
+    },
+    "story_thread_hint": "breaker_curl"
+  }
+}

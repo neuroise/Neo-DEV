@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "case_id": "S-06"
+  },
+  "user_profile": {
+    "primary_archetype": "sage",
+    "music_seed": {
+      "top_genre": "ambient",
+      "bpm": 80,
+      "mood_tag": "minimal_zen"
+    },
+    "story_thread_hint": "calm_tide_mark"
+  }
+}

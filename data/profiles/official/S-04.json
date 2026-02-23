@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "case_id": "S-04"
+  },
+  "user_profile": {
+    "primary_archetype": "sage",
+    "music_seed": {
+      "top_genre": "ambient",
+      "bpm": 80,
+      "mood_tag": "hazy_still"
+    },
+    "story_thread_hint": "smooth_stone"
+  }
+}

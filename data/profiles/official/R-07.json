@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "case_id": "R-07"
+  },
+  "user_profile": {
+    "primary_archetype": "rebel",
+    "music_seed": {
+      "top_genre": "electronic",
+      "bpm": 130,
+      "mood_tag": "kinetic_ocean"
+    },
+    "story_thread_hint": "breaker_curl"
+  }
+}

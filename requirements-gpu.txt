@@ -1,0 +1,43 @@
+# NEURØISE Playground - GPU Dependencies
+#
+# Additional dependencies for CUDA/GPU environments (DGX Spark)
+# Install AFTER requirements.txt
+#
+# Note: PyTorch viene da NGC container, non installare qui
+
+# ==============================================================================
+# Audio Generation
+# ==============================================================================
+# MusicGen (Meta's text-to-music)
+audiocraft>=1.2.0
+# Audio processing
+librosa>=0.10.0
+soundfile>=0.12.0
+torchaudio>=2.2.0
+
+# ==============================================================================
+# Video Generation (placeholder - modelli specifici vanno configurati)
+# ==============================================================================
+# diffusers>=0.26.0  # For Stable Video Diffusion
+# accelerate>=0.27.0
+# safetensors>=0.4.0
+
+# ==============================================================================
+# Evaluation Metrics
+# ==============================================================================
+# VBench dependencies
+# clip>=1.0  # OpenAI CLIP
+# lpips>=0.1.4
+
+# ==============================================================================
+# GPU Utilities
+# ==============================================================================
+nvidia-ml-py>=12.535.0  # GPU monitoring
+gpustat>=1.1.0
+
+# ==============================================================================
+# Performance
+# ==============================================================================
+# flash-attn>=2.5.0  # Se supportato
+# bitsandbytes>=0.42.0  # Quantization
+xformers>=0.0.24  # Memory efficient attention

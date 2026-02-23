@@ -1,0 +1,41 @@
+# NEUROISE Playground - .dockerignore
+# Exclude from Docker build context to speed up builds
+
+.git
+.gitignore
+.dockerignore
+
+# Virtual environments
+venv/
+.venv/
+
+# Runtime data
+data/outputs/
+data/logs/
+
+# Documentation (not needed in container)
+docs/
+research/
+*.md
+LICENSE
+
+# IDE & OS
+.DS_Store
+.idea/
+.vscode/
+.ipynb_checkpoints/
+
+# Cache
+.cache/
+__pycache__/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Model weights (mounted via volumes, not baked in)
+models/
+*.bin
+*.safetensors
+*.gguf

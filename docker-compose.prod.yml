@@ -1,0 +1,167 @@
+# NEUROISE Playground - Docker Compose Production
+#
+# For DGX Spark with NVIDIA GPU and NGC PyTorch
+#
+# Prerequisites:
+#   - nvidia-docker2 installed
+#   - NGC access (nvcr.io/nvidia/pytorch)
+#   - Compatible CUDA drivers
+#
+# Usage:
+#   docker compose -f docker-compose.prod.yml up -d
+#   docker compose -f docker-compose.prod.yml logs -f
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # Main Application (Streamlit) - GPU enabled
+  # ============================================================================
+  app:
+    build:
+      context: .
+      target: prod
+    container_name: neuroise-app-prod
+    ports:
+      - "8501:8501"
+    volumes:
+      # Data persistence
+      - ./data:/app/data
+      - ./data/outputs/videos:/app/data/outputs/videos
+      - ./research:/app/research
+    environment:
+      - PYTHONPATH=/app
+      - STREAMLIT_SERVER_HEADLESS=true
+      # LLM API keys
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      # Ollama connection
+      - OLLAMA_HOST=http://ollama:11434
+      # Video generation service
+      - VIDEO_GEN_URL=http://video-gen:8000
+    depends_on:
+      - ollama
+      - video-gen
+    networks:
+      - neuroise-prod-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ============================================================================
+  # Ollama - Local LLM Server with GPU
+  # ============================================================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: neuroise-ollama-prod
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data-prod:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      # DGX Spark: single GPU (GB10 128GB unified memory)
+      - OLLAMA_NUM_GPU=1
+      - OLLAMA_MAX_LOADED_MODELS=1
+    networks:
+      - neuroise-prod-net
+    restart: unless-stopped
+
+  # ============================================================================
+  # Model Puller - Downloads production models on startup (one-shot)
+  # ============================================================================
+  model-puller:
+    image: ollama/ollama:latest
+    container_name: neuroise-model-puller-prod
+    depends_on:
+      - ollama
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        sleep 15
+        # Pull production models
+        echo "Pulling llama3.3:70b..."
+        ollama pull llama3.3:70b || true
+        echo "Pulling qwen3:32b..."
+        ollama pull qwen3:32b || true
+        echo "Model pulling complete"
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    networks:
+      - neuroise-prod-net
+    restart: "no"
+
+  # ============================================================================
+  # Video Generation Service (Wan2.2 / TurboWan)
+  # ============================================================================
+  video-gen:
+    build:
+      context: ./video-gen
+    container_name: neuroise-video-gen
+    ports:
+      - "8000:8000"
+    volumes:
+      - video-models:/models
+      - ./data/outputs/videos:/outputs/videos
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - OUTPUT_DIR=/outputs/videos
+      - MODEL_CACHE=/models
+    networks:
+      - neuroise-prod-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ============================================================================
+  # Music Generation Service (MusicGen) - Placeholder
+  # ============================================================================
+  # music-gen:
+  #   image: nvcr.io/nvidia/pytorch:24.01-py3
+  #   container_name: neuroise-music-gen
+  #   ports:
+  #     - "8001:8001"
+  #   volumes:
+  #     - ./models/music:/models
+  #     - ./data/outputs:/outputs
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+  #   networks:
+  #     - neuroise-prod-net
+  #   restart: unless-stopped
+
+networks:
+  neuroise-prod-net:
+    driver: bridge
+
+volumes:
+  ollama-data-prod:
+    driver: local
+  video-models:
+    driver: local

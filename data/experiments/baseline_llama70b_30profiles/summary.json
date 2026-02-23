@@ -1,0 +1,108 @@
+{
+  "total_runs": 30,
+  "successful_runs": 30,
+  "failed_runs": 0,
+  "success_rate": 1.0,
+  "models": {
+    "llama3.3:70b": {
+      "M_AUTO_01_schema_compliance": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "std": 0.0,
+        "count": 30
+      },
+      "M_AUTO_02_archetype_consistency": {
+        "mean": 0.7888888888888891,
+        "min": 0.2222222222222222,
+        "max": 1.0,
+        "std": 0.19319705712214783,
+        "count": 30
+      },
+      "M_AUTO_03_role_sequence_valid": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "std": 0.0,
+        "count": 30
+      },
+      "M_AUTO_04_story_thread_presence": {
+        "mean": 0.8222222222222223,
+        "min": 0.0,
+        "max": 1.0,
+        "std": 0.23544022333796763,
+        "count": 30
+      },
+      "M_AUTO_05_red_flag_score": {
+        "mean": 0.7550000000000001,
+        "min": 0.4,
+        "max": 1.0,
+        "std": 0.1253993620398445,
+        "count": 30
+      },
+      "M_AUTO_06_prompt_length_valid": {
+        "mean": 0.9924999999999999,
+        "min": 0.925,
+        "max": 1.0,
+        "std": 0.022499999999999985,
+        "count": 30
+      },
+      "M_AUTO_07_archetype_lexical_fit": {
+        "mean": 0.4164092538286086,
+        "min": 0.0967741935483871,
+        "max": 0.6967741935483871,
+        "std": 0.16408873583765404,
+        "count": 30
+      },
+      "M_AUTO_10_marine_vocabulary_ratio": {
+        "mean": 0.718805825629761,
+        "min": 0.5786046511627907,
+        "max": 0.7362903225806451,
+        "std": 0.032152010918542646,
+        "count": 30
+      },
+      "M_AUTO_08_cross_scene_coherence": {
+        "mean": 0.5882736563682556,
+        "min": 0.3418632447719574,
+        "max": 0.861215353012085,
+        "std": 0.12747009168954615,
+        "count": 30
+      },
+      "M_AUTO_09_prompt_specificity": {
+        "mean": 0.5349999999999999,
+        "min": 0.1166666666666667,
+        "max": 1.0,
+        "std": 0.23934130286947813,
+        "count": 30
+      },
+      "M_AUTO_11_score_narrative_coherence": {
+        "mean": 0.5504511889746151,
+        "min": 0.3945185185185185,
+        "max": 0.7450000000000001,
+        "std": 0.09062893227172085,
+        "count": 30
+      },
+      "M_AUTO_13_pacing_progression": {
+        "mean": 0.9513079365079365,
+        "min": 0.8066666666666666,
+        "max": 1.0,
+        "std": 0.05672539656630235,
+        "count": 30
+      },
+      "M_AUTO_12_llm_judge_quality": {
+        "mean": 0.77,
+        "min": 0.5,
+        "max": 1.0,
+        "std": 0.1268857754044952,
+        "count": 30
+      },
+      "aggregate_score": {
+        "mean": 0.7750487763376692,
+        "min": 0.6528670057628786,
+        "max": 0.8415201696451696,
+        "std": 0.047960521824600005,
+        "count": 30
+      }
+    }
+  }
+}

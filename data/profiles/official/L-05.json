@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "case_id": "L-05"
+  },
+  "user_profile": {
+    "primary_archetype": "lover",
+    "music_seed": {
+      "top_genre": "cinematic_pop",
+      "bpm": 70,
+      "mood_tag": "sunset_glow"
+    },
+    "story_thread_hint": "tide_edge_line"
+  }
+}

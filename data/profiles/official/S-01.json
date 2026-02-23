@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "case_id": "S-01"
+  },
+  "user_profile": {
+    "primary_archetype": "sage",
+    "music_seed": {
+      "top_genre": "ambient",
+      "bpm": 60,
+      "mood_tag": "soft_contemplative"
+    },
+    "story_thread_hint": "single_cloud_gap"
+  }
+}

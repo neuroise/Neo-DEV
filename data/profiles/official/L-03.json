@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "case_id": "L-03"
+  },
+  "user_profile": {
+    "primary_archetype": "lover",
+    "music_seed": {
+      "top_genre": "ambient_pop",
+      "bpm": 90,
+      "mood_tag": "golden_intimate"
+    },
+    "story_thread_hint": "shell_in_sand"
+  }
+}
