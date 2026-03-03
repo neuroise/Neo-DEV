@@ -58,10 +58,28 @@ class OllamaAdapter(LLMAdapter):
         "mistral:7b"
     ]
 
+    # Ollama accepts temperature in [0.0, 2.0]
+    MAX_TEMPERATURE = 2.0
+
     def __init__(self, config: LLMConfig):
         super().__init__(config)
         self.base_url = config.base_url or self.DEFAULT_URL
         self.model = config.model
+
+        # Clamp temperature to valid range
+        if config.temperature > self.MAX_TEMPERATURE:
+            logger.warning(
+                "Temperature %.1f exceeds Ollama max (%.1f), clamping to %.1f",
+                config.temperature, self.MAX_TEMPERATURE, self.MAX_TEMPERATURE,
+            )
+            config.temperature = self.MAX_TEMPERATURE
+        elif config.temperature < 0.0:
+            logger.warning(
+                "Temperature %.1f is negative, clamping to 0.0",
+                config.temperature,
+            )
+            config.temperature = 0.0
+
         self._verify_connection()
 
     def _verify_connection(self) -> None:

@@ -1,20 +1,20 @@
-# NEUROISE Playground - Dockerfile
+# NEURØISE Playground - Dockerfile
 #
-# Multi-stage build for Mac (development) and DGX Spark (production)
+# Multi-stage build per deployment su Mac (development) e DGX Spark (production)
 #
 # Build stages:
-#   1. base: common Python dependencies
-#   2. dev: local development (includes dev tools)
-#   3. prod: production deployment (optimized, CUDA-ready)
+#   1. base: dipendenze Python comuni
+#   2. dev: per sviluppo locale (include dev tools)
+#   3. prod: per deployment (ottimizzato, CUDA-ready)
 #
 # Usage:
 #   Development (Mac):
 #     docker build --target dev -t neuroise-playground:dev .
-#     docker compose up
+#     docker-compose up
 #
-#   Production (DGX with NGC PyTorch):
+#   Production (DGX con NGC PyTorch):
 #     docker build --target prod -t neuroise-playground:prod .
-#     docker compose -f docker-compose.prod.yml up
+#     docker-compose -f docker-compose.prod.yml up
 
 # ==============================================================================
 # BASE STAGE - Common dependencies
@@ -30,12 +30,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Python dependencies
+# Python dependencies (requirements comuni)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # ==============================================================================
-# DEVELOPMENT STAGE - Local development with dev tools
+# DEVELOPMENT STAGE - Per Mac/sviluppo locale
 # ==============================================================================
 FROM base as dev
 
@@ -59,10 +59,10 @@ EXPOSE 8501
 CMD ["streamlit", "run", "app/main.py", "--server.address", "0.0.0.0"]
 
 # ==============================================================================
-# PRODUCTION STAGE - DGX Spark with CUDA
+# PRODUCTION STAGE - Per DGX Spark con CUDA
 # ==============================================================================
-# Uses NGC PyTorch as base for GPU support
-# Note: this stage requires nvidia-docker and NGC access
+# Usa NGC PyTorch come base per GPU support
+# Nota: questo stage richiede nvidia-docker e NGC access
 FROM nvcr.io/nvidia/pytorch:24.01-py3 as prod-base
 
 WORKDIR /app

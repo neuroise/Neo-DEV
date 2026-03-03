@@ -1,12 +1,12 @@
-# NEUROISE Playground - Docker Compose
+# NEURØISE Playground - Docker Compose
 #
-# Development setup for Mac/Linux (no GPU required)
-# For DGX Spark production, use docker-compose.prod.yml
+# Development setup per Mac/Linux
+# Per DGX Spark production, usa docker-compose.prod.yml
 #
 # Usage:
-#   docker compose up -d              # Start all services
-#   docker compose logs -f app        # Follow app logs
-#   docker compose exec ollama ollama pull llama3.2:8b  # Pull model
+#   docker-compose up -d              # Start all services
+#   docker-compose logs -f app        # Follow app logs
+#   docker-compose exec ollama ollama pull llama3.2:8b  # Pull model
 
 version: '3.8'
 
@@ -50,10 +50,10 @@ services:
     ports:
       - "11434:11434"
     volumes:
-      # Persist downloaded models
+      # Persist models
       - ollama-data:/root/.ollama
-    # On Mac with Apple Silicon, Ollama uses Metal automatically.
-    # On Linux with GPU, uncomment the deploy section:
+    # Per Mac con Apple Silicon, Ollama usa Metal automaticamente
+    # Per Linux con GPU, aggiungi:
     # deploy:
     #   resources:
     #     reservations:
@@ -66,7 +66,7 @@ services:
     restart: unless-stopped
 
   # ============================================================================
-  # Model Puller - Downloads models on startup (one-shot)
+  # Model Puller - Scarica modelli all'avvio (one-shot)
   # ============================================================================
   model-puller:
     image: ollama/ollama:latest

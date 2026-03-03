@@ -1,15 +1,15 @@
-# NEUROISE Playground - Docker Compose Production
+# NEURØISE Playground - Docker Compose Production
 #
-# For DGX Spark with NVIDIA GPU and NGC PyTorch
+# Per DGX Spark con NVIDIA GPU e NGC PyTorch
 #
-# Prerequisites:
-#   - nvidia-docker2 installed
+# Prerequisiti:
+#   - nvidia-docker2 installato
 #   - NGC access (nvcr.io/nvidia/pytorch)
-#   - Compatible CUDA drivers
+#   - CUDA drivers compatibili
 #
 # Usage:
-#   docker compose -f docker-compose.prod.yml up -d
-#   docker compose -f docker-compose.prod.yml logs -f
+#   docker-compose -f docker-compose.prod.yml up -d
+#   docker-compose -f docker-compose.prod.yml logs -f
 
 version: '3.8'
 
@@ -37,7 +37,7 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       # Ollama connection
       - OLLAMA_HOST=http://ollama:11434
-      # Video generation service
+      # Video gen service
       - VIDEO_GEN_URL=http://video-gen:8000
     depends_on:
       - ollama
@@ -53,7 +53,7 @@ services:
       start_period: 30s
 
   # ============================================================================
-  # Ollama - Local LLM Server with GPU
+  # Ollama - Local LLM Server con GPU
   # ============================================================================
   ollama:
     image: ollama/ollama:latest
@@ -78,7 +78,7 @@ services:
     restart: unless-stopped
 
   # ============================================================================
-  # Model Puller - Downloads production models on startup (one-shot)
+  # Model Puller - Modelli grandi per produzione
   # ============================================================================
   model-puller:
     image: ollama/ollama:latest

@@ -127,8 +127,8 @@ def render_analysis():
     _render_summary_cards(summary, df)
 
     # --- Tabs for different views ---
-    tab_radar, tab_archetype, tab_heatmap, tab_table = st.tabs([
-        "Radar Chart", "Per-Archetype", "Heatmap", "Data Table"
+    tab_radar, tab_archetype, tab_heatmap, tab_table, tab_runs = st.tabs([
+        "Radar Chart", "Per-Archetype", "Heatmap", "Data Table", "Run Details"
     ])
 
     with tab_radar:
@@ -145,6 +145,9 @@ def render_analysis():
 
     with tab_table:
         _render_table(df)
+
+    with tab_runs:
+        _render_run_details(results)
 
 
 def _render_summary_cards(summary, df):
@@ -383,3 +386,71 @@ def _render_table(df):
         file_name="experiment_results.csv",
         mime="text/csv"
     )
+
+
+def _render_run_details(results):
+    """Navigate individual runs within an experiment."""
+    runs = results.get("results", [])
+    if not runs:
+        st.info("No runs to display.")
+        return
+
+    successful_runs = [r for r in runs if r.get("success")]
+    if not successful_runs:
+        st.warning("No successful runs found.")
+        return
+
+    # Run selector
+    run_labels = [
+        f"{r['profile_id']} | {r.get('model', '?')} | run#{r.get('run_idx', 0)}"
+        for r in successful_runs
+    ]
+    selected_idx = st.selectbox(
+        "Select Run",
+        range(len(run_labels)),
+        format_func=lambda i: run_labels[i],
+        key="run_detail_selector",
+    )
+    run = successful_runs[selected_idx]
+
+    # Summary row
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Profile", run["profile_id"])
+    with col2:
+        st.metric("Aggregate", f"{run.get('metrics', {}).get('aggregate_score', 0):.3f}")
+    with col3:
+        st.metric("Policy", run.get("policy_flag", "?").upper())
+    with col4:
+        st.metric("Latency", f"{run.get('latency_ms', 0)/1000:.1f}s")
+
+    # Metrics detail
+    metrics = run.get("metrics", {})
+    metric_keys = [k for k in METRIC_LABELS if k in metrics]
+    if metric_keys:
+        st.markdown("#### Metrics")
+        cols = st.columns(4)
+        for i, k in enumerate(metric_keys):
+            with cols[i % 4]:
+                v = metrics[k]
+                st.markdown(f"**{METRIC_LABELS[k]}**: `{v:.3f}`")
+
+    # Output content
+    output = run.get("output", {})
+    if output:
+        st.markdown("#### Generated Content")
+        triptych = output.get("video_triptych", [])
+        if triptych:
+            scene_cols = st.columns(3)
+            for i, scene in enumerate(triptych):
+                with scene_cols[i]:
+                    role = scene.get("scene_role", f"Scene {i+1}")
+                    st.markdown(f"**{role.upper()}**")
+                    st.text_area("", scene.get("prompt", ""), height=120,
+                                 key=f"run_detail_scene_{selected_idx}_{i}", disabled=True)
+
+        ost = output.get("ost_prompt", {})
+        if ost:
+            st.markdown(f"**OST**: {ost.get('genre', 'N/A')} | BPM: {ost.get('bpm', 'N/A')} | Mood: {ost.get('mood', 'N/A')}")
+            st.text_area("OST Prompt", ost.get("prompt", ""), height=60,
+                         key=f"run_detail_ost_{selected_idx}", disabled=True)

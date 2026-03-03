@@ -132,6 +132,13 @@ class PolicyGate:
         "calm", "ripple", "foam", "spray", "salt", "breeze", "wind"
     }
 
+    # Expected BPM ranges per archetype
+    ARCHETYPE_BPM_RANGE: Dict[str, tuple] = {
+        "sage": (60, 80),
+        "rebel": (120, 140),
+        "lover": (70, 90),
+    }
+
     # Archetype keywords for consistency check
     ARCHETYPE_KEYWORDS: Dict[str, Set[str]] = {
         "sage": {
@@ -231,6 +238,16 @@ class PolicyGate:
             warnings.extend(length_result)
         else:
             passed.append("R007_length")
+
+        # Rule 8: BPM presence and archetype range
+        bpm_result = self._check_bpm(output, profile)
+        for item in bpm_result:
+            if item.severity == PolicyFlag.RED:
+                violations.append(item)
+            else:
+                warnings.append(item)
+        if not bpm_result:
+            passed.append("R008_bpm")
 
         # Determine final flag
         if violations:
@@ -430,6 +447,42 @@ class PolicyGate:
                 ))
 
         return warnings
+
+    def _check_bpm(
+        self,
+        output: Dict[str, Any],
+        profile: Optional[Dict[str, Any]] = None
+    ) -> List[PolicyViolation]:
+        """Check BPM presence in OST and validate against archetype range."""
+        issues = []
+        ost = output.get("ost_prompt", {})
+        bpm = ost.get("bpm")
+
+        if bpm is None:
+            issues.append(PolicyViolation(
+                rule_id="R008a",
+                rule_name="bpm_missing",
+                severity=PolicyFlag.RED,
+                message="OST is missing required 'bpm' field"
+            ))
+            return issues
+
+        # Validate against archetype range if profile available
+        if profile:
+            user_profile = profile.get("user_profile", profile)
+            archetype = user_profile.get("primary_archetype", "").lower()
+            bpm_range = self.ARCHETYPE_BPM_RANGE.get(archetype)
+            if bpm_range:
+                lo, hi = bpm_range
+                if not (lo <= bpm <= hi):
+                    issues.append(PolicyViolation(
+                        rule_id="R008b",
+                        rule_name="bpm_out_of_range",
+                        severity=PolicyFlag.YELLOW,
+                        message=f"BPM {bpm} outside {archetype} range ({lo}-{hi})"
+                    ))
+
+        return issues
 
     def _get_context(self, text: str, term: str, window: int = 50) -> str:
         """Estrae contesto attorno a un termine."""

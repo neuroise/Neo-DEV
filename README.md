@@ -1,171 +1,151 @@
-# NEUROISE Playground
+# NEURØISE Playground 🌊
 
 > Intelligent Storytelling Engine for Luxury Yacht Experiences
 
-Multimodal AI pipeline that transforms guest profiles into personalized video narratives. Uses LLMs (Ollama/Claude/GPT) for creative direction, automatic video generation, and a comprehensive evaluation framework.
-
-## Prerequisites
-
-- **Docker** and **Docker Compose** v2+
-- **NVIDIA GPU** with drivers installed (production)
-- **nvidia-container-toolkit** (`nvidia-docker2`)
-- 40GB+ disk space for LLM models
+Research playground per il progetto **No Noise × DII UniPisa**.
 
 ## Quick Start
 
-### Production (DGX Spark / NVIDIA GPU)
+### Opzione 1: Docker (consigliato)
 
 ```bash
-# 1. Configure environment
+# Copia le variabili d'ambiente
 cp .env.example .env
-# Edit .env if you need cloud API keys (optional)
+# Modifica .env con le tue API keys
 
-# 2. Build and start all services
-make prod
+# Avvia tutti i servizi
+docker-compose up -d
 
-# 3. Pull the LLM model (first time only, ~40GB)
-make pull-models
-
-# 4. Open the dashboard
-# http://localhost:8501
+# Accedi a http://localhost:8501
 ```
 
-### Development (no GPU required)
+### Opzione 2: locale (Mac/Linux)
 
 ```bash
-cp .env.example .env
-make dev
-# http://localhost:8501
+# Crea virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Installa dipendenze
+pip install -r requirements.txt
+
+# Scarica modello spaCy
+python -m spacy download en_core_web_sm
+
+# Avvia Ollama (in altro terminale)
+ollama serve
+ollama pull llama3.2:8b
+
+# Avvia Streamlit
+streamlit run app/main.py
 ```
 
-### Useful commands
+### Opzione 3: test da riga di comando
 
 ```bash
-make logs      # Follow service logs
-make status    # Show running services
-make stop      # Stop all services
-make clean     # Stop and remove volumes
+# Test con Ollama
+python scripts/test_generation.py --model llama3.2:8b
+
+# Test con Claude
+python scripts/test_generation.py --model claude-sonnet-4
+
+# Test con GPT-4
+python scripts/test_generation.py --model gpt-4o
 ```
 
-## Architecture
+## Struttura Progetto
 
 ```
 neuroise-playground/
-├── app/                         # Streamlit UI
-│   ├── main.py                  # Entry point
-│   ├── pages/                   # Dashboard pages
-│   └── components/              # Reusable UI components
+├── app/                    # Streamlit UI
+│   ├── main.py            # Entry point
+│   └── pages/             # Pagine Streamlit
 │
-├── core/                        # Core engine
-│   ├── llm/                     # LLM adapters (Ollama, Claude, OpenAI)
-│   │   ├── director.py          # Creative Director (profile -> triptych)
-│   │   ├── ollama_adapter.py    # Ollama structured generation
-│   │   ├── anthropic_adapter.py # Claude API adapter
-│   │   └── openai_adapter.py    # OpenAI API adapter
-│   ├── gating/                  # PolicyGate + validators
-│   ├── state/                   # State machine
-│   ├── metrics/                 # Evaluation metrics (M_AUTO_01-13)
-│   ├── experiments/             # Experiment runner
-│   ├── generation/              # Video/Music generation clients
-│   └── logging/                 # Event logging
-│
-├── video-gen/                   # Video generation microservice
-│   ├── Dockerfile               # NGC PyTorch + Wan2.2/TurboWan
-│   ├── server.py                # FastAPI server
-│   └── pipelines.py             # Video diffusion pipelines
+├── core/                   # Core modules
+│   ├── llm/               # LLM adapters
+│   │   ├── anthropic_adapter.py
+│   │   ├── openai_adapter.py
+│   │   ├── ollama_adapter.py
+│   │   └── director.py    # Creative Director
+│   │
+│   ├── state/             # State machine
+│   ├── gating/            # PolicyGate + validators
+│   ├── logging/           # Event logging
+│   ├── metrics/           # Evaluation metrics
+│   └── generation/        # Video/Music generation
 │
 ├── data/
-│   ├── profiles/official/       # 30 guest profiles (JSON)
-│   ├── experiments/             # Experiment results
-│   ├── outputs/                 # Generated videos & JSON (runtime)
-│   └── logs/                    # Runtime logs
+│   ├── profiles/official/ # 30 JSON NoNoise
+│   ├── outputs/           # Generated content
+│   └── experiments/       # Experiment results
 │
-├── docker-compose.yml           # Development setup
-├── docker-compose.prod.yml      # Production (GPU-enabled)
-├── Dockerfile                   # Multi-stage (dev + prod)
-└── Makefile                     # Quick commands
+├── scripts/               # Utility scripts
+│   └── test_generation.py
+│
+├── docker-compose.yml     # Development setup
+├── docker-compose.prod.yml # Production (DGX)
+└── Dockerfile
 ```
 
-## Services
+## Modelli Supportati
 
-| Service | Port | Description |
-|---------|------|-------------|
-| **app** | 8501 | Streamlit dashboard |
-| **ollama** | 11434 | Local LLM server |
-| **video-gen** | 8000 | Video generation (Wan2.2) |
+### Ollama (locale)
+- `llama3.2:8b` - consigliato per Mac
+- `llama3.2:70b` - per DGX con GPU
+- `mistral:7b`
+- `qwen2.5:14b`/`qwen2.5:72b`
 
-## Configuration
+### API Cloud
+- `claude-sonnet-4-20250514` (Anthropic)
+- `gpt-4o` (OpenAI)
 
-All configuration is done via `.env` file. See `.env.example` for all options.
+## Archetypes
 
-Key settings:
+| Archetype | Visual Style | Music Style |
+|-----------|--------------|-------------|
+| **Sage** | Contemplativo, minimale | Ambient, 60-80 BPM |
+| **Rebel** | Dinamico, energetico | Electronic, 120-140 BPM |
+| **Lover** | Caldo, intimo | Acoustic pop, 70-90 BPM |
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `OLLAMA_DEFAULT_MODEL` | `llama3.3:70b` | LLM model for Ollama |
-| `VIDEO_GEN_URL` | `http://video-gen:8000` | Video generation service URL |
-| `ANTHROPIC_API_KEY` | *(optional)* | For Claude models |
-| `OPENAI_API_KEY` | *(optional)* | For GPT models |
-| `LOG_LEVEL` | `INFO` | Logging verbosity |
+## Metriche
 
-## Supported Models
-
-### Ollama (local, recommended)
-- `llama3.3:70b` — recommended for production (DGX)
-- `llama3.2:8b` — lightweight, good for development
-- `qwen3:32b` — alternative production model
-
-### Cloud APIs (optional)
-- Claude Sonnet 4 (Anthropic)
-- GPT-4o (OpenAI)
-
-## Evaluation Metrics
-
-| ID | Metric | Type |
-|----|--------|------|
-| M01-M10 | Schema, Lexical, Semantic | Automatic |
+| ID | Metrica | Tipo |
+|----|---------|------|
+| M01-M10 | Schema, Lexical, Semantic | Base |
 | M11 | SCORE Coherence | NLP |
 | M12 | LLM-as-Judge | LLM |
 | M13 | Pacing Progression | Custom |
 
-## Troubleshooting
+## Deployment DGX Spark
 
-### Services won't start
 ```bash
-# Check Docker is running
-docker info
+# Usa docker-compose production
+docker-compose -f docker-compose.prod.yml up -d
 
-# Check GPU access
-nvidia-smi
-docker run --rm --gpus all nvidia/cuda:12.0-base nvidia-smi
+# Pull modelli grandi
+docker-compose -f docker-compose.prod.yml exec ollama ollama pull llama3.2:70b
 ```
 
-### Ollama model not loading
-```bash
-# Check Ollama logs
-docker compose -f docker-compose.prod.yml logs ollama
+## Roadmap
 
-# Pull model manually
-docker compose -f docker-compose.prod.yml exec ollama ollama pull llama3.3:70b
+- [x] **Fase 1**: Research Playground (Gennaio)
+  - [x] Core infrastructure
+  - [x] LLM adapters (Claude, GPT, Ollama)
+  - [x] PolicyGate
+  - [ ] Metriche complete
+  - [ ] Esperimenti batch
 
-# Check available models
-docker compose -f docker-compose.prod.yml exec ollama ollama list
-```
+- [ ] **Fase 2**: Simulation Playground (Febbraio)
+  - [ ] Scenario Generator
+  - [ ] Event simulator
+  - [ ] Demo interattiva
 
-### Video generation errors
-```bash
-# Check video-gen health
-curl http://localhost:8000/health
-
-# Check video-gen logs
-docker compose -f docker-compose.prod.yml logs video-gen
-```
-
-### Out of GPU memory
-The DGX Spark (GB10) has 128GB unified memory. If you run out:
-- Use `OLLAMA_MAX_LOADED_MODELS=1` (default) to keep only one model loaded
-- Stop video-gen when not needed: `docker compose -f docker-compose.prod.yml stop video-gen`
+- [ ] **Fase 3**: Paper + Production (Marzo)
+  - [ ] Ablation studies
+  - [ ] Human evaluation
+  - [ ] Paper ACM MM 2026
 
 ---
 
-*NEUROISE Playground v0.1.0*
+*NEURØISE Playground v0.1.0*
+*© 2026 No Noise Srl × DII UniPisa*

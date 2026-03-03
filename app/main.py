@@ -18,10 +18,11 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Page modules
-from app.pages.analysis import render_analysis
-from app.pages.evaluate import render_evaluate
-from app.pages.experiments import render_experiments
-from app.pages.preview import render_preview
+from app.views.analysis import render_analysis
+from app.views.evaluate import render_evaluate
+from app.views.experiments import render_experiments
+from app.views.preview import render_preview
+from app.views.profiles import render_profiles
 
 # Page config
 st.set_page_config(
@@ -78,6 +79,7 @@ def main():
             "🧪 Experiments",
             "📈 Analysis",
             "🎥 Preview",
+            "👤 Profiles",
             # "🌊 Simulation"  # Phase 2
         ]
     )
@@ -153,6 +155,8 @@ def main():
         render_analysis()
     elif page == "🎥 Preview":
         render_preview()
+    elif page == "👤 Profiles":
+        render_profiles()
 
 
 def render_home():

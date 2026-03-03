@@ -66,6 +66,18 @@ Each scene must flow naturally into the next while maintaining archetype consist
 - Prompts must be MARINE/COASTAL only (no urban, no people faces)
 - Prompts must be PRODUCTION-READY for text-to-video AI
 - OST must complement the visual mood and archetype
+- OST **MUST** include a numeric `bpm` value matching the archetype range (Sage 60-80, Rebel 120-140, Lover 70-90)
+
+## PROMPT FORMAT RULES (for video prompts)
+
+Each scene prompt must be a concise **shot description** (2-3 sentences max):
+- State the SUBJECT, FRAMING, CAMERA MOVEMENT, and LIGHTING
+- Be concrete and production-ready for text-to-video AI
+- NO audio references, NO metaphors, NO "we see", NO narration
+
+**GOOD example**: "Wide aerial shot of turquoise waves breaking over a coral reef at golden hour. Camera slowly descends toward the foam line, warm backlight from low sun. Gentle ripple patterns on the surface."
+
+**BAD example**: "We witness the eternal dance of the ocean as it whispers secrets to the shore. The viewer is transported into a realm of peace and wonder, accompanied by the gentle soundtrack of the deep."
 
 ## Red Flags (NEVER include)
 
@@ -220,7 +232,7 @@ class Director:
             )
             logger.info(f"Structured result keys: {list(result.keys()) if isinstance(result, dict) else type(result)}")
 
-            return self._parse_result(result)
+            return self._parse_result(result, profile=profile)
 
         except Exception as e:
             logger.warning(f"Structured generation failed: {e}")
@@ -235,7 +247,7 @@ class Director:
                 parsed = response.parse_json()
                 if parsed:
                     logger.info(f"Fallback parsed keys: {list(parsed.keys())}")
-                    return self._parse_result(parsed, raw_response=response)
+                    return self._parse_result(parsed, raw_response=response, profile=profile)
                 else:
                     logger.error(f"Fallback parse_json returned None")
             except Exception as e2:
@@ -246,7 +258,8 @@ class Director:
     @staticmethod
     def _parse_result(
         result: Dict[str, Any],
-        raw_response: Optional[LLMResponse] = None
+        raw_response: Optional[LLMResponse] = None,
+        profile: Optional[Dict[str, Any]] = None,
     ) -> "DirectorOutput":
         """Extract DirectorOutput from a parsed JSON dict, handling key variations."""
         # Try to find video_triptych in various locations
@@ -280,6 +293,14 @@ class Director:
             or result.get("soundtrack")
             or {}
         )
+
+        # BPM fallback: if LLM omitted bpm, pull from profile music_seed
+        if ost and not ost.get("bpm") and profile:
+            user_profile = profile.get("user_profile", profile)
+            fallback_bpm = user_profile.get("music_seed", {}).get("bpm")
+            if fallback_bpm is not None:
+                ost["bpm"] = fallback_bpm
+                logger.warning("BPM missing from LLM output, using profile fallback: %s", fallback_bpm)
 
         return DirectorOutput(
             video_triptych=triptych,
@@ -325,6 +346,7 @@ Ensure:
 - All scenes maintain archetype consistency
 - The triptych tells a coherent visual story
 - The OST complements the visual narrative
+- The OST includes a numeric **bpm** field (MANDATORY — use {music_seed.get('bpm', 70)} BPM as reference)
 - All content is marine/coastal themed
 - Prompts are specific enough for AI video generation
 

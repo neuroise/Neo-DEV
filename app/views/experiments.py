@@ -186,7 +186,7 @@ def _run_experiment(exp_name, models, profiles, runs_per_profile, temperature, j
 
 
 def _render_history():
-    """Show past experiment history."""
+    """Show past experiment history with expandable run details and JSONL download."""
     experiments = _list_past_experiments()
 
     if not experiments:
@@ -198,9 +198,10 @@ def _render_history():
             st.markdown(f"**Models**: {', '.join(exp['models'])}")
             st.markdown(f"**Success rate**: {exp['success']}/{exp['total']}")
 
+            exp_dir = _get_experiments_dir() / exp['name']
+
             # Load full summary
             try:
-                exp_dir = _get_experiments_dir() / exp['name']
                 with open(exp_dir / "summary.json") as f:
                     summary = json.load(f)
 
@@ -210,3 +211,41 @@ def _render_history():
                                 f"(range: {agg.get('min', 0):.3f}-{agg.get('max', 0):.3f})")
             except Exception:
                 pass
+
+            # JSONL download button
+            jsonl_path = exp_dir / "results.jsonl"
+            if jsonl_path.exists():
+                st.download_button(
+                    "Download JSONL",
+                    jsonl_path.read_text(),
+                    file_name=f"{exp['name']}.jsonl",
+                    mime="application/jsonl",
+                    key=f"dl_jsonl_{exp['name']}",
+                )
+
+            # Individual run details
+            results_path = exp_dir / "results.json"
+            if results_path.exists():
+                try:
+                    with open(results_path) as f:
+                        full_results = json.load(f)
+                    runs = full_results.get("results", [])
+                    if runs:
+                        st.markdown("---")
+                        st.markdown("**Individual Runs**")
+                        for i, run in enumerate(runs):
+                            pid = run.get("profile_id", "?")
+                            model = run.get("model", "?")
+                            ok = run.get("success", False)
+                            label = f"{'OK' if ok else 'FAIL'} | {pid} | {model}"
+                            with st.expander(label, expanded=False):
+                                if ok:
+                                    metrics = run.get("metrics", {})
+                                    agg_score = metrics.get("aggregate_score", 0)
+                                    st.markdown(f"Aggregate: **{agg_score:.3f}** | "
+                                                f"Policy: {run.get('policy_flag', '?')} | "
+                                                f"Latency: {run.get('latency_ms', 0)/1000:.1f}s")
+                                else:
+                                    st.error(run.get("error", "Unknown error"))
+                except (json.JSONDecodeError, KeyError):
+                    pass

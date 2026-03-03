@@ -152,7 +152,17 @@ class ExperimentResults:
         with open(summary_file, "w") as f:
             json.dump(self.get_summary(), f, indent=2)
 
+        # Save JSONL (one line per run, for streaming / quick inspection)
+        self._save_jsonl(out_dir)
+
         return out_dir
+
+    def _save_jsonl(self, out_dir: Path):
+        """Save results as JSONL — one JSON object per line per run."""
+        jsonl_file = out_dir / "results.jsonl"
+        with open(jsonl_file, "w") as f:
+            for r in self.results:
+                f.write(json.dumps(r, default=str) + "\n")
 
     def to_dataframe(self):
         """Convert results to pandas DataFrame (if available)."""
