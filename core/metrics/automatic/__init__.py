@@ -10,7 +10,8 @@ from .llm_judge import LLMJudge, evaluate_with_llm_judge
 def compute_all_automatic_metrics(
     output: dict,
     profile: dict,
-    judge_model: str = "qwen3:32b"
+    judge_model: str = "qwen3:32b",
+    judge_num_ctx: int = None
 ) -> dict:
     """
     Compute all automatic metrics (M_AUTO_01-13) for a Director output.
@@ -19,6 +20,7 @@ def compute_all_automatic_metrics(
         output: DirectorOutput.to_dict() or equivalent
         profile: User profile dict
         judge_model: Model for LLM-as-Judge (default: qwen3:32b)
+        judge_num_ctx: Ollama context window for judge (reduces VRAM)
 
     Returns:
         Dict with all metric scores (0.0-1.0)
@@ -42,7 +44,7 @@ def compute_all_automatic_metrics(
     results["M_AUTO_11_score_narrative_coherence"] = score.compute()
 
     # LLM-as-Judge (M_AUTO_12)
-    judge = LLMJudge(output, profile, judge_model)
+    judge = LLMJudge(output, profile, judge_model, num_ctx=judge_num_ctx)
     results["M_AUTO_12_llm_judge_quality"] = judge.compute()
 
     # Pacing progression (M_AUTO_13)

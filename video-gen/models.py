@@ -36,16 +36,16 @@ MODEL_INFO = {
     VideoModel.TURBO_1_3B: {
         "name": "TurboWanV2-T2V-1.3B",
         "params": "1.3B",
-        "vram_gb": 3,
+        "vram_gb": 16,
         "speed": "fast",
-        "description": "Fastest generation, lower quality",
+        "description": "Fastest generation (4 steps), good quality at 480p",
     },
     VideoModel.TURBO_14B: {
         "name": "TurboWanV2-T2V-14B",
         "params": "14B",
-        "vram_gb": 27,
+        "vram_gb": 45,
         "speed": "medium",
-        "description": "Fast generation with good quality",
+        "description": "Fast generation (4-8 steps) with high quality at 480p",
     },
 }
 

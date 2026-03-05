@@ -1,0 +1,26 @@
+\begin{table}[t]
+\centering
+\caption{Prompt pack ablation study. All experiments use LLaMA 3.3:70B at $T{=}0.7$ on 30 profiles. Bold indicates best mean per metric.}
+\label{tab:ablation}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+Metric & Default & Concise & Detailed \\
+\midrule
+Schema & \textbf{1.000} {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} \\
+Archetype & \textbf{0.789} {\scriptsize$\pm$0.196} & 0.726 {\scriptsize$\pm$0.247} & 0.770 {\scriptsize$\pm$0.283} \\
+Sequence & \textbf{1.000} {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} \\
+Thread & \textbf{0.822} {\scriptsize$\pm$0.239} & 0.772 {\scriptsize$\pm$0.311} & 0.711 {\scriptsize$\pm$0.321} \\
+Red Flags & 0.755 {\scriptsize$\pm$0.128} & 0.830 {\scriptsize$\pm$0.116} & \textbf{0.835} {\scriptsize$\pm$0.127} \\
+Length & 0.992 {\scriptsize$\pm$0.023} & \textbf{0.998} {\scriptsize$\pm$0.014} & 0.998 {\scriptsize$\pm$0.014} \\
+Lex. Fit & 0.416 {\scriptsize$\pm$0.167} & \textbf{0.458} {\scriptsize$\pm$0.146} & 0.399 {\scriptsize$\pm$0.190} \\
+Coherence & \textbf{0.588} {\scriptsize$\pm$0.130} & 0.137 {\scriptsize$\pm$0.039} & 0.140 {\scriptsize$\pm$0.039} \\
+Specificity & 0.535 {\scriptsize$\pm$0.243} & 0.542 {\scriptsize$\pm$0.283} & \textbf{0.692} {\scriptsize$\pm$0.255} \\
+Marine & 0.719 {\scriptsize$\pm$0.033} & \textbf{0.721} {\scriptsize$\pm$0.041} & 0.711 {\scriptsize$\pm$0.048} \\
+Narrative & 0.550 {\scriptsize$\pm$0.092} & \textbf{0.661} {\scriptsize$\pm$0.110} & 0.568 {\scriptsize$\pm$0.122} \\
+LLM Judge & 0.770 {\scriptsize$\pm$0.129} & \textbf{0.967} {\scriptsize$\pm$0.086} & 0.958 {\scriptsize$\pm$0.095} \\
+Pacing & \textbf{0.951} {\scriptsize$\pm$0.058} & 0.923 {\scriptsize$\pm$0.088} & 0.888 {\scriptsize$\pm$0.137} \\
+\textbf{Aggregate} & \textbf{0.775} {\scriptsize$\pm$0.049} & 0.749 {\scriptsize$\pm$0.056} & 0.744 {\scriptsize$\pm$0.080} \\
+\bottomrule
+\end{tabular}}
+\end{table}

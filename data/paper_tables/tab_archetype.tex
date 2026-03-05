@@ -1,0 +1,25 @@
+\begin{table}[t]
+\centering
+\caption{Per-archetype performance breakdown (LLaMA 3.3:70B, default prompt, $n{=}10$ per archetype). Bold indicates best mean.}
+\label{tab:archetype}
+\begin{tabular}{lccc}
+\toprule
+Metric & Sage & Rebel & Lover \\
+\midrule
+Schema & \textbf{1.000} {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} \\
+Archetype & \textbf{0.911} {\scriptsize$\pm$0.115} & 0.589 {\scriptsize$\pm$0.174} & 0.867 {\scriptsize$\pm$0.115} \\
+Sequence & \textbf{1.000} {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} \\
+Thread & 0.833 {\scriptsize$\pm$0.176} & 0.733 {\scriptsize$\pm$0.335} & \textbf{0.900} {\scriptsize$\pm$0.161} \\
+Red Flags & 0.715 {\scriptsize$\pm$0.131} & \textbf{0.775} {\scriptsize$\pm$0.079} & 0.775 {\scriptsize$\pm$0.162} \\
+Length & 0.993 {\scriptsize$\pm$0.024} & 0.985 {\scriptsize$\pm$0.032} & \textbf{1.000} {\scriptsize$\pm$0.000} \\
+Lex. Fit & 0.437 {\scriptsize$\pm$0.143} & 0.274 {\scriptsize$\pm$0.139} & \textbf{0.538} {\scriptsize$\pm$0.102} \\
+Coherence & 0.608 {\scriptsize$\pm$0.117} & 0.504 {\scriptsize$\pm$0.123} & \textbf{0.654} {\scriptsize$\pm$0.111} \\
+Specificity & \textbf{0.752} {\scriptsize$\pm$0.221} & 0.368 {\scriptsize$\pm$0.197} & 0.485 {\scriptsize$\pm$0.133} \\
+Marine & \textbf{0.730} {\scriptsize$\pm$0.005} & 0.721 {\scriptsize$\pm$0.023} & 0.706 {\scriptsize$\pm$0.051} \\
+Narrative & 0.524 {\scriptsize$\pm$0.075} & \textbf{0.569} {\scriptsize$\pm$0.099} & 0.559 {\scriptsize$\pm$0.103} \\
+LLM Judge & 0.765 {\scriptsize$\pm$0.125} & 0.725 {\scriptsize$\pm$0.142} & \textbf{0.820} {\scriptsize$\pm$0.114} \\
+Pacing & \textbf{0.997} {\scriptsize$\pm$0.008} & 0.933 {\scriptsize$\pm$0.061} & 0.924 {\scriptsize$\pm$0.058} \\
+\textbf{Aggregate} & \textbf{0.805} {\scriptsize$\pm$0.023} & 0.723 {\scriptsize$\pm$0.047} & 0.798 {\scriptsize$\pm$0.018} \\
+\bottomrule
+\end{tabular}
+\end{table}

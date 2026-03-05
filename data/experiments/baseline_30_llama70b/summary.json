@@ -1,0 +1,94 @@
+{
+  "total_runs": 30,
+  "successful_runs": 30,
+  "failed_runs": 0,
+  "success_rate": 1.0,
+  "models": {
+    "llama3.3:70b": {
+      "M_AUTO_01_schema_compliance": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "count": 30
+      },
+      "M_AUTO_02_archetype_consistency": {
+        "mean": 0.825925925925926,
+        "min": 0.2222222222222222,
+        "max": 1.0,
+        "count": 30
+      },
+      "M_AUTO_03_role_sequence_valid": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "count": 30
+      },
+      "M_AUTO_04_story_thread_presence": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "count": 30
+      },
+      "M_AUTO_05_red_flag_score": {
+        "mean": 0.7799999999999999,
+        "min": 0.55,
+        "max": 1.0,
+        "count": 30
+      },
+      "M_AUTO_06_prompt_length_valid": {
+        "mean": 0.985,
+        "min": 0.925,
+        "max": 1.0,
+        "count": 30
+      },
+      "M_AUTO_07_archetype_lexical_fit": {
+        "mean": 0.4920755946562398,
+        "min": 0.1935483870967742,
+        "max": 0.7741935483870968,
+        "count": 30
+      },
+      "M_AUTO_10_marine_vocabulary_ratio": {
+        "mean": 0.7213732316571458,
+        "min": 0.5784615384615384,
+        "max": 0.7414634146341463,
+        "count": 30
+      },
+      "M_AUTO_08_cross_scene_coherence": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "count": 20
+      },
+      "M_AUTO_09_prompt_specificity": {
+        "mean": 0.5305555555555556,
+        "min": 0.1333333333333333,
+        "max": 0.9,
+        "count": 30
+      },
+      "M_AUTO_11_score_narrative_coherence": {
+        "mean": 0.5261077712904114,
+        "min": 0.37243386243386245,
+        "max": 0.7437254901960784,
+        "count": 30
+      },
+      "M_AUTO_12_llm_judge_quality": {
+        "mean": 0.7933333333333333,
+        "min": 0.75,
+        "max": 1.0,
+        "count": 30
+      },
+      "M_AUTO_13_pacing_progression": {
+        "mean": 0.9514589065255732,
+        "min": 0.6161904761904762,
+        "max": 1.0,
+        "count": 30
+      },
+      "aggregate_score": {
+        "mean": 0.731057425728453,
+        "min": 0.5992165886067689,
+        "max": 0.7851055773494798,
+        "count": 30
+      }
+    }
+  }
+}

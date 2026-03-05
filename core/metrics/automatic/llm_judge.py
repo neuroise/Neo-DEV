@@ -23,7 +23,8 @@ except ImportError:
     HAS_LLM = False
 
 
-JUDGE_SYSTEM_PROMPT = """You are an expert evaluator for AI-generated video prompts.
+JUDGE_SYSTEM_PROMPT = """/no_think
+You are an expert evaluator for AI-generated video prompts.
 You evaluate prompts for a luxury yacht storytelling system called NEURØISE.
 
 Your task is to score prompts on multiple quality dimensions.
@@ -105,7 +106,8 @@ class LLMJudge:
         self,
         output: Dict[str, Any],
         profile: Dict[str, Any],
-        judge_model: str = None
+        judge_model: str = None,
+        num_ctx: Optional[int] = None
     ):
         """
         Initialize LLM Judge.
@@ -114,6 +116,7 @@ class LLMJudge:
             output: Director output to evaluate
             profile: User profile for context
             judge_model: Model to use as judge (default: qwen3:32b)
+            num_ctx: Ollama context window size (reduces VRAM usage)
         """
         self.output = output
         self.profile = profile
@@ -128,17 +131,20 @@ class LLMJudge:
 
         # Judge model - use a capable model from a different family than the generator
         self.judge_model = judge_model or "qwen3:32b"
+        self.num_ctx = num_ctx
         self._adapter = None
 
     def _get_adapter(self):
         """Lazy load judge adapter."""
         if self._adapter is None and HAS_LLM:
             try:
-                self._adapter = create_adapter(
-                    self.judge_model,
+                kwargs = dict(
                     temperature=0.3,  # Low temperature for consistent evaluation
-                    timeout=120
+                    timeout=300,
                 )
+                if self.num_ctx is not None:
+                    kwargs["num_ctx"] = self.num_ctx
+                self._adapter = create_adapter(self.judge_model, **kwargs)
             except Exception:
                 pass
         return self._adapter
@@ -251,7 +257,8 @@ class LLMJudge:
 def evaluate_with_llm_judge(
     output: Dict[str, Any],
     profile: Dict[str, Any],
-    judge_model: str = "qwen3:32b"
+    judge_model: str = "qwen3:32b",
+    num_ctx: Optional[int] = None
 ) -> Dict[str, Any]:
     """
     Convenience function to evaluate output with LLM judge.
@@ -260,9 +267,10 @@ def evaluate_with_llm_judge(
         output: Director output dict
         profile: User profile dict
         judge_model: Model to use as judge
+        num_ctx: Ollama context window size
 
     Returns:
         Evaluation dict with scores
     """
-    judge = LLMJudge(output, profile, judge_model)
+    judge = LLMJudge(output, profile, judge_model, num_ctx=num_ctx)
     return judge.get_detailed_evaluation()

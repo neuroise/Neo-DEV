@@ -86,6 +86,91 @@ def render_evaluate():
         st.error("Profile not found in results.")
         return
 
+    # Tabs: Automatic Metrics vs Human Evaluation
+    tab_auto, tab_human = st.tabs(["Automatic Metrics", "Human Evaluation"])
+
+    with tab_auto:
+        _render_automatic_metrics(run, selected_profile, selected_exp)
+
+    with tab_human:
+        _render_human_evaluation(selected_exp, selected_profile)
+
+
+def _render_human_evaluation(experiment: str, profile_id: str):
+    """Render the human evaluation tab with Likert sliders and agreement stats."""
+    try:
+        from core.metrics.manual.human_eval import (
+            HumanEvalStore, HumanEvaluation, EVAL_DIMENSIONS, DIMENSION_DESCRIPTIONS,
+        )
+    except ImportError:
+        st.error("Human evaluation module not available.")
+        return
+
+    store = HumanEvalStore()
+
+    st.markdown("#### Submit Human Evaluation")
+
+    rater_id = st.text_input("Rater ID", value="rater_A", key="human_eval_rater")
+
+    scores = {}
+    cols = st.columns(len(EVAL_DIMENSIONS))
+    for i, dim in enumerate(EVAL_DIMENSIONS):
+        with cols[i]:
+            scores[dim] = st.slider(
+                dim.replace("_", " ").title(),
+                1, 5, 3,
+                key=f"human_eval_{dim}",
+                help=DIMENSION_DESCRIPTIONS.get(dim, ""),
+            )
+
+    notes = st.text_area("Notes (optional)", key="human_eval_notes", height=80)
+
+    if st.button("Submit Evaluation", type="primary", key="submit_human_eval"):
+        evaluation = HumanEvaluation(
+            experiment=experiment,
+            profile_id=profile_id,
+            rater_id=rater_id,
+            scores=scores,
+            notes=notes,
+        )
+        store.save(evaluation)
+        st.success(f"Evaluation saved for {profile_id} by {rater_id}.")
+
+    # Show existing evaluations
+    st.markdown("---")
+    st.markdown("#### Existing Evaluations")
+
+    item_evals = store.load_for_item(experiment, profile_id)
+    if not item_evals:
+        st.info("No human evaluations yet for this item.")
+    else:
+        for ev in item_evals:
+            with st.expander(f"{ev.rater_id} — {ev.timestamp[:16]} (mean: {ev.mean_score:.1f})"):
+                score_cols = st.columns(len(EVAL_DIMENSIONS))
+                for j, dim in enumerate(EVAL_DIMENSIONS):
+                    with score_cols[j]:
+                        st.metric(dim.replace("_", " ").title(), ev.scores.get(dim, "?"))
+                if ev.notes:
+                    st.caption(f"Notes: {ev.notes}")
+
+    # Agreement stats
+    exp_evals = store.load_for_experiment(experiment)
+    raters = sorted(set(e.rater_id for e in exp_evals))
+
+    if len(raters) >= 2:
+        st.markdown("---")
+        st.markdown("#### Inter-Rater Agreement")
+
+        if len(raters) == 2:
+            kappa = store.cohens_kappa(experiment, raters[0], raters[1])
+            st.metric(f"Cohen's Kappa ({raters[0]} vs {raters[1]})", f"{kappa:.3f}")
+        elif len(raters) >= 3:
+            fk = store.fleiss_kappa(experiment)
+            st.metric(f"Fleiss' Kappa ({len(raters)} raters)", f"{fk:.3f}")
+
+
+def _render_automatic_metrics(run, selected_profile, selected_exp):
+    """Render the automatic metrics content."""
     # --- Metric Overview ---
     st.markdown("---")
     metrics = run.get("metrics", {})

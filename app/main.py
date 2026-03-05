@@ -269,7 +269,27 @@ def render_generate(model: str):
         )
 
     with col2:
-        temperature = st.slider("Temperature", 0.0, 1.0, 0.7, 0.1)
+        # Look up recommended temperature for the selected model
+        RECOMMENDED_TEMPERATURES = {
+            "qwen3": 0.6, "qwen2.5": 0.7, "qwen3.5": 0.6,
+            "llama3": 0.6, "llama3.1": 0.6, "llama3.2": 0.6, "llama3.3": 0.6,
+            "gemma3": 1.0, "gemma2": 1.0,
+            "mistral": 0.7, "mixtral": 0.7, "mistral-large": 0.7,
+            "phi3": 0.0, "phi4": 0.6,
+            "deepseek-r1": 0.6, "deepseek-v3": 0.6,
+        }
+        model_key = model.lower().split(":")[0]
+        rec_temp = RECOMMENDED_TEMPERATURES.get(model_key)
+        if rec_temp is None:
+            for known, temp in RECOMMENDED_TEMPERATURES.items():
+                if model_key.startswith(known):
+                    rec_temp = temp
+                    break
+        default_temp = rec_temp if rec_temp is not None else 0.7
+        help_text = f"Recommended: {default_temp}" if rec_temp is not None else None
+        temperature = st.slider(
+            "Temperature", 0.0, 1.0, default_temp, 0.1, help=help_text,
+        )
 
     # Load and display profile
     if selected_profile:

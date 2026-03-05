@@ -1,0 +1,2434 @@
+{
+  "config": {
+    "name": "ablation_concise_llama70b",
+    "profiles": [
+      "L-01",
+      "L-02",
+      "L-03",
+      "L-04",
+      "L-05",
+      "L-06",
+      "L-07",
+      "L-08",
+      "L-09",
+      "L-10",
+      "R-01",
+      "R-02",
+      "R-03",
+      "R-04",
+      "R-05",
+      "R-06",
+      "R-07",
+      "R-08",
+      "R-09",
+      "R-10",
+      "S-01",
+      "S-02",
+      "S-03",
+      "S-04",
+      "S-05",
+      "S-06",
+      "S-07",
+      "S-08",
+      "S-09",
+      "S-10"
+    ],
+    "models": [
+      "llama3.3:70b"
+    ],
+    "temperature": 0.7,
+    "runs_per_profile": 1,
+    "judge_model": "qwen3:32b",
+    "prompt_pack": "concise",
+    "timestamp": "2026-03-05T15:23:29.751011"
+  },
+  "summary": {
+    "total_runs": 30,
+    "successful_runs": 30,
+    "failed_runs": 0,
+    "success_rate": 1.0,
+    "models": {
+      "llama3.3:70b": {
+        "M_AUTO_01_schema_compliance": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "count": 30,
+          "std": 0.0,
+          "ci95_low": 1.0,
+          "ci95_high": 1.0
+        },
+        "M_AUTO_02_archetype_consistency": {
+          "mean": 0.7259259259259259,
+          "min": 0.2222222222222222,
+          "max": 1.0,
+          "count": 30,
+          "std": 0.24713485189668247,
+          "ci95_low": 0.6336442556209004,
+          "ci95_high": 0.8182075962309513
+        },
+        "M_AUTO_03_role_sequence_valid": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "count": 30,
+          "std": 0.0,
+          "ci95_low": 1.0,
+          "ci95_high": 1.0
+        },
+        "M_AUTO_04_story_thread_presence": {
+          "mean": 0.7722222222222223,
+          "min": 0.0,
+          "max": 1.0,
+          "count": 30,
+          "std": 0.31098451173483344,
+          "ci95_low": 0.656098697103714,
+          "ci95_high": 0.8883457473407305
+        },
+        "M_AUTO_05_red_flag_score": {
+          "mean": 0.83,
+          "min": 0.55,
+          "max": 1.0,
+          "count": 30,
+          "std": 0.11641187283920415,
+          "ci95_low": 0.7865310922903376,
+          "ci95_high": 0.8734689077096623
+        },
+        "M_AUTO_06_prompt_length_valid": {
+          "mean": 0.9975,
+          "min": 0.925,
+          "max": 1.0,
+          "count": 30,
+          "std": 0.013693063937629145,
+          "ci95_low": 0.9923869258946683,
+          "ci95_high": 1.0026130741053318
+        },
+        "M_AUTO_07_archetype_lexical_fit": {
+          "mean": 0.45826653633105247,
+          "min": 0.22580645161290322,
+          "max": 0.6967741935483871,
+          "count": 30,
+          "std": 0.14574202980785989,
+          "ci95_low": 0.40384556801721566,
+          "ci95_high": 0.5126875046448893
+        },
+        "M_AUTO_10_marine_vocabulary_ratio": {
+          "mean": 0.7205090584324433,
+          "min": 0.5816216216216216,
+          "max": 0.7444444444444444,
+          "count": 30,
+          "std": 0.04050250308651027,
+          "ci95_low": 0.7053851752258764,
+          "ci95_high": 0.7356329416390102
+        },
+        "M_AUTO_08_cross_scene_coherence": {
+          "mean": 0.13713100087236782,
+          "min": 0.07281577790339804,
+          "max": 0.2451230443285528,
+          "count": 30,
+          "std": 0.038540720647501185,
+          "ci95_low": 0.12273965926751126,
+          "ci95_high": 0.15152234247722438
+        },
+        "M_AUTO_09_prompt_specificity": {
+          "mean": 0.5416666666666666,
+          "min": 0.033333333333333326,
+          "max": 1.0,
+          "count": 30,
+          "std": 0.28283424603107976,
+          "ci95_low": 0.43605462351331115,
+          "ci95_high": 0.6472787098200221
+        },
+        "M_AUTO_11_score_narrative_coherence": {
+          "mean": 0.6609024851691518,
+          "min": 0.41000000000000003,
+          "max": 0.9274074074074075,
+          "count": 30,
+          "std": 0.10952947477209966,
+          "ci95_low": 0.6200035071333583,
+          "ci95_high": 0.7018014632049454
+        },
+        "M_AUTO_12_llm_judge_quality": {
+          "mean": 0.9666666666666667,
+          "min": 0.75,
+          "max": 1.0,
+          "count": 30,
+          "std": 0.0864364759104401,
+          "ci95_low": 0.9343907561219646,
+          "ci95_high": 0.9989425772113687
+        },
+        "M_AUTO_13_pacing_progression": {
+          "mean": 0.9228592592592594,
+          "min": 0.6339682539682541,
+          "max": 1.0,
+          "count": 30,
+          "std": 0.08836835071648393,
+          "ci95_low": 0.8898619748065323,
+          "ci95_high": 0.9558565437119865
+        },
+        "aggregate_score": {
+          "mean": 0.7487422939650581,
+          "min": 0.6162428018235305,
+          "max": 0.8454796969412354,
+          "count": 30,
+          "std": 0.05605618876748131,
+          "ci95_low": 0.72781056907601,
+          "ci95_high": 0.7696740188541061
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "profile_id": "L-01",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T13:34:52.663901",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, golden hour scene of a deserted beach, with the tide gently lapping at the shore. The camera is positioned low to the ground, looking out towards the horizon, capturing the vast expanse of the ocean. The warm light of the setting sun casts a long shadow across the sand, emphasizing the solitude of the scene.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "peaceful",
+              "intimate",
+              "golden"
+            ],
+            "camera_hints": "static shot with slight tilt to emphasize horizon"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide continues to rise, the camera pans across the beach, revealing driftwood and shells scattered along the water's edge. The light begins to soften, with the sun dipping lower in the sky, casting a warm glow over the entire scene. The sound of the waves gently lapping at the shore creates a soothing melody, drawing the viewer into the tranquility of the moment.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "serene",
+              "contemplative",
+              "coastal"
+            ],
+            "camera_hints": "slow pan to reveal tidal treasures"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The final scene captures the beach at sunset, with the tide at its highest point. The camera is positioned at the water's edge, looking out towards the horizon, where the sky meets the sea. The warm, golden light of the setting sun casts a magical glow over the entire scene, as the waves caress the shore in a soothing rhythm, creating a sense of closure and tranquility.",
+            "duration_hint": 8,
+            "mood_tags": [
+              "intimate",
+              "warm",
+              "coastal"
+            ],
+            "camera_hints": "slow zoom to emphasize the horizon"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a soothing ambient pop track that captures the essence of a serene coastal landscape at sunset.",
+          "genre": "ambient_pop",
+          "bpm": 70,
+          "mood": "golden_intimate",
+          "instruments_hint": "feat. soft piano, gentle guitar, and calming synth pads"
+        },
+        "metadata": {
+          "archetype_detected": "LOVER",
+          "story_thread_used": "tide_edge_line",
+          "coherence_notes": "The video triptych and OST are designed to work in harmony, creating a cohesive narrative that explores the intimate relationship between the coastline and the viewer, evoking feelings of peace and tranquility."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.8888888888888888,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.6666666666666666,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.3225806451612903,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.740625,
+        "M_AUTO_08_cross_scene_coherence": 0.2451230443285528,
+        "M_AUTO_09_prompt_specificity": 0.5666666666666667,
+        "M_AUTO_11_score_narrative_coherence": 0.6,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.8314285714285714,
+        "aggregate_score": 0.7470753448569719
+      },
+      "latency_ms": 133425.80437660217
+    },
+    {
+      "profile_id": "L-02",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T13:38:27.309692",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, low-tide shoreline at sunset, with a few scattered shells and pebbles in the foreground, gently illuminated by the warm, golden light of the setting sun. The camera is positioned close to the ground, looking out towards the calm, turquoise sea. Soft, warm colors dominate the scene, with the sky gradually transitioning from blue to hues of orange and pink. The atmosphere is peaceful, inviting the viewer to step into the tranquility of the moment.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "sunset_glow",
+              "serene",
+              "peaceful"
+            ],
+            "camera_hints": "static shot, slight tilt to emphasize the vastness of the sea"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide begins to rise, the camera pans slowly over a detailed, vibrant tide pool, filled with anemones, starfish, and mussels, their colors vibrant against the rocky, weathered background. The water's edge gently laps at the pool's boundary, creating a soothing melody. The lighting remains warm, with the sunset's glow casting a golden ambiance over the scene, highlighting the textures and colors of the marine life.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "vibrant",
+              "intimate",
+              "exploratory"
+            ],
+            "camera_hints": "smooth pan, macro shots to emphasize the details of the marine life"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The final scene transitions to a wider view of the shoreline as the sun dips below the horizon, casting a warm, golden light across the now fully submerged tide pools. The sea is calm, with gentle waves rolling in, creating a sense of closure and fulfillment. The sky is painted with hues of pink, orange, and purple, reflecting off the water's surface. The atmosphere remains serene, concluding the narrative on a peaceful note.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "peaceful",
+              "fulfilling",
+              "serene"
+            ],
+            "camera_hints": "panoramic view, slow zoom out to capture the vastness of the scene"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a cinematic pop soundtrack that captures the essence of a serene marine sunset, evolving into a vibrant exploration of a tide pool, and concluding with a peaceful, fulfilling ambiance.",
+          "genre": "cinematic_pop",
+          "bpm": 90,
+          "mood": "sunset_glow",
+          "instruments_hint": "feature a combination of soft pianos, ambient pads, and subtle, acoustic guitar melodies, with a minimalist approach to percussion to maintain the serene atmosphere"
+        },
+        "metadata": {
+          "archetype_detected": "LOVER",
+          "story_thread_used": "tide_pool_detail",
+          "coherence_notes": "The narrative arc maintains consistency with the LOVER archetype, focusing on intimate, serene, and vibrant moments of a marine sunset and tide pool exploration, culminating in a peaceful conclusion."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 1.0,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.7,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.3548387096774194,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.727906976744186,
+        "M_AUTO_08_cross_scene_coherence": 0.13994744409737717,
+        "M_AUTO_09_prompt_specificity": 0.8166666666666667,
+        "M_AUTO_11_score_narrative_coherence": 0.7339100529100528,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.9822222222222223,
+        "aggregate_score": 0.8042686209475326
+      },
+      "latency_ms": 158164.8063659668
+    },
+    {
+      "profile_id": "L-03",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T13:42:14.497246",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, golden hour scene of a deserted beach with gentle waves caressing the shore. The camera pans over a stretch of pristine sand, focusing on a delicate shell partially buried, with the sound of waves softly crashing in the distance. The lighting is warm and intimate, with long shadows cast across the sand.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "peaceful",
+              "intimate",
+              "golden"
+            ],
+            "camera_hints": "slow pan"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide comes in, the camera follows the water's edge, capturing the shell as it's gently lifted by the waves and carried along the beach. The scene evolves with the shell's journey, showing it pass by beach stones, seaweed, and other coastal elements, with the warm light of the setting sun casting a glow on the water's surface. The movement of the waves and the shell creates a sense of gentle, continuous motion.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "serene",
+              "warm",
+              "flowing"
+            ],
+            "camera_hints": "follow-shot"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The shell comes to rest in a small tidal pool, surrounded by anemones and starfish, as the sun dips below the horizon. The camera zooms in on the shell, now a part of a vibrant, miniature coastal world, lit by the soft, fading light of day. The scene is one of tranquility and connection to the natural world, with the shell's journey concluding in a place of beauty and peace.",
+            "duration_hint": 8,
+            "mood_tags": [
+              "tranquil",
+              "natural",
+              "coastal"
+            ],
+            "camera_hints": "macro"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a soundscape that complements the serene and intimate visuals of a shell's journey on a beach at golden hour, evolving with the tide and concluding in a tranquil tidal pool.",
+          "genre": "ambient_pop",
+          "bpm": 90,
+          "mood": "golden_intimate",
+          "instruments_hint": "feat. piano, ambient pads, and subtle, filtered percussion"
+        },
+        "metadata": {
+          "archetype_detected": "LOVER",
+          "story_thread_used": "shell_in_sand",
+          "coherence_notes": "The narrative arc follows the shell's gentle journey, maintaining an intimate and peaceful mood throughout, consistent with the LOVER archetype and the golden_intimate mood tag."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.7777777777777777,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.7,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.5806451612903226,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.5816216216216216,
+        "M_AUTO_08_cross_scene_coherence": 0.10319951432483403,
+        "M_AUTO_09_prompt_specificity": 0.5833333333333334,
+        "M_AUTO_11_score_narrative_coherence": 0.6245555555555556,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.968,
+        "aggregate_score": 0.7630102279925726
+      },
+      "latency_ms": 135026.34572982788
+    },
+    {
+      "profile_id": "L-04",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T13:45:41.289974",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, low-tide morning at a rocky shoreline, with gentle waves caressing the shore. The camera pans over a vibrant tide pool, filled with anemones, starfish, and mussels, as the morning sun casts a warm glow on the water's edge. The framing is intimate, focusing on the textures and colors of the marine life, with a slight tilt to convey a sense of wonder.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "calm",
+              "vibrant",
+              "intimate"
+            ],
+            "camera_hints": "macro shots, slow pan"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide begins to rise, the camera follows a small school of fish darting through the tide pool, their shimmering scales catching the sunlight. The framing expands to reveal the surrounding rocks and the ocean's horizon, as the waves gently lap at the shore. The camera movement becomes more fluid, with a mix of slow-motion and real-time footage to convey the dynamic movement of the fish and the water.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "dynamic",
+              "playful",
+              "serene"
+            ],
+            "camera_hints": "mix of underwater and above-water shots, slow-motion"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "As the tide reaches its peak, the camera pulls back to reveal the entire shoreline, with the tide pool now submerged and the waves crashing against the rocks. The framing is wide, with a warm, golden light casting a sense of closure and completion. The camera lingers on the scene, as the sound of the waves and the cries of seagulls fill the air, conveying a sense of peace and tranquility.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "peaceful",
+              "warm",
+              "contemplative"
+            ],
+            "camera_hints": "wide shot, static camera"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a warm, romantic cinematic pop track that evokes the feeling of a serene ocean shoreline at sunset. Incorporate instrumentation that features a mix of acoustic guitar, piano, and subtle strings, with a gentle, pulsing rhythm that matches the movement of the waves.",
+          "genre": "cinematic_pop",
+          "bpm": 75,
+          "mood": "warm_romantic",
+          "instruments_hint": "acoustic guitar, piano, subtle strings"
+        },
+        "metadata": {
+          "archetype_detected": "LOVER",
+          "story_thread_used": "tide_pool_detail",
+          "coherence_notes": "The video triptych and OST prompt work together to create a cohesive narrative that explores the beauty and tranquility of a marine shoreline, with a focus on intimate, warm, and romantic moments."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.5555555555555555,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.6666666666666666,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.6580645161290322,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7238095238095238,
+        "M_AUTO_08_cross_scene_coherence": 0.1292831616565062,
+        "M_AUTO_09_prompt_specificity": 0.2333333333333333,
+        "M_AUTO_11_score_narrative_coherence": 0.7008571428571428,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.9893333333333334,
+        "aggregate_score": 0.7313002487185456
+      },
+      "latency_ms": 147071.75421714783
+    },
+    {
+      "profile_id": "L-05",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T13:49:27.446024",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, deserted beach at dawn, with the tide slowly rising. The camera pans over the shoreline, capturing the gentle lapping of waves against the sand. Soft, warm light casts a golden glow over the scene, with the sun peeking over the horizon.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "peaceful",
+              "intimate",
+              "warm"
+            ],
+            "camera_hints": "slow pan, low angle"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide continues to rise, the camera focuses on a piece of driftwood, worn smooth by the ocean's caress, being gently carried by the waves towards the shore. The light dances across the water, creating a mesmerizing display of reflections and ripples. Seagulls fly overhead, their cries distant and melancholic.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "contemplative",
+              "serene",
+              "longing"
+            ],
+            "camera_hints": "steady cam, medium shot"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The sun now sets over the ocean, casting a warm, golden light over the beach. The tide has reached its peak, and the driftwood lies still on the sand, a testament to the ebb and flow of the sea. The camera zooms out, capturing the vast expanse of the coastline, the sky ablaze with hues of orange and pink, as the stars begin to twinkle in the night sky.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "romantic",
+              "trusting",
+              "hopeful"
+            ],
+            "camera_hints": " crane shot, high angle"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a cinematic pop soundtrack that evokes the feeling of a romantic sunset by the ocean. Incorporate elements of nature, such as the sound of waves and seagulls, into the instrumentation.",
+          "genre": "cinematic_pop",
+          "bpm": 70,
+          "mood": "sunset_glow",
+          "instruments_hint": "feature piano, acoustic guitar, and a subtle string section"
+        },
+        "metadata": {
+          "archetype_detected": "LOVER",
+          "story_thread_used": "tide_edge_line",
+          "coherence_notes": "The video triptych and OST are designed to work in harmony, creating a cohesive narrative that explores the intimate and romantic aspects of the ocean's edge. The LOVER archetype is maintained throughout, with a focus on warmth, trust, and hope."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.6666666666666666,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.6666666666666666,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.5806451612903226,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7378378378378377,
+        "M_AUTO_08_cross_scene_coherence": 0.10964983079166842,
+        "M_AUTO_09_prompt_specificity": 0.7333333333333334,
+        "M_AUTO_11_score_narrative_coherence": 0.5263333333333333,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.8466666666666666,
+        "aggregate_score": 0.7475230381989613
+      },
+      "latency_ms": 135265.49220085144
+    },
+    {
+      "profile_id": "L-06",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T13:53:15.288133",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, golden hour scene of a solitary seashell half-buried in the sand, with gentle waves caressing the shore in the background. The camera is positioned directly above the shell, with a slight tilt to emphasize its texture and the surrounding sand. Soft, warm lighting illuminates the scene, with the sun's rays peeking through the waves.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "intimate",
+              "golden",
+              "serene"
+            ],
+            "camera_hints": "Static shot with a slow zoom-in"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide comes in, the camera pans out to reveal more of the coastline, showing the shell now partially submerged in the calm, clear water. A school of small fish darts past the shell, their scales shimmering in the sunlight. The framing is wider, capturing the movement of the waves and the fish, with the shell as the central focal point. The lighting remains warm and inviting, with the sun now higher in the sky.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "intimate",
+              "golden",
+              "dynamic"
+            ],
+            "camera_hints": "Slow pan-out with a slight tilt to follow the fish"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The scene evolves further as the sun begins to set, casting a warm, golden glow over the water. The shell is now fully submerged, but still visible through the clear water. The camera dives beneath the surface, capturing the shell surrounded by the marine life, with seaweed swaying gently in the current. The lighting is soft and intimate, with the setting sun's rays filtering down through the water.",
+            "duration_hint": 8,
+            "mood_tags": [
+              "intimate",
+              "golden",
+              "peaceful"
+            ],
+            "camera_hints": "Slow dive with a slight rotation to emphasize the underwater world"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a soothing, acoustic piece that captures the intimacy and warmth of a coastal scene at sunset. Incorporate instruments like the acoustic guitar, piano, and possibly a soft, mournful violin to evoke feelings of peace and connection to nature.",
+          "genre": "acoustic_intimate",
+          "bpm": 90,
+          "mood": "golden_intimate",
+          "instruments_hint": "Acoustic guitar, piano, soft violin"
+        },
+        "metadata": {
+          "archetype_detected": "LOVER",
+          "story_thread_used": "shell_in_sand",
+          "coherence_notes": "The video triptych and OST are designed to evoke a sense of intimacy and connection to nature, following the story thread of a shell in the sand and maintaining consistency with the LOVER archetype."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 1.0,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.7,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.6193548387096773,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7259842519685039,
+        "M_AUTO_08_cross_scene_coherence": 0.13476937330421548,
+        "M_AUTO_09_prompt_specificity": 0.5833333333333334,
+        "M_AUTO_11_score_narrative_coherence": 0.5461428571428572,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.9573333333333334,
+        "aggregate_score": 0.78976292213784
+      },
+      "latency_ms": 145223.28925132751
+    },
+    {
+      "profile_id": "L-07",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T13:56:53.548186",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene coastline at sunset, with the tide gently lapping at the shore. The camera pans over the beach, capturing the warmth of the setting sun casting a golden glow on the waves. The framing is wide, encompassing the vast expanse of the ocean and the sky, with the sound of the waves subtly present in the background.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "peaceful",
+              "warm",
+              "intimate"
+            ],
+            "camera_hints": "slow pan"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the sun dips lower, the light dances across the waves, creating a mesmerizing display of color and movement. The camera zooms in on the water's edge, where the tide is leaving behind a trail of seaweed and shells, each one telling a story of the ocean's secrets. The framing is closer, focusing on the textures and patterns of the natural world.",
+            "duration_hint": 4,
+            "mood_tags": [
+              "intriguing",
+              "vibrant",
+              "oceanic"
+            ],
+            "camera_hints": "medium zoom"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The final scene is of the coastline at dusk, with the stars beginning to twinkle in the sky. The camera pulls back, showing the beach in a state of tranquil surrender to the night, the only sound being the gentle lapping of the waves against the shore. The framing is wide again, capturing the vastness of the night sky and the peacefulness of the ocean.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "calm",
+              "serene",
+              "nighttime"
+            ],
+            "camera_hints": "slow pull back"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a cinematic pop soundtrack that captures the essence of a serene coastline at sunset, evolving into a vibrant display of color and movement, and finally surrendering to the peacefulness of the night.",
+          "genre": "cinematic_pop",
+          "bpm": 90,
+          "mood": "sunset_glow",
+          "instruments_hint": "featuring piano, acoustic guitar, and subtle strings"
+        },
+        "metadata": {
+          "archetype_detected": "LOVER",
+          "story_thread_used": "tide_edge_line",
+          "coherence_notes": "The video triptych and OST are designed to work together in harmony, capturing the intimate and warm feelings of the LOVER archetype, while telling a coherent visual story of the coastline at different times of the day."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.5555555555555555,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.2903225806451613,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7346153846153846,
+        "M_AUTO_08_cross_scene_coherence": 0.13246008471814924,
+        "M_AUTO_09_prompt_specificity": 0.4,
+        "M_AUTO_11_score_narrative_coherence": 0.6294074074074074,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.9466666666666665,
+        "aggregate_score": 0.7337713599698712
+      },
+      "latency_ms": 133649.69778060913
+    },
+    {
+      "profile_id": "L-08",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:00:28.057773",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene beach at sunrise, with gentle waves caressing the shore. The camera pans over a stretch of pristine sand, where a single shell lies nestled, partially buried. Soft, warm light illuminates the scene, with the sound of waves gently lapping in the background.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "peaceful",
+              "intimate"
+            ],
+            "camera_hints": "slow pan"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide comes in, the camera focuses on the shell, now being slowly engulfed by the incoming waves. The water dances around it, creating miniature whirlpools in the sand. The light begins to shift, with the sun rising higher in the sky, casting a warm glow over the evolving scene.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "engaging",
+              "emotional"
+            ],
+            "camera_hints": "close-up, slow zoom"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The shell, now fully submerged, is surrounded by a school of small fish, their scales shimmering in the sunlight that penetrates the water. The camera lingers on this tranquil scene, as the waves continue to gently lap at the shore, creating a sense of closure and harmony. The light is soft and warm, embracing the marine life.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "serene",
+              "romantic"
+            ],
+            "camera_hints": "underwater, static shot"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a soothing acoustic piece that captures the warmth and intimacy of a romantic marine setting.",
+          "genre": "acoustic_intimate",
+          "bpm": 80,
+          "mood": "warm_romantic",
+          "instruments_hint": "piano, acoustic guitar, subtle strings"
+        },
+        "metadata": {
+          "archetype_detected": "LOVER",
+          "story_thread_used": "shell_in_sand",
+          "coherence_notes": "The narrative arc follows the discovery, engagement, and culmination of a serene marine moment, emphasizing warmth and intimacy throughout."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.7777777777777777,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 1.0,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.5032258064516129,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7309278350515463,
+        "M_AUTO_08_cross_scene_coherence": 0.16222753854332803,
+        "M_AUTO_09_prompt_specificity": 0.5,
+        "M_AUTO_11_score_narrative_coherence": 0.649,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.9182222222222223,
+        "aggregate_score": 0.7877985523112684
+      },
+      "latency_ms": 115194.12875175476
+    },
+    {
+      "profile_id": "L-09",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:03:51.069559",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, golden hour shot of a deserted beach, with the camera panning over the shoreline to reveal a single, delicate shell nestled in the sand. The framing is tight, focusing on the texture of the shell and the gentle waves caressing the shore. Soft, warm lighting casts a romantic glow over the scene.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "peaceful",
+              "intimate",
+              "warm"
+            ],
+            "camera_hints": "slow pan"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide comes in, the camera captures the shell being gently lifted by the waves and carried along the beach. The framing opens up to show the shell's journey, with the camera following its path as it moves towards a secluded cove. The lighting remains warm, with the sun beginning to set behind the horizon, casting a golden light on the waves.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "serene",
+              "dreamy",
+              "romantic"
+            ],
+            "camera_hints": "smooth tracking shot"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The shell comes to rest in a tranquil pool of seawater, surrounded by smooth rocks and anemones swaying in the current. The camera zooms in on the shell, now filled with seawater and tiny marine creatures, as the sun dips below the horizon. The lighting is soft and intimate, with the warm colors of the sunset giving way to a peaceful, starry night sky.",
+            "duration_hint": 8,
+            "mood_tags": [
+              "calm",
+              "intimate",
+              "magical"
+            ],
+            "camera_hints": "close-up, slow zoom"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a soothing, acoustic piece featuring a solo piano or a combination of acoustic guitar and soft, ambient pads. The music should evoke a sense of warmth and intimacy, with a gentle, lapping rhythm that recalls the movement of waves on a deserted beach.",
+          "genre": "acoustic_intimate",
+          "bpm": 70,
+          "mood": "warm_romantic",
+          "instruments_hint": "piano, acoustic guitar, ambient pads"
+        },
+        "metadata": {
+          "archetype_detected": "LOVER",
+          "story_thread_used": "shell_in_sand",
+          "coherence_notes": "The video triptych and OST prompt work together to create a cohesive narrative that explores the themes of intimacy, warmth, and the beauty of the marine environment. The LOVER archetype is consistently reflected in the peaceful, romantic atmosphere and the focus on the shell as a symbol of love and connection."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 1.0,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.7,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.6967741935483871,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7272727272727272,
+        "M_AUTO_08_cross_scene_coherence": 0.11424189854618357,
+        "M_AUTO_09_prompt_specificity": 0.6666666666666666,
+        "M_AUTO_11_score_narrative_coherence": 0.6013703703703703,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.7958730158730158,
+        "aggregate_score": 0.792476836329027
+      },
+      "latency_ms": 140476.89819335938
+    },
+    {
+      "profile_id": "L-10",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:07:27.874752",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, shallow tide pool at dawn, with gentle waves caressing the shore. The camera pans over a variety of anemones and starfish, their colors vibrant in the morning light. Soft, warm lighting accentuates the textures of the marine life and the rocky pool.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "serene",
+              "vibrant",
+              "warm"
+            ],
+            "camera_hints": "slow pan, macro shots"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide rises, the camera follows a small school of fish darting through the pool, their scales shimmering in the increasing sunlight. The anemones sway gently in the current, and the starfish slowly move across the rocks. The lighting becomes more golden, highlighting the movement and life within the pool.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "gentle",
+              "lively",
+              "intimate"
+            ],
+            "camera_hints": "follow shots, medium close-ups"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The tide pool at sunset, with the warm light casting long shadows across the rocks. The marine life is settled, with the anemones closed and the starfish stationary. The camera zooms out to reveal the pool's place within the larger coastal landscape, the sound of the waves gently lapping at the shore. The lighting is soft and romantic, with the sky ablaze with color in the background.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "peaceful",
+              "romantic",
+              "cozy"
+            ],
+            "camera_hints": "wide shot, slow zoom"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a warm and intimate ambient pop track that complements the serene and romantic mood of the tide pool scenes.",
+          "genre": "ambient_pop",
+          "bpm": 90,
+          "mood": "warm_romantic",
+          "instruments_hint": "featuring piano, acoustic guitar, and subtle ocean sound effects"
+        },
+        "metadata": {
+          "archetype_detected": "LOVER",
+          "story_thread_used": "tide_pool_detail",
+          "coherence_notes": "The video triptych and OST are designed to work together to create a cohesive and immersive marine/coastal narrative, with a focus on warmth, intimacy, and romance."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 1.0,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.6666666666666666,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.6967741935483871,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.5858064516129031,
+        "M_AUTO_08_cross_scene_coherence": 0.19067066860653828,
+        "M_AUTO_09_prompt_specificity": 0.5833333333333334,
+        "M_AUTO_11_score_narrative_coherence": 0.6055714285714285,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.9288888888888889,
+        "aggregate_score": 0.7775162793252419
+      },
+      "latency_ms": 126735.23616790771
+    },
+    {
+      "profile_id": "R-01",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:10:45.316696",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "Aerial shot of a solitary wave forming on the horizon, with the sun setting behind it, casting a golden glow on the water's surface. The camera pans down to reveal the wave's powerful curl as it begins to break. The framing is wide, showing the vastness of the ocean.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "oceanic",
+              "energetic"
+            ],
+            "camera_hints": "Drone shot, smooth pan"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "Close-up shot of the wave's face as it crashes onto the shore, with foam and spray exploding in all directions. The camera is positioned at a low angle, looking up at the wave, emphasizing its power and dynamism. The lighting is dramatic, with the setting sun casting long shadows across the beach.",
+            "duration_hint": 4,
+            "mood_tags": [
+              "intense",
+              "kinetic"
+            ],
+            "camera_hints": "Handheld, dynamic movement"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "Wide shot of the wave's aftermath, with the water receding to reveal a beach strewn with seaweed and shells. The camera zooms out further to show the vast expanse of the ocean, with the sun dipping below the horizon. The mood is one of calm after the storm, with the wave's energy spent.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "serene",
+              "oceanic"
+            ],
+            "camera_hints": "Static shot, slow zoom"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a driving, acoustic track that captures the kinetic energy of the ocean's waves",
+          "genre": "hybrid_acoustic_driving",
+          "bpm": 120,
+          "mood": "kinetic_ocean",
+          "instruments_hint": "Featuring a combination of acoustic guitar, driving percussion, and haunting oceanic sound design elements"
+        },
+        "metadata": {
+          "archetype_detected": "REBEL",
+          "story_thread_used": "breaker_curl",
+          "coherence_notes": "The video triptych and OST are designed to work together to create a cohesive narrative that captures the dynamic, kinetic energy of the ocean's waves, consistent with the REBEL archetype."
+        }
+      },
+      "policy_flag": "yellow",
+      "policy_violations": 0,
+      "policy_warnings": 3,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.4444444444444444,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.5,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.34838709677419355,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7387096774193548,
+        "M_AUTO_08_cross_scene_coherence": 0.15380323675438332,
+        "M_AUTO_09_prompt_specificity": 0.55,
+        "M_AUTO_11_score_narrative_coherence": 0.7586719576719576,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.8755555555555556,
+        "aggregate_score": 0.7091978437399914
+      },
+      "latency_ms": 122910.00366210938
+    },
+    {
+      "profile_id": "R-02",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:14:07.023667",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "Aerial footage of a wave beginning to form on the horizon, with the sun peeking through the clouds, casting a warm glow on the water's surface. The camera pans down, following the wave as it starts to gain momentum, revealing the power and energy building beneath. The framing is wide, showcasing the vastness of the ocean and the solitude of the wave.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "high_contrast_motion",
+              "dynamic"
+            ],
+            "camera_hints": "Aerial, drone shot, smooth pan"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "The wave crashes against the shore, creating a breaker curl that envelops the surrounding environment in a misty veil. The camera is positioned at a low angle, looking up at the wave, emphasizing its force and majesty. As the wave recedes, it reveals hidden tidal pools and sea life, momentarily exposed before being covered again by the next wave. The lighting is dramatic, with the sun's rays piercing through the water droplets, creating a kaleidoscope of colors.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "turbulent",
+              "vibrant"
+            ],
+            "camera_hints": "Low-angle shot, handheld, dynamic movement"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The wave finally subsides, leaving behind a serene and peaceful coastline. The camera zooms out, revealing the aftermath of the wave's passage, with seaweed and shells scattered along the beach. The sun dips lower in the sky, casting a warm, golden light on the scene, symbolizing the end of the wave's turbulent journey. The framing is wide, capturing the tranquility of the moment, as the ocean and the shore return to a state of calm.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "serene",
+              "golden"
+            ],
+            "camera_hints": "Wide shot, static, warm lighting"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a drum and bass track that captures the high-energy motion of a wave crashing against the shore, with a focus on clean and sharp drum patterns, complemented by vibrant synthesizer leads that evoke the feeling of sea spray and the power of the ocean.",
+          "genre": "drum_and_bass_clean",
+          "bpm": 120,
+          "mood": "high_contrast_motion",
+          "instruments_hint": "Prominent drum machine, piercing synthesizers, and a driving bassline"
+        },
+        "metadata": {
+          "archetype_detected": "REBEL",
+          "story_thread_used": "breaker_curl",
+          "coherence_notes": "The video triptych and OST prompt are designed to work together, capturing the dynamic and turbulent nature of the wave, while also conveying a sense of energy and power, consistent with the REBEL archetype."
+        }
+      },
+      "policy_flag": "red",
+      "policy_violations": 1,
+      "policy_warnings": 1,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.2222222222222222,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.7,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.22580645161290322,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.73,
+        "M_AUTO_08_cross_scene_coherence": 0.1093672809923204,
+        "M_AUTO_09_prompt_specificity": 0.2833333333333334,
+        "M_AUTO_11_score_narrative_coherence": 0.7261322751322752,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.8653968253968254,
+        "aggregate_score": 0.6817121837453753
+      },
+      "latency_ms": 150920.5996990204
+    },
+    {
+      "profile_id": "R-03",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:18:05.452595",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "Aerial shot of a rugged coastline at sunrise, with waves crashing against the rocky shore and sea spray misting the air. The camera pans over the rocks, revealing hidden tidal pools and anemones swaying in the current. The light is golden, with long shadows accentuating the textures of the rocks.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "driving",
+              "clean",
+              "rugged"
+            ],
+            "camera_hints": "Drone shot, slow pan"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide rises, the camera follows a school of fish darting through the shallow water, their scales shimmering in the sunlight. The rocks are now partially submerged, with seaweed swaying back and forth in the current. The camera zooms in on a particularly narrow channel, where the water rushes through with increased speed and turbulence.",
+            "duration_hint": 4,
+            "mood_tags": [
+              "dynamic",
+              "fast-paced",
+              "oceanic"
+            ],
+            "camera_hints": "Underwater shot, medium zoom"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The sun is now high overhead, and the camera looks out at the open ocean, where waves are building in size and intensity. The rocky shoreline is still visible in the distance, but the focus is on the power and energy of the sea. The camera tilts up, capturing the spray and foam as the waves crest and break.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "exhilarating",
+              "unbridled",
+              "marine"
+            ],
+            "camera_hints": "Aerial shot, wide angle"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create an electronic track that captures the dynamic energy of the ocean, with a driving beat and clean, pulsing synths. Incorporate sound design elements that evoke the sound of waves and sea spray.",
+          "genre": "electronic",
+          "bpm": 130,
+          "mood": "driving_clean",
+          "instruments_hint": "Pulsing synths, driving drum machine, oceanic sound design elements"
+        },
+        "metadata": {
+          "archetype_detected": "REBEL",
+          "story_thread_used": "rock_shelf_runoff",
+          "coherence_notes": "The video triptych and OST are designed to work together to create a cohesive and engaging narrative that showcases the power and energy of the ocean, while maintaining consistency with the REBEL archetype."
+        }
+      },
+      "policy_flag": "red",
+      "policy_violations": 1,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.5555555555555555,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.3333333333333333,
+        "M_AUTO_05_red_flag_score": 0.55,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.22580645161290322,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7351351351351351,
+        "M_AUTO_08_cross_scene_coherence": 0.07281577790339804,
+        "M_AUTO_09_prompt_specificity": 0.21666666666666667,
+        "M_AUTO_11_score_narrative_coherence": 0.41000000000000003,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.9288888888888889,
+        "aggregate_score": 0.6175539853150678
+      },
+      "latency_ms": 132604.4318675995
+    },
+    {
+      "profile_id": "R-04",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:21:42.374433",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "Aerial shot of a turbulent sea at dawn, with waves crashing against the shore. The camera pans over the water, capturing the dynamic movement of the waves. The lighting is dramatic, with the sun slowly rising over the horizon, casting a warm glow over the scene.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "high_contrast_motion",
+              "turbulent"
+            ],
+            "camera_hints": "Fast-paced, dynamic camera movements to match the energy of the waves"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "Underwater shot of a school of fish swimming rapidly through the coral reef, with the camera following their movement. The lighting is intense, with sunbeams piercing through the water, highlighting the vibrant colors of the fish and the reef. The scene is chaotic, with fish darting in all directions.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "high_contrast_motion",
+              "chaotic"
+            ],
+            "camera_hints": "Quick cuts and fast-paced camera movements to capture the frenetic energy of the fish"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "Aerial shot of a massive wave breaking on the shore, with the camera capturing the explosive power of the wave. The lighting is dramatic, with the sun setting over the horizon, casting a golden glow over the scene. The wave crashes against the shore, sending spray flying everywhere.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "high_contrast_motion",
+              "explosive"
+            ],
+            "camera_hints": "Slow-motion camera capture to emphasize the power and drama of the wave"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a drum and bass track that captures the high-energy movement of the ocean, with fast-paced drum patterns and piercing synth leads.",
+          "genre": "drum_and_bass_clean",
+          "bpm": 140,
+          "mood": "high_contrast_motion",
+          "instruments_hint": "Incorporate sound design elements that evoke the sound of waves and ocean spray"
+        },
+        "metadata": {
+          "archetype_detected": "REBEL",
+          "story_thread_used": "breaker_curl",
+          "coherence_notes": "The video triptych and OST prompt work together to create a cohesive narrative that captures the dynamic energy of the ocean, with a focus on high-contrast motion and explosive power."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.5555555555555555,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.0,
+        "M_AUTO_05_red_flag_score": 1.0,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.42580645161290326,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7444444444444444,
+        "M_AUTO_08_cross_scene_coherence": 0.19406305619120265,
+        "M_AUTO_09_prompt_specificity": 0.5666666666666667,
+        "M_AUTO_11_score_narrative_coherence": 0.649,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.9644444444444444,
+        "aggregate_score": 0.6999985091473243
+      },
+      "latency_ms": 127571.2080001831
+    },
+    {
+      "profile_id": "R-05",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:25:11.794625",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A dramatic shot of a wave approaching the shore, with the sun setting behind it, casting a golden glow on the water. The camera is positioned low, looking up at the wave, emphasizing its power. The framing is wide, capturing the vastness of the ocean.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "dramatic",
+              "powerful"
+            ],
+            "camera_hints": "Low-angle shot, slow zoom"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the wave hits the rock, the camera cuts to a close-up shot of the water splashing against the rugged coastline, with sea spray flying everywhere. The lighting is intense, highlighting the texture of the rock and the foam. The camera moves quickly, following the movement of the water.",
+            "duration_hint": 4,
+            "mood_tags": [
+              "intense",
+              "dynamic"
+            ],
+            "camera_hints": "Handheld, fast-paced"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The final shot is of the wave receding, leaving behind a calm, peaceful landscape. The camera pans out, showing the extent of the coastline, with the sun dipping below the horizon. The lighting is soft, warm, and inviting. The camera movement is slow, reflective.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "peaceful",
+              "serene"
+            ],
+            "camera_hints": "Aerial shot, slow pan"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a breakbeat track that captures the energy and power of the ocean, with driving beats and clean synths. The mood should be dynamic and intense, with a sense of movement and progression.",
+          "genre": "breakbeat",
+          "bpm": 140,
+          "mood": "driving_clean",
+          "instruments_hint": "Prominent use of drums, bass, and synthesizers"
+        },
+        "metadata": {
+          "archetype_detected": "REBEL",
+          "story_thread_used": "wave_hits_rock",
+          "coherence_notes": "The video triptych and OST are designed to work together to create a cohesive narrative that showcases the power and beauty of the ocean, with a focus on dynamic movement and intense energy."
+        }
+      },
+      "policy_flag": "yellow",
+      "policy_violations": 0,
+      "policy_warnings": 1,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.4444444444444444,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.3870967741935484,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7428571428571428,
+        "M_AUTO_08_cross_scene_coherence": 0.11273640661938533,
+        "M_AUTO_09_prompt_specificity": 0.06666666666666665,
+        "M_AUTO_11_score_narrative_coherence": 0.7427142857142857,
+        "M_AUTO_12_llm_judge_quality": 0.75,
+        "M_AUTO_13_pacing_progression": 0.9066666666666667,
+        "aggregate_score": 0.6925524913201644
+      },
+      "latency_ms": 119247.25890159607
+    },
+    {
+      "profile_id": "R-06",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:28:44.024670",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A dramatic, low-angle shot of a massive wave approaching the shore, with the sun setting behind it, casting a golden glow on the water's surface. The camera is positioned on the beach, with the wave crashing in the distance, creating a sense of anticipation. The framing is wide, capturing the vastness of the ocean and the power of the wave.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "dramatic",
+              "powerful",
+              "anticipatory"
+            ],
+            "camera_hints": "low-angle, wide framing"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the wave hits the rock, the camera cuts to a dynamic, overhead shot of the water splashing against the rock, with sea spray flying everywhere. The lighting is intense, with the sun's rays piercing through the water droplets, creating a kaleidoscope of colors. The camera moves rapidly, capturing the energy and turbulence of the moment.",
+            "duration_hint": 4,
+            "mood_tags": [
+              "intense",
+              "turbulent",
+              "dynamic"
+            ],
+            "camera_hints": "overhead, rapid movement"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The final shot is a calming, high-angle view of the wave receding, leaving behind a tranquil beach scene, with the sun dipping below the horizon. The camera pans out, revealing the vast expanse of the ocean, as the wave's energy dissipates, creating a sense of serenity. The lighting is soft, with warm hues of orange and pink dominating the sky.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "calming",
+              "serene",
+              "peaceful"
+            ],
+            "camera_hints": "high-angle, pan out"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a breakbeat track that captures the energy and power of the ocean, with driving beats and clean synths. The melody should be catchy and memorable, with a sense of tension and release.",
+          "genre": "breakbeat",
+          "bpm": 130,
+          "mood": "driving_clean",
+          "instruments_hint": "prominent use of synthesizers and drum machines"
+        },
+        "metadata": {
+          "archetype_detected": "REBEL",
+          "story_thread_used": "wave_hits_rock",
+          "coherence_notes": "The video triptych and OST prompt work together to create a cohesive narrative, with the music complementing the visual story and enhancing the overall mood and atmosphere."
+        }
+      },
+      "policy_flag": "yellow",
+      "policy_violations": 0,
+      "policy_warnings": 1,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.5555555555555555,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.42580645161290326,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.733644859813084,
+        "M_AUTO_08_cross_scene_coherence": 0.15551378446115288,
+        "M_AUTO_09_prompt_specificity": 0.1166666666666667,
+        "M_AUTO_11_score_narrative_coherence": 0.7115555555555555,
+        "M_AUTO_12_llm_judge_quality": 0.75,
+        "M_AUTO_13_pacing_progression": 0.6339682539682541,
+        "aggregate_score": 0.6871316252025518
+      },
+      "latency_ms": 133701.12586021423
+    },
+    {
+      "profile_id": "R-07",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:32:28.017824",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "Aerial footage of a solitary wave beginning to form on the horizon, with the sun setting behind it, casting a golden glow on the water's surface. The wave starts as a gentle swell, framed against the vast expanse of the ocean and sky. Camera pans down slightly as the wave starts to gain momentum, capturing its initial power.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "dynamic",
+              "oceanic"
+            ],
+            "camera_hints": "Drone shot, smooth panning"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the wave approaches the shore, it transforms into a powerful breaker, curling over itself in a tube of turquoise and white. The camera, positioned at water level, follows the wave's evolution, capturing the kinetic energy and spray as it crashes towards the beach. The framing emphasizes the wave's force and beauty, set against the vibrant colors of the coastal environment.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "kinetic",
+              "breaker_curl"
+            ],
+            "camera_hints": "Water-level shot, tracking the wave's movement"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The final scene shows the wave's aftermath, with foam dispersing across the beach and the sun dipping below the horizon, casting a warm, golden light over the shoreline. The camera, now static, frames the serene post-wave landscape, capturing the tranquil atmosphere that follows the kinetic event, with the sound of gentle lapping of water against the shore.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "serene",
+              "coastal"
+            ],
+            "camera_hints": "Static shot, wide-angle lens"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Energetic electronic track that builds from a gentle, pulsing melody into a crescendo of kinetic beats and synthesizers, mirroring the formation and crash of the wave. Incorporate sounds reminiscent of ocean spray and wave movement to enhance the coastal ambiance.",
+          "genre": "electronic",
+          "bpm": 130,
+          "mood": "kinetic_ocean",
+          "instruments_hint": "Synthesizers, drum machine, ambient pads"
+        },
+        "metadata": {
+          "archetype_detected": "REBEL",
+          "story_thread_used": "breaker_curl",
+          "coherence_notes": "The narrative arc follows the wave from its inception to its climax, maintaining a dynamic and kinetic mood consistent with the REBEL archetype, while incorporating elements of the marine/coastal environment."
+        }
+      },
+      "policy_flag": "red",
+      "policy_violations": 1,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.2222222222222222,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.22580645161290322,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.735,
+        "M_AUTO_08_cross_scene_coherence": 0.14869281045751634,
+        "M_AUTO_09_prompt_specificity": 0.4,
+        "M_AUTO_11_score_narrative_coherence": 0.9274074074074075,
+        "M_AUTO_12_llm_judge_quality": 0.75,
+        "M_AUTO_13_pacing_progression": 0.8826666666666667,
+        "aggregate_score": 0.7032150429512859
+      },
+      "latency_ms": 134827.14581489563
+    },
+    {
+      "profile_id": "R-08",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:35:44.816128",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A dramatic, low-angle shot of a wave about to break, with the sun peeking through the crest, casting a golden glow on the surrounding water. The camera is positioned at the water's edge, with the wave looming large in the frame. The lighting is warm and inviting, with a hint of mist in the air.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "oceanic",
+              "energizing"
+            ],
+            "camera_hints": "slow zoom"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the wave breaks, the camera follows the action, moving rapidly along the shoreline as the water crashes against the rocks. The subject is the turbulent, foamy water, with sea spray flying everywhere. The framing is dynamic, with the camera capturing the kinetic energy of the breaking wave.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "kinetic",
+              "unpredictable"
+            ],
+            "camera_hints": "fast pan"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The final scene shows the aftermath of the wave's fury, with the water receding to reveal a tranquil, rocky shoreline. The camera lingers on a small pool of seawater, reflecting the sky above, as the sound of the waves gently lapping at the shore fills the air. The mood is peaceful, with a sense of calm after the storm.",
+            "duration_hint": 8,
+            "mood_tags": [
+              "serene",
+              "reflective"
+            ],
+            "camera_hints": "static shot"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a drum and bass track that captures the kinetic energy of the ocean, with a focus on clean, driving beats and soaring melodies. The music should evoke the feeling of being swept up in a powerful wave, with a sense of exhilaration and freedom.",
+          "genre": "drum_and_bass_clean",
+          "bpm": 128,
+          "mood": "kinetic_ocean",
+          "instruments_hint": "prominent bassline, crisp drum patterns, and uplifting synth leads"
+        },
+        "metadata": {
+          "archetype_detected": "REBEL",
+          "story_thread_used": "breaker_curl",
+          "coherence_notes": "The video triptych and OST are designed to work together to create a cohesive narrative that captures the dynamic, kinetic energy of the ocean, while also conveying a sense of calm and reflection in the aftermath of the wave's fury."
+        }
+      },
+      "policy_flag": "yellow",
+      "policy_violations": 0,
+      "policy_warnings": 1,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.3333333333333333,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.0,
+        "M_AUTO_05_red_flag_score": 1.0,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.5419354838709677,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.731578947368421,
+        "M_AUTO_08_cross_scene_coherence": 0.0763562781807947,
+        "M_AUTO_09_prompt_specificity": 0.033333333333333326,
+        "M_AUTO_11_score_narrative_coherence": 0.6832857142857143,
+        "M_AUTO_12_llm_judge_quality": 0.75,
+        "M_AUTO_13_pacing_progression": 0.8613333333333333,
+        "aggregate_score": 0.6162428018235305
+      },
+      "latency_ms": 131277.04763412476
+    },
+    {
+      "profile_id": "R-09",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:39:27.322286",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "Aerial shot of a rugged coastline at dawn, with waves crashing against the rocks, sending plumes of spray high into the air. The camera pans over the rocky shelf, revealing the turbulent runoff from the previous night's high tide. The scene is set against a backdrop of a stormy sky, with clouds reflecting the kinetic energy of the ocean.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "kinetic",
+              "oceanic",
+              "turbulent"
+            ],
+            "camera_hints": "fast-paced aerial movements"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide rises, the camera dives into the chaos of the rock shelf runoff, capturing the intense movement of water as it rushes through the narrow channels and over the rocks. The scene is a blur of blue and white, with seaweed and debris being swept along by the powerful currents. The lighting is dramatic, with sunbeams piercing through the waves.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "dynamic",
+              "unpredictable",
+              "marine"
+            ],
+            "camera_hints": "immersive, fast-paced movements, emphasizing the power of the water"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The final scene shows the aftermath of the tidal runoff, with the water receding to reveal a newly sculpted rock shelf. The camera lingers on the smoothed rocks, the seaweed-covered crevices, and the pools of calm water left behind. The sky has cleared, and the sun shines down, casting a warm glow over the scene. The mood is one of serene power, a testament to the ocean's ability to shape and transform.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "serene",
+              "powerful",
+              "transformative"
+            ],
+            "camera_hints": "slow, sweeping movements, emphasizing the tranquility of the aftermath"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a breakbeat track that captures the kinetic energy of the ocean, with a focus on the turbulent runoff over a rocky shelf. The music should be dynamic and unpredictable, with a mix of fast-paced rhythms and soaring melodies that evoke the power and beauty of the marine environment.",
+          "genre": "breakbeat",
+          "bpm": 140,
+          "mood": "kinetic_ocean",
+          "instruments_hint": "prominent use of synthesizers and drum machines, with possible incorporation of sound effects that mimic the ocean's sounds"
+        },
+        "metadata": {
+          "archetype_detected": "REBEL",
+          "story_thread_used": "rock_shelf_runoff",
+          "coherence_notes": "The video triptych and OST prompt are designed to work together to create a cohesive narrative that showcases the dynamic and transformative power of the ocean, consistent with the REBEL archetype and the kinetic_ocean mood."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.6666666666666666,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 1.0,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.5419354838709677,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.727906976744186,
+        "M_AUTO_08_cross_scene_coherence": 0.12696790022490287,
+        "M_AUTO_09_prompt_specificity": 0.04999999999999999,
+        "M_AUTO_11_score_narrative_coherence": 0.7139629629629629,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.7355555555555555,
+        "aggregate_score": 0.7356150420019417
+      },
+      "latency_ms": 149645.67232131958
+    },
+    {
+      "profile_id": "R-10",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:43:14.786902",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "Aerial shot of a serene, untouched coastline at dawn, with the camera panning over the waves gently lapping at the shore, revealing hidden coves and inlets as the sun rises. The framing is wide, capturing the vast expanse of the ocean and the shoreline. Lighting is soft and warm, with a golden glow casting over the scene.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "calm",
+              "expansive"
+            ],
+            "camera_hints": "Drone shot, slow pan"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the day progresses, the camera cuts to a dynamic shot of waves crashing against a rocky outcrop, with sea spray flying high into the air. The framing is tighter, focusing on the intense action of the waves. Camera movement is fast and erratic, mimicking the force of the waves. Lighting is harsh and contrasting, with deep shadows and bright highlights.",
+            "duration_hint": 4,
+            "mood_tags": [
+              "intense",
+              "dynamic"
+            ],
+            "camera_hints": "Handheld, fast cuts"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The final scene shows the aftermath of the waves' fury, with the camera zooming out to reveal a beach strewn with seaweed and debris, the waves now calm and peaceful once more. The framing is wide again, capturing the full extent of the coastline. Lighting is soft and warm, with the sun setting over the ocean, casting a golden glow over the scene.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "serene",
+              "reflective"
+            ],
+            "camera_hints": "Static shot, slow zoom"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create an electronic track that captures the high-energy contrast of waves crashing against the shore, with a building intensity that reflects the dynamic movement of the ocean.",
+          "genre": "electronic",
+          "bpm": 140,
+          "mood": "high_contrast_motion",
+          "instruments_hint": "Distorted synths, driving drum machines"
+        },
+        "metadata": {
+          "archetype_detected": "REBEL",
+          "story_thread_used": "wave_hits_rock",
+          "coherence_notes": "The video triptych and OST are designed to work together to create a cohesive narrative that reflects the REBEL archetype, with a focus on dynamic movement and high-energy contrast."
+        }
+      },
+      "policy_flag": "red",
+      "policy_violations": 1,
+      "policy_warnings": 1,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.5555555555555555,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.6666666666666666,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.2903225806451613,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.729126213592233,
+        "M_AUTO_08_cross_scene_coherence": 0.15041196135723497,
+        "M_AUTO_09_prompt_specificity": 0.4833333333333334,
+        "M_AUTO_11_score_narrative_coherence": 0.8769312169312169,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.9200000000000002,
+        "aggregate_score": 0.7324882713908771
+      },
+      "latency_ms": 128879.40168380737
+    },
+    {
+      "profile_id": "S-01",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:46:43.174769",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene marine landscape at dawn, with the camera positioned on a rocky coastline, looking out towards a vast, calm ocean. The framing is wide, capturing the sky's pastel hues and the gentle lapping of waves against the shore. The camera remains still, absorbing the tranquility of the moment.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "calm",
+              "contemplative"
+            ],
+            "camera_hints": "Static shot, emphasis on natural lighting"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the day progresses, the camera pans slowly over the ocean's surface, focusing on the subtle dance of waves and the occasional seagull flying overhead. The framing narrows slightly, emphasizing the textures of the water and the sky. A single cloud appears in the gap of a otherwise clear sky, symbolizing a moment of change or reflection.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "reflective",
+              "hopeful"
+            ],
+            "camera_hints": "Slow pan, capturing the movement of waves and birds"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The scene evolves further with the sun beginning to set, casting a warm, golden light over the ocean. The camera zooms out to capture the vastness of the sea and the sky, with the single cloud from earlier now tinged with hues of orange and pink. The framing is once again wide, embracing the serenity and beauty of the marine landscape at dusk.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "peaceful",
+              "inspirational"
+            ],
+            "camera_hints": "Zoom out, emphasizing the sunset's warm colors"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a soft, contemplative ambient track that complements a serene marine landscape. Incorporate sounds that evoke a sense of calmness and reflection, such as gentle wave movements or distant, muted bird calls.",
+          "genre": "ambient",
+          "bpm": 60,
+          "mood": "soft_contemplative",
+          "instruments_hint": "Piano, ambient pads, and subtle, filtered field recordings of ocean waves"
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "single_cloud_gap",
+          "coherence_notes": "The video triptych and OST are designed to maintain a consistent, contemplative mood, with the story thread of a single cloud gap symbolizing reflection and hope. The marine/coastal theme is prevalent throughout, ensuring a coherent visual and auditory narrative."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.6666666666666666,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.7,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.5454545454545454,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7365217391304347,
+        "M_AUTO_08_cross_scene_coherence": 0.12490155795240541,
+        "M_AUTO_09_prompt_specificity": 0.4166666666666667,
+        "M_AUTO_11_score_narrative_coherence": 0.5956666666666667,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 1.0,
+        "aggregate_score": 0.7527598340413373
+      },
+      "latency_ms": 136179.84080314636
+    },
+    {
+      "profile_id": "S-02",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:50:35.051545",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, misty dawn breaks over a tranquil coastal cove, with the camera slowly panning over the still water to reveal a solitary sailboat anchored in the distance, its sail gently swaying in the breeze. The framing is wide, capturing the vastness of the sky and the sea, with a soft, golden light gradually illuminating the scene. The camera's movement is smooth and deliberate, setting the contemplative tone for the narrative.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "calm",
+              "serene",
+              "minimal"
+            ],
+            "camera_hints": "Static shot with slow pan"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the day progresses, the camera focuses on the sailboat, now with its sail partially unfurled, catching the gentle wind. The framing is closer, emphasizing the textures of the sail and the boat's weathered wood, with the sun casting a warm glow on the scene. The camera moves in a gentle, sweeping motion, following the sail's slow dance with the wind, evoking a sense of peaceful evolution.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "peaceful",
+              "evolving",
+              "serene"
+            ],
+            "camera_hints": "Slow tracking shot"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The narrative concludes with the sailboat drifting towards the shore, the sail now fully unfurled, as the camera pulls back to a wide shot, capturing the boat's serene approach to the coastline. The lighting is soft and warm, with the setting sun casting long shadows across the beach, and the camera's movement is calm and reflective, encapsulating the essence of a day well-spent by the sea.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "reflective",
+              "serene",
+              "fulfilled"
+            ],
+            "camera_hints": "Slow zoom out"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Compose a piece that reflects the calmness of a tide mark at dawn, with the sounds of gentle waves and seagulls in the distance, gradually evolving into a serene melody that captures the peacefulness of a sailboat gliding across the water.",
+          "genre": "modern_classical",
+          "bpm": 60,
+          "mood": "minimal_zen",
+          "instruments_hint": "Featuring piano, ambient pads, and subtle woodwind elements"
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "calm_tide_mark",
+          "coherence_notes": "The narrative maintains a consistent sage archetype tone, with a focus on minimal and serene elements, complemented by the modern classical OST that enhances the contemplative mood."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 1.0,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.6181818181818182,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7418032786885246,
+        "M_AUTO_08_cross_scene_coherence": 0.145287078122899,
+        "M_AUTO_09_prompt_specificity": 0.9,
+        "M_AUTO_11_score_narrative_coherence": 0.6826666666666668,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 1.0,
+        "aggregate_score": 0.8413799108969159
+      },
+      "latency_ms": 144824.0704536438
+    },
+    {
+      "profile_id": "S-03",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:54:17.725988",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, misty dawn breaks over a tranquil coastal cove, with the camera positioned at a low angle to emphasize the vastness of the sky and the gentle lapping of waves against the shore. The framing is wide, capturing the entirety of the cove, with the mist slowly clearing to reveal the outline of rocks and the distant horizon. Lighting is soft and warm, with the first light of dawn casting a golden glow over the scene.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "calm",
+              "contemplative",
+              "serene"
+            ],
+            "camera_hints": "Static shot with a slight tilt to emphasize the horizon"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide begins to rise, the camera pans slowly across the beach, capturing the gentle movement of the water as it washes over the sand and around the rocks. The subject is a piece of driftwood, worn smooth by the sea, which is gradually uncovered as the tide rises. The framing is more intimate, focusing on the textures and patterns of the wood and the surrounding sand. Lighting remains soft, with the sun now higher in the sky, casting a warm glow over the scene.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "peaceful",
+              "reflective",
+              "organic"
+            ],
+            "camera_hints": "Slow pan with a focus on textures and patterns"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The tide reaches its peak, and the camera pulls back to reveal the cove once more, this time with the water lapping gently at the base of the cliffs. The framing is wide, capturing the full extent of the cove, with the sun now at its zenith, casting a bright, warm light over the scene. The subject is the calm, reflective surface of the water, which mirrors the sky above. The mood is one of perfect tranquility, with the sound of the waves gently lapping at the shore the only sound.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "tranquil",
+              "reflective",
+              "serene"
+            ],
+            "camera_hints": "Static shot with a slight zoom to emphasize the reflective surface"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a soft, contemplative ambient track that captures the essence of a calm tide rising and falling in a serene coastal cove.",
+          "genre": "ambient",
+          "bpm": 80,
+          "mood": "soft_contemplative",
+          "instruments_hint": "Featuring piano, soft pads, and gentle, lapping water sound effects"
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "calm_tide_mark",
+          "coherence_notes": "The video triptych and OST prompt work together to create a coherent and contemplative narrative, emphasizing the serene and peaceful aspects of the coastal environment."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 1.0,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.6666666666666666,
+        "M_AUTO_05_red_flag_score": 0.7,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.509090909090909,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7347107438016528,
+        "M_AUTO_08_cross_scene_coherence": 0.18994668609559495,
+        "M_AUTO_09_prompt_specificity": 0.9,
+        "M_AUTO_11_score_narrative_coherence": 0.7382121212121213,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 1.0,
+        "aggregate_score": 0.8029713174513036
+      },
+      "latency_ms": 153769.77562904358
+    },
+    {
+      "profile_id": "S-04",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T14:58:11.539083",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, misty dawn breaks over a still, turquoise ocean, with the silhouette of a smooth stone jetty stretching into the distance. The camera pans slowly over the water's glassy surface, capturing the gentle lapping of waves against the shore. The atmosphere is peaceful, with a hint of mystery.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "calm",
+              "mysterious"
+            ],
+            "camera_hints": "slow pan, low angle"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the mist begins to clear, the camera zooms in on a weathered, smooth stone nestled among the beach pebbles, with the ocean's waves gently caressing it. The stone's surface is adorned with barnacles and seaweed, telling the story of its long-standing presence by the sea. The lighting is soft, with the warm glow of the rising sun casting a gentle shadow on the surrounding sand.",
+            "duration_hint": 4,
+            "mood_tags": [
+              "contemplative",
+              "serene"
+            ],
+            "camera_hints": "close-up, natural light"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The scene fades to a wide shot of the ocean at dusk, with the smooth stone jetty now bathed in the warm, golden light of sunset. The waves continue their soothing melody, and the sky is painted with hues of pink and orange, reflecting off the calm water. The atmosphere is one of profound peace, as if the stone and the sea have shared a timeless secret.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "peaceful",
+              "timeless"
+            ],
+            "camera_hints": "wide shot, warm color palette"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a soundscape that echoes the serene and mystical atmosphere of a coastal dawn, with the sound of gentle waves and a subtle, ambient melody that evokes a sense of contemplation and wonder.",
+          "genre": "ambient",
+          "bpm": 80,
+          "mood": "hazy_still",
+          "instruments_hint": "featuring soft piano, ambient pads, and the subtle sound of ocean waves"
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "smooth_stone",
+          "coherence_notes": "The video triptych and OST are designed to work in harmony, creating a cohesive narrative that explores the peaceful, mystical connection between the ocean and a smooth stone, embodying the contemplative essence of the SAGE archetype."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 1.0,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.5818181818181818,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7428571428571428,
+        "M_AUTO_08_cross_scene_coherence": 0.10741258741258741,
+        "M_AUTO_09_prompt_specificity": 1.0,
+        "M_AUTO_11_score_narrative_coherence": 0.7091481481481481,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 1.0,
+        "aggregate_score": 0.8454796969412354
+      },
+      "latency_ms": 136077.9106616974
+    },
+    {
+      "profile_id": "S-05",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T15:01:42.081501",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, misty dawn breaks over a tranquil coastal cove, with the camera panning slowly over the calm, glassy water towards a lone, smooth stone sitting at the water's edge, illuminated by the first rays of sunlight peeking through the mist. The framing is wide, capturing the vastness of the ocean and the solitude of the stone. The camera movement is smooth and contemplative, reflecting the peaceful ambiance of the scene.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "serene",
+              "misty",
+              "tranquil"
+            ],
+            "camera_hints": "slow pan"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the sun rises higher, the mist begins to clear, revealing a school of small fish swimming around the stone, their gentle movements creating ripples in the otherwise calm water. The camera zooms in on the stone, now partially submerged, with the fish darting in and out of frame, their scales shimmering in the increasing light. The lighting is soft and warm, highlighting the textures of the stone and the water.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "peaceful",
+              "serene",
+              "natural"
+            ],
+            "camera_hints": "slow zoom"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The scene fades to a late afternoon, with the sun casting a warm, golden light over the cove. The stone, now fully submerged, is surrounded by a halo of light, with the fish still swimming lazily around it. The camera pulls back, framing the entire cove once more, with the sound of gentle waves filling the air. The mood is one of deep tranquility, with the stone and the fish embodying a sense of harmony with nature.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "tranquil",
+              "golden",
+              "harmonious"
+            ],
+            "camera_hints": "slow pull back"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a soundscape that captures the essence of a serene coastal landscape at dawn, with the sounds of gentle waves and the calls of distant seagulls blending with ambient, minimalist melodies to evoke a sense of peace and tranquility.",
+          "genre": "ambient",
+          "bpm": 60,
+          "mood": "minimal_zen",
+          "instruments_hint": "piano, ambient pads, soft woodwinds"
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "smooth_stone",
+          "coherence_notes": "The video triptych and OST are designed to work in harmony, creating a cohesive narrative that explores the themes of serenity, tranquility, and harmony with nature, all while maintaining the consistency of the SAGE archetype."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.8888888888888888,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.6181818181818182,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.6509302325581395,
+        "M_AUTO_08_cross_scene_coherence": 0.10306267806267806,
+        "M_AUTO_09_prompt_specificity": 0.5666666666666667,
+        "M_AUTO_11_score_narrative_coherence": 0.7687777777777778,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 1.0,
+        "aggregate_score": 0.8035775432412284
+      },
+      "latency_ms": 147191.2386417389
+    },
+    {
+      "profile_id": "S-06",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T15:05:15.362926",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, misty dawn breaks over a tranquil marine cove, with the camera positioned at a low angle, looking out towards the calm sea. The framing is wide, capturing the entirety of the cove, with the mist slowly lifting to reveal the surrounding cliffs. The camera remains still, allowing the gentle lapping of the waves against the shore to be the sole movement.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "calm",
+              "serene",
+              "minimal"
+            ],
+            "camera_hints": "static, low-angle"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the mist clears, the camera pans slowly across the cove, revealing a small, secluded beach with driftwood and seaweed scattered along the shoreline. A few seagulls fly overhead, their silhouettes against the pale blue sky. The lighting is soft, with the sun hidden behind thin clouds, casting no harsh shadows. The camera's movement is smooth and deliberate, following the curve of the beach.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "peaceful",
+              "contemplative",
+              "coastal"
+            ],
+            "camera_hints": "panning, smooth movement"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The scene transitions to a close-up of the water's edge, where the waves gently lap against the shore. The camera is positioned at a 45-degree angle, capturing the intricate dance of the water as it recedes and advances. The lighting is warm, with the sun beginning to set behind the camera, casting a golden glow over the scene. The camera zooms in slightly, emphasizing the soothing sound of the waves.",
+            "duration_hint": 4,
+            "mood_tags": [
+              "soothing",
+              "calming",
+              "marine"
+            ],
+            "camera_hints": "close-up, 45-degree angle"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a calming ambient piece that evokes the feeling of a serene marine landscape at dawn. Incorporate soft, legato synthesizer pads and the gentle sound of waves in the background.",
+          "genre": "ambient",
+          "bpm": 80,
+          "mood": "minimal_zen",
+          "instruments_hint": "soft synthesizers, gentle wave sounds"
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "calm_tide_mark",
+          "coherence_notes": "The video triptych and OST are designed to work in harmony, creating a cohesive and calming narrative that reflects the SAGE archetype's contemplative and minimal nature."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.7777777777777778,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.3333333333333333,
+        "M_AUTO_05_red_flag_score": 1.0,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.3333333333333333,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7290322580645161,
+        "M_AUTO_08_cross_scene_coherence": 0.09949874686716792,
+        "M_AUTO_09_prompt_specificity": 0.9,
+        "M_AUTO_11_score_narrative_coherence": 0.5162222222222221,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.9644444444444444,
+        "aggregate_score": 0.742587855080215
+      },
+      "latency_ms": 138797.27387428284
+    },
+    {
+      "profile_id": "S-07",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T15:08:42.646827",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, misty dawn breaks over a deserted, rocky coastline. The camera pans slowly over the rugged terrain, capturing the gentle lapping of waves against the shore. The lighting is soft and diffused, with the sun hidden behind a veil of mist.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "calm",
+              "hazy",
+              "still"
+            ],
+            "camera_hints": "slow pan, low angle"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide begins to rise, the camera focuses on a small, isolated cove, where the water pools and reflects the sky above. The sound of the waves grows slightly louder, and the camera zooms in on the gentle ripples disturbing the otherwise glassy surface. The lighting remains soft, with the mist beginning to clear.",
+            "duration_hint": 4,
+            "mood_tags": [
+              "peaceful",
+              "contemplative",
+              "serene"
+            ],
+            "camera_hints": "slow zoom, medium shot"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The tide reaches its peak, and the camera pulls back to reveal the coastline at sunset. The sky is painted with hues of orange and pink, reflected in the calm waters. The waves gently lap at the shore, and the camera lingers on the peaceful scene, as the stars begin to twinkle in the night sky. The lighting is warm and golden.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "tranquil",
+              "reflective",
+              "calm"
+            ],
+            "camera_hints": "slow pull back, high angle"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a contemplative, acoustic piece that evokes the feeling of a calm tide. Incorporate soothing instrumentation, such as piano or guitar, to complement the serene marine landscape.",
+          "genre": "acoustic_contemplative",
+          "bpm": 60,
+          "mood": "hazy_still",
+          "instruments_hint": "piano, guitar, ambient pads"
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "calm_tide_mark",
+          "coherence_notes": "The video triptych and OST prompt work together to create a cohesive narrative that embodies the SAGE archetype, with a focus on calmness, contemplation, and serenity."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 1.0,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.6666666666666666,
+        "M_AUTO_05_red_flag_score": 0.7,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.509090909090909,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7311320754716981,
+        "M_AUTO_08_cross_scene_coherence": 0.10067340067340068,
+        "M_AUTO_09_prompt_specificity": 0.5666666666666667,
+        "M_AUTO_11_score_narrative_coherence": 0.7404444444444445,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 1.0,
+        "aggregate_score": 0.7703595510010603
+      },
+      "latency_ms": 128048.15077781677
+    },
+    {
+      "profile_id": "S-08",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T15:12:14.300902",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, misty dawn breaks over a secluded, rocky coastline. The camera, positioned at a low angle, looks out towards the horizon as the first light of day creeps over the waves. The framing is wide, capturing the vast expanse of the ocean and the rugged shoreline. The camera remains still, allowing the gentle movement of the waves and the rising mist to be the only motion in the scene.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "calm",
+              "serene",
+              "minimal"
+            ],
+            "camera_hints": "Static, low-angle shot"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the day progresses, the tide begins to rise, gently lapping at the rocks and filling the tidal pools. The camera, now at a medium height, pans slowly across the shoreline, revealing anemones, starfish, and other marine life in the pools. The lighting is soft and natural, with the warm glow of the sun casting long shadows across the rocks. The movement of the camera is smooth and deliberate, mirroring the gentle flow of the water.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "peaceful",
+              "exploratory",
+              "marine"
+            ],
+            "camera_hints": "Slow pan, medium height"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The day comes to a close with a tranquil sunset over the ocean. The camera, positioned high on the cliffside, looks down upon the coastline as the waves glow with the fading light. The framing is wide, capturing the vast expanse of the sea and the sky. The camera zooms out slowly, emphasizing the solitude and vastness of the marine landscape. The lighting is warm and golden, with the sun dipping below the horizon.",
+            "duration_hint": 8,
+            "mood_tags": [
+              "calm",
+              "reflective",
+              "zen"
+            ],
+            "camera_hints": "Slow zoom out, high angle"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a soundscape that captures the essence of a serene marine environment, with sounds of gentle waves, distant seagulls, and the occasional splash of water against the rocks.",
+          "genre": "experimental_ambient",
+          "bpm": 60,
+          "mood": "minimal_zen",
+          "instruments_hint": "Featuring soft, muted synthesizers, gentle piano melodies, and subtle, natural sound effects."
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "calm_tide_mark",
+          "coherence_notes": "The video triptych and OST are designed to work in harmony, creating a cohesive narrative that explores the serene and peaceful aspects of the marine environment, consistent with the SAGE archetype and the calm_tide_mark story thread."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 1.0,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.3333333333333333,
+        "M_AUTO_05_red_flag_score": 1.0,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.3333333333333333,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.733050847457627,
+        "M_AUTO_08_cross_scene_coherence": 0.15183261183261185,
+        "M_AUTO_09_prompt_specificity": 0.9,
+        "M_AUTO_11_score_narrative_coherence": 0.5775714285714285,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 0.9822222222222223,
+        "aggregate_score": 0.7701033674423505
+      },
+      "latency_ms": 148763.07845115662
+    },
+    {
+      "profile_id": "S-09",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T15:15:54.661462",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, misty morning at the coast, with the camera positioned at a low angle, looking up towards the sky. The frame is filled with the gentle, rolling hills of sand dunes, and in the distance, the outline of a lone, smooth stone monument is visible, partially covered in seaweed and shells. The camera is static, capturing the stillness of the moment, with soft, warm lighting casting a golden glow over the scene.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "calm",
+              "peaceful",
+              "hazy"
+            ],
+            "camera_hints": "low angle, static"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide comes in, the camera, now positioned at a medium angle, shows the smooth stone monument being gently caressed by the waves. The water's edge laps softly at the base of the monument, with sea foam and small shells being carried by the water, creating a sense of gentle movement. The lighting remains soft, with the sun beginning to break through the mist, casting a warm glow on the water's surface. The camera pans slowly to the right, following the movement of the waves.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "serene",
+              "evolving",
+              "oceanic"
+            ],
+            "camera_hints": "medium angle, slow pan"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The camera is now at a high angle, looking down on the smooth stone monument as the tide reaches its peak. The monument is almost completely surrounded by water, with the waves gently lapping at its sides. The sun has fully broken through the mist, casting a warm, golden light over the entire scene. The camera is static once more, capturing the tranquility of the moment, as the sound of the waves gently fills the air. The frame is filled with the blues and greens of the ocean, creating a sense of depth and serenity.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "tragic",
+              "peaceful",
+              "accepting"
+            ],
+            "camera_hints": "high angle, static"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a soundscape that reflects the serene and peaceful atmosphere of a coastal landscape at dawn, with the sound of gentle waves and the warmth of the sun breaking through the mist.",
+          "genre": "acoustic_contemplative",
+          "bpm": 70,
+          "mood": "hazy_still",
+          "instruments_hint": "feat. piano, ambient pads, and subtle woodwind elements"
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "smooth_stone",
+          "coherence_notes": "The narrative arc follows the serene and peaceful atmosphere of the coastal landscape, from the stillness of the morning, through the gentle evolution of the tide, to the tranquility of the peak tide, maintaining consistency with the SAGE archetype."
+        }
+      },
+      "policy_flag": "yellow",
+      "policy_violations": 0,
+      "policy_warnings": 1,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.7777777777777778,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 0.925,
+        "M_AUTO_07_archetype_lexical_fit": 0.36363636363636365,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7266129032258064,
+        "M_AUTO_08_cross_scene_coherence": 0.19924894382725708,
+        "M_AUTO_09_prompt_specificity": 1.0,
+        "M_AUTO_11_score_narrative_coherence": 0.5725555555555556,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 1.0,
+        "aggregate_score": 0.8011408880017508
+      },
+      "latency_ms": 157008.05473327637
+    },
+    {
+      "profile_id": "S-10",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-03-05T15:19:54.392214",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, misty dawn breaks over a tranquil ocean cove, with smooth stones and pebbles lining the shoreline. The camera pans slowly over the water's edge, capturing the gentle lapping of waves against the stones. Soft, warm light illuminates the scene, with a few seagulls flying lazily in the distance.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "calm",
+              "peaceful",
+              "natural"
+            ],
+            "camera_hints": "slow pan, medium shot"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the tide slowly rises, the camera focuses on a particular smooth stone, partially submerged in the water. The stone's surface reflects the sky above, creating a sense of symmetry and harmony. With each gentle wave, the stone becomes more covered, symbolizing the constant yet soothing change in nature. The lighting remains soft and warm, with the sound of waves providing a constant, calming presence.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "serene",
+              "reflective",
+              "constant"
+            ],
+            "camera_hints": "close-up, slow zoom"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The tide has risen further, and the smooth stone is now almost completely submerged. The camera pulls back to reveal the cove once more, but this time, the focus is on the horizon, where the sky meets the sea. The scene is bathed in a warm, golden light, symbolizing the end of the day and the completion of the natural cycle. A few seagulls are seen flying towards the horizon, adding a sense of freedom and vastness to the scene.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "peaceful",
+              "vast",
+              "complete"
+            ],
+            "camera_hints": "wide shot, slow pan"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create a modern classical piece that reflects the serene and peaceful atmosphere of a coastal landscape at dawn. Incorporate instruments such as the piano, violin, and soft woodwinds to evoke a sense of calmness and tranquility.",
+          "genre": "modern_classical",
+          "bpm": 70,
+          "mood": "minimal_zen",
+          "instruments_hint": "piano, violin, soft woodwinds"
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "smooth_stone",
+          "coherence_notes": "The video triptych and OST prompt are designed to work together to create a cohesive and calming narrative that reflects the SAGE archetype and the smooth_stone story thread."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.8888888888888888,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.3939393939393939,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7238095238095238,
+        "M_AUTO_08_cross_scene_coherence": 0.12976468326478838,
+        "M_AUTO_09_prompt_specificity": 0.6666666666666666,
+        "M_AUTO_11_score_narrative_coherence": 0.509,
+        "M_AUTO_12_llm_judge_quality": 1.0,
+        "M_AUTO_13_pacing_progression": 1.0,
+        "aggregate_score": 0.7816976274284048
+      },
+      "latency_ms": 139993.93820762634
+    }
+  ],
+  "duration_seconds": 6517.098709
+}

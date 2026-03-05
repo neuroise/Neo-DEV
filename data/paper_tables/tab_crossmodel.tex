@@ -1,0 +1,25 @@
+\begin{table}[ht]
+\centering
+\caption{Cross-model comparison (paired Wilcoxon signed-rank test, $n{=}30$)}
+\label{tab:crossmodel}
+\begin{tabular}{lcccc}
+\toprule
+Metric & LLaMA 3.3:70B & Qwen3:32B & $p$ & $d$ \\
+\midrule
+Schema & \textbf{1.000} {\scriptsize$\pm$0.000} & 0.964 {\scriptsize$\pm$0.131} & 0.157 & +0.39 \\
+Archetype & \textbf{0.798} {\scriptsize$\pm$0.201} & 0.770 {\scriptsize$\pm$0.209} & 0.583 & +0.14 \\
+Sequence & \textbf{1.000} {\scriptsize$\pm$0.000} & 0.929 {\scriptsize$\pm$0.262} & 0.157 & +0.39 \\
+Thread & \textbf{0.827} {\scriptsize$\pm$0.238} & 0.720 {\scriptsize$\pm$0.240} & 0.042* & +0.45 \\
+Red Flags & 0.748 {\scriptsize$\pm$0.129} & \textbf{0.759} {\scriptsize$\pm$0.118} & 0.714 & -0.09 \\
+Length & \textbf{0.992} {\scriptsize$\pm$0.024} & 0.979 {\scriptsize$\pm$0.066} & 0.336 & +0.25 \\
+Lexical Fit & \textbf{0.419} {\scriptsize$\pm$0.169} & 0.346 {\scriptsize$\pm$0.171} & 0.025* & +0.43 \\
+Marine & \textbf{0.718} {\scriptsize$\pm$0.034} & 0.679 {\scriptsize$\pm$0.083} & 0.316 & +0.62 \\
+Coherence & \textbf{0.593} {\scriptsize$\pm$0.124} & 0.102 {\scriptsize$\pm$0.030} & <.001*** & +5.46 \\
+Specificity & 0.543 {\scriptsize$\pm$0.243} & \textbf{0.731} {\scriptsize$\pm$0.309} & 0.002** & -0.67 \\
+Narrative & \textbf{0.551} {\scriptsize$\pm$0.095} & 0.546 {\scriptsize$\pm$0.120} & 0.797 & +0.05 \\
+Pacing & \textbf{0.955} {\scriptsize$\pm$0.052} & 0.950 {\scriptsize$\pm$0.070} & 0.936 & +0.07 \\
+LLM Judge & 0.771 {\scriptsize$\pm$0.134} & \textbf{0.996} {\scriptsize$\pm$0.013} & <.001*** & -2.37 \\
+Aggregate & \textbf{0.777} {\scriptsize$\pm$0.050} & 0.729 {\scriptsize$\pm$0.079} & <.001*** & +0.73 \\
+\bottomrule
+\end{tabular}
+\end{table}

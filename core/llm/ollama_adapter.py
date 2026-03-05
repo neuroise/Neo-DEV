@@ -61,6 +61,32 @@ class OllamaAdapter(LLMAdapter):
     # Ollama accepts temperature in [0.0, 2.0]
     MAX_TEMPERATURE = 2.0
 
+    # Model-recommended temperatures (from model creators / unsloth / community)
+    RECOMMENDED_TEMPERATURES: dict = {
+        # Qwen family
+        "qwen3": 0.6,
+        "qwen2.5": 0.7,
+        "qwen3.5": 0.6,
+        # Llama family
+        "llama3": 0.6,
+        "llama3.1": 0.6,
+        "llama3.2": 0.6,
+        "llama3.3": 0.6,
+        # Gemma family
+        "gemma3": 1.0,
+        "gemma2": 1.0,
+        # Mistral family
+        "mistral": 0.7,
+        "mixtral": 0.7,
+        "mistral-large": 0.7,
+        # Phi family
+        "phi3": 0.0,
+        "phi4": 0.6,
+        # DeepSeek
+        "deepseek-r1": 0.6,
+        "deepseek-v3": 0.6,
+    }
+
     def __init__(self, config: LLMConfig):
         super().__init__(config)
         self.base_url = config.base_url or self.DEFAULT_URL
@@ -81,6 +107,54 @@ class OllamaAdapter(LLMAdapter):
             config.temperature = 0.0
 
         self._verify_connection()
+
+    @classmethod
+    def get_recommended_temperature(cls, model: str) -> Optional[float]:
+        """Get model-recommended temperature from known defaults.
+
+        Checks RECOMMENDED_TEMPERATURES dict using model family prefix.
+        Returns None if no recommendation is known.
+        """
+        model_lower = model.lower().split(":")[0]  # e.g. "qwen3" from "qwen3:32b"
+        # Try exact match first, then prefix match
+        if model_lower in cls.RECOMMENDED_TEMPERATURES:
+            return cls.RECOMMENDED_TEMPERATURES[model_lower]
+        # Try progressively shorter prefixes
+        for known, temp in cls.RECOMMENDED_TEMPERATURES.items():
+            if model_lower.startswith(known):
+                return temp
+        return None
+
+    @classmethod
+    def query_model_temperature(cls, model: str, base_url: str = None) -> Optional[float]:
+        """Query Ollama /api/show for the model's default temperature.
+
+        Falls back to RECOMMENDED_TEMPERATURES if the API doesn't expose it.
+        """
+        url = base_url or cls.DEFAULT_URL
+        try:
+            resp = requests.post(
+                f"{url}/api/show",
+                json={"name": model},
+                timeout=5,
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                # Check modelfile parameters
+                params = data.get("parameters", "")
+                for line in params.split("\n"):
+                    if line.strip().startswith("temperature"):
+                        parts = line.strip().split()
+                        if len(parts) >= 2:
+                            return float(parts[1])
+                # Check model_info dict
+                model_info = data.get("model_info", {})
+                for k, v in model_info.items():
+                    if "temperature" in k.lower() and isinstance(v, (int, float)):
+                        return float(v)
+        except Exception:
+            pass
+        return cls.get_recommended_temperature(model)
 
     def _verify_connection(self) -> None:
         """Verifica connessione a Ollama server."""
@@ -160,6 +234,11 @@ class OllamaAdapter(LLMAdapter):
             }
         }
 
+        if self.config.num_ctx is not None:
+            payload["options"]["num_ctx"] = self.config.num_ctx
+        if self.config.seed is not None:
+            payload["options"]["seed"] = self.config.seed
+
         if system_prompt:
             payload["system"] = system_prompt
 
@@ -219,14 +298,20 @@ class OllamaAdapter(LLMAdapter):
         """
         start_time = time.time()
 
+        options = {
+            "temperature": self.config.temperature,
+            "num_predict": self.config.max_tokens,
+        }
+        if self.config.num_ctx is not None:
+            options["num_ctx"] = self.config.num_ctx
+        if self.config.seed is not None:
+            options["seed"] = self.config.seed
+
         payload = {
             "model": self.model,
             "messages": messages,
             "stream": False,
-            "options": {
-                "temperature": self.config.temperature,
-                "num_predict": self.config.max_tokens,
-            }
+            "options": options,
         }
 
         try:
@@ -290,16 +375,22 @@ Respond ONLY with the JSON, no other text or explanation."""
         # Usa format: json per Ollama
         start_time = time.time()
 
+        options = {
+            "temperature": self.config.temperature,
+            "num_predict": self.config.max_tokens,
+        }
+        if self.config.num_ctx is not None:
+            options["num_ctx"] = self.config.num_ctx
+        if self.config.seed is not None:
+            options["seed"] = self.config.seed
+
         payload = {
             "model": self.model,
             "prompt": user_prompt,
             "system": full_system,
             "stream": False,
             "format": "json",  # Forza output JSON
-            "options": {
-                "temperature": self.config.temperature,
-                "num_predict": self.config.max_tokens,
-            }
+            "options": options,
         }
 
         try:

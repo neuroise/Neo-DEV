@@ -15,12 +15,17 @@ Example:
 """
 
 import json
+import logging
+import math
+import statistics
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from tqdm import tqdm
+
+logger = logging.getLogger(__name__)
 
 from core.llm import create_adapter, Director
 from core.metrics.automatic import compute_all_automatic_metrics
@@ -39,25 +44,40 @@ class ExperimentConfig:
     temperature: float = 0.7
     max_tokens: int = 4096
     timeout: int = 300
+    num_ctx: Optional[int] = None  # Ollama context window size
 
     # Experiment settings
     runs_per_profile: int = 1  # For variance measurement
     save_outputs: bool = True
     verbose: bool = True
 
+    # Reproducibility
+    seed: Optional[int] = None
+
+    # LLM Judge model
+    judge_model: str = "qwen3:32b"
+
+    # Prompt pack for ablation
+    prompt_pack: str = "default"
+
     # Paths
     profiles_dir: str = "data/profiles/official"
     output_dir: str = "data/experiments"
 
     def to_dict(self) -> Dict[str, Any]:
-        return {
+        d = {
             "name": self.name,
             "profiles": self.profiles,
             "models": self.models,
             "temperature": self.temperature,
             "runs_per_profile": self.runs_per_profile,
-            "timestamp": datetime.now().isoformat()
+            "judge_model": self.judge_model,
+            "prompt_pack": self.prompt_pack,
+            "timestamp": datetime.now().isoformat(),
         }
+        if self.seed is not None:
+            d["seed"] = self.seed
+        return d
 
 
 @dataclass
@@ -104,8 +124,32 @@ class ExperimentResults:
 
         return by_model
 
+    @staticmethod
+    def _summarize_values(values: List[float]) -> Dict[str, Any]:
+        """Compute mean, std, CI95, min, max for a list of values."""
+        n = len(values)
+        if n == 0:
+            return {}
+        mean = sum(values) / n
+        result = {"mean": mean, "min": min(values), "max": max(values), "count": n}
+        if n >= 2:
+            std = statistics.stdev(values)
+            result["std"] = std
+            try:
+                from scipy.stats import t as t_dist
+                t_val = t_dist.ppf(0.975, df=n - 1)
+            except ImportError:
+                # Approximate t-value for 95% CI when scipy unavailable
+                t_val = 1.96 if n > 30 else 2.0
+            margin = t_val * std / math.sqrt(n)
+            result["ci95_low"] = mean - margin
+            result["ci95_high"] = mean + margin
+        else:
+            result["std"] = 0.0
+        return result
+
     def get_summary(self) -> Dict[str, Any]:
-        """Get summary statistics."""
+        """Get summary statistics with std and 95% CI."""
         by_model = self.get_metrics_by_model()
 
         summary = {
@@ -120,14 +164,37 @@ class ExperimentResults:
             model_summary = {}
             for metric_name, values in metrics.items():
                 if values:
-                    model_summary[metric_name] = {
-                        "mean": sum(values) / len(values),
-                        "min": min(values),
-                        "max": max(values),
-                        "count": len(values)
-                    }
+                    model_summary[metric_name] = self._summarize_values(values)
             summary["models"][model] = model_summary
 
+        return summary
+
+    def get_summary_by_archetype(self) -> Dict[str, Dict[str, Dict[str, Any]]]:
+        """Get summary statistics broken down by archetype (S/R/L).
+
+        Returns:
+            Dict mapping archetype -> metric_name -> stats dict
+        """
+        by_archetype: Dict[str, Dict[str, List[float]]] = {}
+        prefix_map = {"S": "sage", "R": "rebel", "L": "lover"}
+
+        for result in self.results:
+            if not result.get("success"):
+                continue
+            pid = result.get("profile_id", "")
+            prefix = pid.split("-")[0]
+            archetype = prefix_map.get(prefix, "unknown")
+            if archetype not in by_archetype:
+                by_archetype[archetype] = {}
+            for metric_name, value in result.get("metrics", {}).items():
+                if isinstance(value, (int, float)):
+                    by_archetype[archetype].setdefault(metric_name, []).append(value)
+
+        summary = {}
+        for arch, metrics in by_archetype.items():
+            summary[arch] = {
+                m: self._summarize_values(v) for m, v in metrics.items()
+            }
         return summary
 
     def save(self, output_dir: str = None):
@@ -147,10 +214,12 @@ class ExperimentResults:
                 "duration_seconds": (self.end_time - self.start_time).total_seconds()
             }, f, indent=2, default=str)
 
-        # Save summary separately
+        # Save summary separately (includes archetype breakdown)
+        summary = self.get_summary()
+        summary["by_archetype"] = self.get_summary_by_archetype()
         summary_file = out_dir / "summary.json"
         with open(summary_file, "w") as f:
-            json.dump(self.get_summary(), f, indent=2)
+            json.dump(summary, f, indent=2)
 
         # Save JSONL (one line per run, for streaming / quick inspection)
         self._save_jsonl(out_dir)
@@ -242,12 +311,26 @@ class ExperimentRunner:
 
             # Initialize adapter once per model
             try:
-                adapter = create_adapter(
-                    model,
+                adapter_kwargs = dict(
                     temperature=self.config.temperature,
-                    timeout=self.config.timeout
+                    timeout=self.config.timeout,
                 )
-                director = Director(adapter)
+                if self.config.num_ctx is not None:
+                    adapter_kwargs["num_ctx"] = self.config.num_ctx
+                if self.config.seed is not None:
+                    adapter_kwargs["seed"] = self.config.seed
+                adapter = create_adapter(model, **adapter_kwargs)
+
+                # Load prompt pack if specified
+                system_prompt = None
+                if self.config.prompt_pack != "default":
+                    try:
+                        from core.llm.prompt_packs import load_prompt_pack
+                        system_prompt, _ = load_prompt_pack(self.config.prompt_pack)
+                    except (ImportError, ValueError) as e:
+                        logger.warning("Failed to load prompt pack '%s': %s", self.config.prompt_pack, e)
+
+                director = Director(adapter, system_prompt=system_prompt)
             except Exception as e:
                 if self.config.verbose:
                     print(f"Failed to initialize {model}: {e}")
@@ -334,7 +417,11 @@ class ExperimentRunner:
             policy_result = self.policy_gate.check(output_dict, profile)
 
             # Compute metrics
-            metrics = compute_all_automatic_metrics(output_dict, profile)
+            metrics = compute_all_automatic_metrics(
+                output_dict, profile,
+                judge_model=self.config.judge_model,
+                judge_num_ctx=self.config.num_ctx,
+            )
 
             result.update({
                 "success": True,
@@ -419,3 +506,60 @@ def run_quick_experiment(
 
     runner = ExperimentRunner(config)
     return runner.run()
+
+
+if __name__ == "__main__":
+    import argparse
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+    parser = argparse.ArgumentParser(description="Run NEURØISE experiments")
+    parser.add_argument("--name", "-n", required=True, help="Experiment name")
+    parser.add_argument("--model", "-m", default="llama3.3:70b", help="Model name")
+    parser.add_argument("--prompt-pack", "-p", default="default",
+                        choices=["default", "concise", "detailed"],
+                        help="Prompt pack for ablation")
+    parser.add_argument("--temperature", "-t", type=float, default=0.7)
+    parser.add_argument("--profiles-dir", default="data/profiles/official")
+    parser.add_argument("--output-dir", default="data/experiments")
+    parser.add_argument("--judge-model", default="qwen3:32b")
+    parser.add_argument("--timeout", type=int, default=600,
+                        help="Timeout per generation in seconds (default: 600)")
+    parser.add_argument("--num-ctx", type=int, default=8192,
+                        help="Ollama context window size (default: 8192)")
+    parser.add_argument("--profiles", nargs="*", default=None,
+                        help="Specific profile IDs (default: all in profiles-dir)")
+    parser.add_argument("--quiet", "-q", action="store_true")
+
+    args = parser.parse_args()
+
+    # Discover profiles
+    if args.profiles:
+        profile_ids = args.profiles
+    else:
+        profiles_path = Path(args.profiles_dir)
+        profile_ids = sorted([p.stem for p in profiles_path.glob("*.json")])
+
+    if not profile_ids:
+        print(f"No profiles found in {args.profiles_dir}")
+        sys.exit(1)
+
+    config = ExperimentConfig(
+        name=args.name,
+        profiles=profile_ids,
+        models=[args.model],
+        temperature=args.temperature,
+        timeout=args.timeout,
+        num_ctx=args.num_ctx,
+        prompt_pack=args.prompt_pack,
+        judge_model=args.judge_model,
+        profiles_dir=args.profiles_dir,
+        output_dir=args.output_dir,
+        verbose=not args.quiet,
+    )
+
+    runner = ExperimentRunner(config)
+    results = runner.run()
+
+    sys.exit(0 if results.failed_runs == 0 else 1)

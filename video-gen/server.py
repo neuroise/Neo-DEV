@@ -72,25 +72,32 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 # -- Helpers -------------------------------------------------------------------
 
 def _save_video(frames: list, output_path: Path, fps: int = 16):
-    """Save frames to mp4. Handles both float32 [0,1] and uint8 [0,255] frames."""
+    """Save frames to mp4. Accepts PIL Images, float32 [0,1], or uint8 [0,255]."""
     import numpy as np
-
-    def to_uint8(frame):
-        arr = np.array(frame)
-        if arr.dtype in (np.float32, np.float64):
-            arr = np.clip(arr * 255, 0, 255).astype(np.uint8)
-        return arr
 
     try:
         from diffusers.utils import export_to_video
-        # export_to_video expects list of PIL or numpy uint8
-        uint8_frames = [to_uint8(f) for f in frames]
-        export_to_video(uint8_frames, str(output_path), fps=fps)
-    except (ImportError, Exception):
+        # export_to_video handles float32 numpy arrays natively (it does * 255 internally).
+        # Do NOT pre-convert to uint8 — that causes double-conversion overflow.
+        # If frames are already uint8, wrap as PIL to prevent the internal * 255.
+        processed = []
+        for frame in frames:
+            arr = np.array(frame)
+            if arr.dtype == np.uint8:
+                from PIL import Image
+                processed.append(Image.fromarray(arr))
+            else:
+                processed.append(arr)
+        export_to_video(processed, str(output_path), fps=fps)
+    except (ImportError, Exception) as e:
+        logger.warning(f"export_to_video failed ({e}), falling back to imageio")
         import imageio
         writer = imageio.get_writer(str(output_path), fps=fps, codec="libx264")
         for frame in frames:
-            writer.append_data(to_uint8(frame))
+            arr = np.array(frame)
+            if arr.dtype in (np.float32, np.float64):
+                arr = np.clip(arr * 255, 0, 255).astype(np.uint8)
+            writer.append_data(arr)
         writer.close()
 
 

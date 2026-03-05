@@ -89,10 +89,10 @@ def _render_new_experiment():
             default=[available_models[0]] if available_models else [],
         )
 
-        # Judge model
+        # Judge model — use all available models from Ollama
         judge_model = st.selectbox(
             "LLM Judge Model",
-            ["qwen3:32b", "gemma3:27b", "llama3.3:70b", "qwen3:14b"],
+            available_models if available_models else ["qwen3:32b"],
             index=0,
         )
 
@@ -123,6 +123,18 @@ def _render_new_experiment():
         # Temperature
         temperature = st.slider("Temperature", 0.0, 1.0, 0.7, 0.1)
 
+        # Prompt Pack (for ablation studies)
+        prompt_pack = st.selectbox(
+            "Prompt Pack",
+            ["default", "concise", "detailed"],
+            index=0,
+            help="Prompt variant for ablation studies",
+        )
+
+        # Seed for reproducibility
+        use_seed = st.checkbox("Use seed (reproducible)", value=False)
+        seed = st.number_input("Seed", value=42, disabled=not use_seed) if use_seed else None
+
     # Summary
     total_runs = len(selected_models) * len(filtered_profiles) * runs_per_profile
     st.info(
@@ -132,10 +144,15 @@ def _render_new_experiment():
 
     # Run button
     if st.button("Run Experiment", type="primary", disabled=not selected_models or not filtered_profiles):
-        _run_experiment(exp_name, selected_models, filtered_profiles, runs_per_profile, temperature, judge_model)
+        _run_experiment(
+            exp_name, selected_models, filtered_profiles,
+            runs_per_profile, temperature, judge_model,
+            prompt_pack=prompt_pack, seed=seed,
+        )
 
 
-def _run_experiment(exp_name, models, profiles, runs_per_profile, temperature, judge_model):
+def _run_experiment(exp_name, models, profiles, runs_per_profile, temperature,
+                    judge_model, prompt_pack="default", seed=None):
     """Execute experiment with progress tracking."""
     import sys
     import os
@@ -155,6 +172,8 @@ def _run_experiment(exp_name, models, profiles, runs_per_profile, temperature, j
         runs_per_profile=runs_per_profile,
         temperature=temperature,
         judge_model=judge_model,
+        prompt_pack=prompt_pack,
+        seed=seed,
     )
 
     runner = ExperimentRunner(config)

@@ -25,13 +25,22 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# TurboWan from git (optional, skip if not available)
+# TurboDiffusion: clone full repo (serve/pipeline.py needs inference/ and rcm/)
+ARG TURBO_COMMIT=4ce6a6fc25138c745bf42dfadbbc12fabbe1add6
+RUN git clone https://github.com/thu-ml/TurboDiffusion.git /opt/TurboDiffusion \
+    && cd /opt/TurboDiffusion && git checkout $TURBO_COMMIT \
+    && git submodule update --init --recursive
+# Runtime deps (editable install fails without GPU for CUDA extensions, so install deps separately)
 RUN pip install --no-cache-dir \
-    git+https://github.com/turbodiffusion/turbodiffusion.git \
-    || echo "TurboWan not available, skipping"
+    loguru einops omegaconf fvcore ftfy attrs regex rich prompt-toolkit pandas nvidia-ml-py
+
+# PYTHONPATH: turbodiffusion/ for bare imports (rcm, imaginaire, ops, SLA)
+#             turbodiffusion/inference/ for modify_model
+ENV PYTHONPATH="/opt/TurboDiffusion/turbodiffusion:/opt/TurboDiffusion/turbodiffusion/inference:${PYTHONPATH}"
 
 # Application code
-COPY models.py pipelines.py server.py ./
+COPY models.py pipelines.py server.py entrypoint.sh ./
+COPY scripts/ scripts/
 
 # Output and model cache directories
 RUN mkdir -p /outputs/videos /models
@@ -45,4 +54,4 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]
+CMD ["bash", "entrypoint.sh"]

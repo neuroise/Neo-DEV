@@ -1,0 +1,278 @@
+{
+  "config": {
+    "name": "baseline_30_llama70b",
+    "profiles": [
+      "S-01",
+      "S-02",
+      "S-03",
+      "S-04",
+      "S-05",
+      "S-06",
+      "S-07",
+      "S-08",
+      "S-09",
+      "S-10",
+      "R-01",
+      "R-02",
+      "R-03",
+      "R-04",
+      "R-05",
+      "R-06",
+      "R-07",
+      "R-08",
+      "R-09",
+      "R-10",
+      "L-01",
+      "L-02",
+      "L-03",
+      "L-04",
+      "L-05",
+      "L-06",
+      "L-07",
+      "L-08",
+      "L-09",
+      "L-10"
+    ],
+    "models": [
+      "llama3.3:70b"
+    ],
+    "temperature": 0.7,
+    "runs_per_profile": 1,
+    "timestamp": "2026-01-26T02:36:40.014140"
+  },
+  "summary": {
+    "total_runs": 30,
+    "successful_runs": 30,
+    "failed_runs": 0,
+    "success_rate": 1.0,
+    "models": {
+      "llama3.3:70b": {
+        "M_AUTO_01_schema_compliance": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "count": 29
+        },
+        "M_AUTO_02_archetype_consistency": {
+          "mean": 0.8199233716475096,
+          "min": 0.2222222222222222,
+          "max": 1.0,
+          "count": 29
+        },
+        "M_AUTO_03_role_sequence_valid": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "count": 29
+        },
+        "M_AUTO_04_story_thread_presence": {
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "count": 29
+        },
+        "M_AUTO_05_red_flag_score": {
+          "mean": 0.7827586206896552,
+          "min": 0.55,
+          "max": 1.0,
+          "count": 29
+        },
+        "M_AUTO_06_prompt_length_valid": {
+          "mean": 0.9844827586206897,
+          "min": 0.925,
+          "max": 1.0,
+          "count": 29
+        },
+        "M_AUTO_07_archetype_lexical_fit": {
+          "mean": 0.49035628813159404,
+          "min": 0.1935483870967742,
+          "max": 0.7741935483870968,
+          "count": 29
+        },
+        "M_AUTO_10_marine_vocabulary_ratio": {
+          "mean": 0.726301221077684,
+          "min": 0.5805128205128205,
+          "max": 0.7414634146341463,
+          "count": 29
+        },
+        "M_AUTO_08_cross_scene_coherence": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "count": 19
+        },
+        "M_AUTO_09_prompt_specificity": {
+          "mean": 0.5293103448275862,
+          "min": 0.1333333333333333,
+          "max": 0.9,
+          "count": 29
+        },
+        "M_AUTO_11_score_narrative_coherence": {
+          "mean": 0.5263331624186522,
+          "min": 0.37243386243386245,
+          "max": 0.7437254901960784,
+          "count": 29
+        },
+        "M_AUTO_12_llm_judge_quality": {
+          "mean": 0.7948275862068965,
+          "min": 0.75,
+          "max": 1.0,
+          "count": 29
+        },
+        "M_AUTO_13_pacing_progression": {
+          "mean": 0.9503981025360336,
+          "min": 0.6161904761904762,
+          "max": 1.0,
+          "count": 29
+        },
+        "aggregate_score": {
+          "mean": 0.7306990416294532,
+          "min": 0.5992165886067689,
+          "max": 0.7851055773494798,
+          "count": 29
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "profile_id": "S-01",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-01-26T01:25:22.711985",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, slow-motion shot of a single cloud drifting across a vast, blue sky reflected perfectly in calm ocean waters at dawn. The camera is positioned low to the horizon, emphasizing the expansiveness of both the sea and the sky. Soft, golden light gradually illuminates the scene as the sun rises.",
+            "duration_hint": 5,
+            "mood_tags": [
+              "serene",
+              "contemplative"
+            ],
+            "camera_hints": "Low-angle shot with a slow pan to follow the cloud's movement"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "The camera zooms out further, revealing more of the sky and the ocean's surface. The single cloud from the previous scene now creates a gap in the clouds, allowing a beam of sunlight to illuminate a specific area of the water, creating a shimmering effect. This shot maintains the slow-motion pace, with the sun's rays dancing across the waves.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "hopeful",
+              "reflective"
+            ],
+            "camera_hints": "Wide-angle shot with gradual zoom out"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "As the day progresses, the sun reaches its peak, and the cloud gap widens, casting a broader path of light on the ocean. The camera then slowly descends onto the water's surface, capturing the gentle lapping of waves against the shore in extreme close-up. The shot ends with a tranquil scene of seaweed swaying gently underwater, illuminated by the soft, filtered sunlight.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "peaceful",
+              "timeless"
+            ],
+            "camera_hints": "Close-up shot with a slight tilt to emphasize the movement of seaweed"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Create an ambient soundscape that mirrors the serene and contemplative mood of the visuals. Incorporate soft, legato piano notes and subtle, calming synth pads to evoke a sense of peacefulness.",
+          "genre": "ambient",
+          "bpm": 60,
+          "mood": "soft_contemplative",
+          "instruments_hint": "Piano, ambient synth pads, possibly incorporating gentle sound effects from nature like softly lapping waves"
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "single_cloud_gap",
+          "coherence_notes": "The narrative arc follows the serene observation of a cloud's movement and its effect on the ocean's illumination, maintaining a contemplative mood throughout."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 0.8888888888888888,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 1.0,
+        "M_AUTO_05_red_flag_score": 0.85,
+        "M_AUTO_06_prompt_length_valid": 1.0,
+        "M_AUTO_07_archetype_lexical_fit": 0.5818181818181818,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7292682926829268,
+        "M_AUTO_08_cross_scene_coherence": 1.0,
+        "M_AUTO_09_prompt_specificity": 0.6666666666666666,
+        "M_AUTO_11_score_narrative_coherence": 0.559827067669173,
+        "M_AUTO_12_llm_judge_quality": 0.75,
+        "M_AUTO_13_pacing_progression": 0.9614814814814816,
+        "aggregate_score": 0.8452269676313322
+      },
+      "latency_ms": 148036.119222641
+    },
+    {
+      "profile_id": "S-02",
+      "model": "llama3.3:70b",
+      "run_idx": 0,
+      "timestamp": "2026-01-26T01:28:00.735135",
+      "success": true,
+      "output": {
+        "video_triptych": [
+          {
+            "scene_role": "start",
+            "prompt": "A serene, misty dawn breaks over a tranquil sea, with gentle waves caressing the shore. The camera pans slowly over the horizon, capturing the soft, golden light of sunrise dancing across the ripples on the water's surface. In the distance, a lone seagull flies lazily, its silhouette stark against the pastel hues of the sky.",
+            "duration_hint": 6,
+            "mood_tags": [
+              "serene",
+              "contemplative",
+              "peaceful"
+            ],
+            "camera_hints": "Static shot with slow zoom"
+          },
+          {
+            "scene_role": "evolve",
+            "prompt": "As the sun rises higher, its rays illuminate a geometric pattern of tidal flats and shallow pools, creating a mesmerizing mosaic of light and shadow. The camera moves slowly over this natural artwork, highlighting the intricate textures and reflections within the calm water. A few stray seaweed strands drift lazily in the current, adding a sense of gentle movement to the scene.",
+            "duration_hint": 7,
+            "mood_tags": [
+              "intriguing",
+              "reflective",
+              "soothing"
+            ],
+            "camera_hints": "Drone shot with gradual descent"
+          },
+          {
+            "scene_role": "end",
+            "prompt": "The tide reaches its calmest point, and the sea becomes a perfect mirror to the sky. The camera looks down upon a small, isolated rock or reef, partially submerged in the glassy water, creating a sense of symmetry and balance. As the last rays of the sun fade, the stars begin to twinkle in the night sky, reflected perfectly in the still ocean, symbolizing the infinite and the eternal.",
+            "duration_hint": 8,
+            "mood_tags": [
+              "timeless",
+              "philosophical",
+              "serene"
+            ],
+            "camera_hints": "Static shot with star trail effect"
+          }
+        ],
+        "ost_prompt": {
+          "prompt": "Compose a modern classical piece that evokes the feeling of standing on a serene coastline at dawn, with the gentle lapping of waves against the shore and the cries of seagulls in the distance. The music should be minimalist, featuring a solo piano or a small ensemble, with a focus on ambient textures and soft, legato melodies.",
+          "genre": "modern_classical",
+          "bpm": 60,
+          "mood": "minimal_zen",
+          "instruments_hint": "Piano, ambient pads, softly played strings"
+        },
+        "metadata": {
+          "archetype_detected": "SAGE",
+          "story_thread_used": "calm_tide_mark",
+          "coherence_notes": "The narrative arc follows the serene and contemplative mood of the SAGE archetype, with each scene flowing into the next to create a sense of calm progression from dawn to dusk."
+        }
+      },
+      "policy_flag": "green",
+      "policy_violations": 0,
+      "policy_warnings": 0,
+      "metrics": {
+        "M_AUTO_01_schema_compliance": 1.0,
+        "M_AUTO_02_archetype_consistency": 1.0,
+        "M_AUTO_03_role_sequence_valid": 1.0,
+        "M_AUTO_04_story_thread_presence": 0.6666666666666666,
+        "M_AUTO_05_red_flag_score": 0.7,
+        "M_AUTO_06_prompt_length_valid": 0.925,
+        "M_AUTO_07_archetype_lexical_fit": 0.42424242424242425,
+        "M_AUTO_10_marine_vocabulary_ratio": 0.7385714285714285,
+        "M_AUTO_08_cross_scene_coherence": 

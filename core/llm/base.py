@@ -31,15 +31,24 @@ class LLMConfig:
     api_key: Optional[str] = None  # Se None, usa env var
     base_url: Optional[str] = None  # Per endpoint custom
 
+    # Context window (Ollama: num_ctx)
+    num_ctx: Optional[int] = None
+
+    # Reproducibility
+    seed: Optional[int] = None  # Seed for deterministic generation
+
     def to_dict(self) -> Dict[str, Any]:
-        return {
+        d = {
             "model": self.model,
             "temperature": self.temperature,
             "max_tokens": self.max_tokens,
             "top_p": self.top_p,
             "stop_sequences": self.stop_sequences,
-            "timeout": self.timeout
+            "timeout": self.timeout,
         }
+        if self.seed is not None:
+            d["seed"] = self.seed
+        return d
 
 
 @dataclass

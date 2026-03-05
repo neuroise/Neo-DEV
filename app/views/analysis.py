@@ -134,6 +134,8 @@ def render_analysis():
     with tab_radar:
         if compare_with:
             _render_radar_comparison(selected, compare_with)
+            # Statistical comparison table
+            _render_statistical_comparison(selected, compare_with)
         else:
             _render_radar(summary)
 
@@ -454,3 +456,68 @@ def _render_run_details(results):
             st.markdown(f"**OST**: {ost.get('genre', 'N/A')} | BPM: {ost.get('bpm', 'N/A')} | Mood: {ost.get('mood', 'N/A')}")
             st.text_area("OST Prompt", ost.get("prompt", ""), height=60,
                          key=f"run_detail_ost_{selected_idx}", disabled=True)
+
+
+def _render_statistical_comparison(selected, compare_with):
+    """Render statistical comparison table with p-values and LaTeX export."""
+    try:
+        from core.experiments.comparator import ExperimentComparator
+    except ImportError:
+        st.warning("ExperimentComparator not available (missing scipy?).")
+        return
+
+    exp_dir = get_experiments_dir()
+    comp = ExperimentComparator(str(exp_dir))
+
+    for other in compare_with:
+        st.markdown(f"---\n#### Statistical Comparison: **{selected}** vs **{other}**")
+
+        try:
+            df = comp.compare_paired(selected, other)
+        except Exception as e:
+            st.error(f"Comparison failed: {e}")
+            continue
+
+        if df.empty:
+            st.info("Not enough paired data for statistical comparison.")
+            continue
+
+        # Display table
+        display = df.copy()
+        display["metric"] = display["metric"].apply(comp._short_metric_name)
+        display["sig"] = display["p_value"].apply(
+            lambda p: comp._significance_stars(p)
+        )
+        display["mean_a"] = display.apply(
+            lambda r: f"{r['mean_a']:.3f} +/- {r['std_a']:.3f}", axis=1
+        )
+        display["mean_b"] = display.apply(
+            lambda r: f"{r['mean_b']:.3f} +/- {r['std_b']:.3f}", axis=1
+        )
+        display["p_value"] = display["p_value"].apply(lambda p: f"{p:.4f}")
+        display["cohens_d"] = display["cohens_d"].apply(lambda d: f"{d:+.3f}")
+
+        st.dataframe(
+            display[["metric", "mean_a", "mean_b", "p_value", "sig", "cohens_d"]].rename(
+                columns={
+                    "metric": "Metric",
+                    "mean_a": selected,
+                    "mean_b": other,
+                    "p_value": "p-value",
+                    "sig": "",
+                    "cohens_d": "Cohen's d",
+                }
+            ),
+            use_container_width=True,
+            hide_index=True,
+        )
+
+        # LaTeX export button
+        latex = comp.to_latex(df, selected, other)
+        st.download_button(
+            "Export LaTeX Table",
+            latex,
+            file_name=f"comparison_{selected}_vs_{other}.tex",
+            mime="text/plain",
+            key=f"latex_{selected}_{other}",
+        )
