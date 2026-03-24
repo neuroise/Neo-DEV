@@ -23,6 +23,7 @@ from app.views.evaluate import render_evaluate
 from app.views.experiments import render_experiments
 from app.views.preview import render_preview
 from app.views.profiles import render_profiles
+from app.views.annotate import render_annotate
 
 # Page config
 st.set_page_config(
@@ -80,6 +81,7 @@ def main():
             "📈 Analysis",
             "🎥 Preview",
             "👤 Profiles",
+            "✏️ Annotate",
             # "🌊 Simulation"  # Phase 2
         ]
     )
@@ -157,6 +159,8 @@ def main():
         render_preview()
     elif page == "👤 Profiles":
         render_profiles()
+    elif page == "✏️ Annotate":
+        render_annotate()
 
 
 def render_home():

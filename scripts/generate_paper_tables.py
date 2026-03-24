@@ -76,6 +76,11 @@ def get_metric_values(data, metric):
             v = run.get("metrics", {}).get(metric)
             if isinstance(v, (int, float)):
                 values.append(v)
+            elif isinstance(v, str):
+                try:
+                    values.append(float(v))
+                except ValueError:
+                    pass
     return values
 
 
@@ -234,9 +239,15 @@ def generate_table_2_archetype(experiments_dir, output_dir):
 
 def generate_table_3_crossmodel(experiments_dir, output_dir):
     """Table 3: Cross-model comparison."""
+    import math
+
     experiments = {
         "LLaMA 3.3:70B": "baseline_30_llama70b_v3",
         "Qwen3:32B": "baseline_30_qwen32b",
+        "Qwen3:8B": "baseline_30_qwen3_8b",
+        "Ministral-3:14B": "baseline_30_ministral3_14b",
+        "GPT-4o": "baseline_30_gpt4o",
+        "GPT-5.4": "baseline_30_gpt54",
     }
 
     datasets = {}
@@ -251,21 +262,70 @@ def generate_table_3_crossmodel(experiments_dir, output_dir):
         print("  Need at least 2 models for cross-model table")
         return
 
+    model_labels = list(datasets.keys())
+
+    lines = [
+        r"\begin{table*}[t]",
+        r"\centering",
+        r"\caption{Cross-model comparison ($n{=}30$). Bold = best mean. Significance vs.\ LLaMA (Wilcoxon): * $p{<}.05$, ** $p{<}.01$, *** $p{<}.001$.}",
+        r"\label{tab:crossmodel}",
+        r"\begin{tabular}{l" + "c" * len(model_labels) + "}",
+        r"\toprule",
+        "Metric & " + " & ".join(model_labels) + r" \\",
+        r"\midrule",
+    ]
+
+    baseline_label = model_labels[0]
     try:
-        from core.experiments.comparator import ExperimentComparator
-        comp = ExperimentComparator(experiments_dir)
-        names = list(experiments.values())
-        df = comp.compare_paired(names[0], names[1])
-        labels = list(experiments.keys())
-        latex = comp.to_latex(df, labels[0], labels[1],
-                              caption="Cross-model comparison (paired Wilcoxon signed-rank test, $n{=}30$)",
-                              table_label="tab:crossmodel")
-        print("\n=== Table 3: Cross-Model Comparison ===")
-        print(latex)
-        if output_dir:
-            (Path(output_dir) / "tab_crossmodel.tex").write_text(latex)
-    except Exception as e:
-        print(f"  Cross-model comparison error: {e}")
+        from scipy.stats import wilcoxon
+        has_scipy = True
+    except ImportError:
+        has_scipy = False
+
+    for metric in METRIC_LABELS:
+        means = {}
+        all_values = {}
+        for label, data in datasets.items():
+            values = get_metric_values(data, metric)
+            m, s = stats(values)
+            means[label] = (m, s)
+            all_values[label] = values
+
+        best_label = max(means, key=lambda l: means[l][0])
+        label_str = SHORT_LABELS.get(metric, metric)
+        row = label_str
+        baseline_vals = all_values.get(baseline_label, [])
+
+        for label in model_labels:
+            m, s = means[label]
+            sig = ""
+            if has_scipy and label != baseline_label:
+                other_vals = all_values.get(label, [])
+                n_common = min(len(baseline_vals), len(other_vals))
+                if n_common >= 5:
+                    bv, ov = baseline_vals[:n_common], other_vals[:n_common]
+                    if any(a != b for a, b in zip(bv, ov)):
+                        try:
+                            _, p = wilcoxon(bv, ov)
+                            if p < 0.001: sig = "***"
+                            elif p < 0.01: sig = "**"
+                            elif p < 0.05: sig = "*"
+                        except Exception:
+                            pass
+
+            if label == best_label and m > 0:
+                row += rf" & \textbf{{{m:.3f}}} {{\scriptsize$\pm${s:.3f}}}{sig}"
+            else:
+                row += rf" & {m:.3f} {{\scriptsize$\pm${s:.3f}}}{sig}"
+        row += r" \\"
+        lines.append(row)
+
+    lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
+    table = "\n".join(lines)
+    print("\n=== Table 3: Cross-Model Comparison ===")
+    print(table)
+    if output_dir:
+        (Path(output_dir) / "tab_crossmodel.tex").write_text(table)
 
 
 def generate_table_4_policy(experiments_dir, output_dir):

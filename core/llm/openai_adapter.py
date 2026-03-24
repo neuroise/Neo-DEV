@@ -82,12 +82,19 @@ class OpenAIAdapter(LLMAdapter):
         messages.append({"role": "user", "content": user_prompt})
 
         try:
+            # GPT-5+ uses max_completion_tokens instead of max_tokens
+            token_param = {}
+            if "gpt-5" in self.model or "o1" in self.model or "o3" in self.model:
+                token_param["max_completion_tokens"] = self.config.max_tokens
+            else:
+                token_param["max_tokens"] = self.config.max_tokens
+
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
-                max_tokens=self.config.max_tokens,
                 temperature=self.config.temperature,
                 top_p=self.config.top_p,
+                **token_param,
                 **kwargs
             )
 
@@ -152,7 +159,7 @@ Respond ONLY with the JSON, no other text."""
 
         # Usa JSON mode se supportato
         response_format = None
-        if "gpt-4" in self.model or "gpt-3.5-turbo" in self.model:
+        if "gpt-4" in self.model or "gpt-3.5-turbo" in self.model or "gpt-5" in self.model:
             response_format = {"type": "json_object"}
 
         response = self.generate(

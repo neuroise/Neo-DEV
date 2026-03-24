@@ -1,25 +1,25 @@
-\begin{table}[ht]
+\begin{table*}[t]
 \centering
-\caption{Cross-model comparison (paired Wilcoxon signed-rank test, $n{=}30$)}
+\caption{Cross-model comparison ($n{=}30$). Bold = best mean. Significance vs.\ LLaMA (Wilcoxon): * $p{<}.05$, ** $p{<}.01$, *** $p{<}.001$.}
 \label{tab:crossmodel}
-\begin{tabular}{lcccc}
+\begin{tabular}{lcccccc}
 \toprule
-Metric & LLaMA 3.3:70B & Qwen3:32B & $p$ & $d$ \\
+Metric & LLaMA 3.3:70B & Qwen3:32B & Qwen3:8B & Ministral-3:14B & GPT-4o & GPT-5.4 \\
 \midrule
-Schema & \textbf{1.000} {\scriptsize$\pm$0.000} & 0.964 {\scriptsize$\pm$0.131} & 0.157 & +0.39 \\
-Archetype & \textbf{0.798} {\scriptsize$\pm$0.201} & 0.770 {\scriptsize$\pm$0.209} & 0.583 & +0.14 \\
-Sequence & \textbf{1.000} {\scriptsize$\pm$0.000} & 0.929 {\scriptsize$\pm$0.262} & 0.157 & +0.39 \\
-Thread & \textbf{0.827} {\scriptsize$\pm$0.238} & 0.720 {\scriptsize$\pm$0.240} & 0.042* & +0.45 \\
-Red Flags & 0.748 {\scriptsize$\pm$0.129} & \textbf{0.759} {\scriptsize$\pm$0.118} & 0.714 & -0.09 \\
-Length & \textbf{0.992} {\scriptsize$\pm$0.024} & 0.979 {\scriptsize$\pm$0.066} & 0.336 & +0.25 \\
-Lexical Fit & \textbf{0.419} {\scriptsize$\pm$0.169} & 0.346 {\scriptsize$\pm$0.171} & 0.025* & +0.43 \\
-Marine & \textbf{0.718} {\scriptsize$\pm$0.034} & 0.679 {\scriptsize$\pm$0.083} & 0.316 & +0.62 \\
-Coherence & \textbf{0.593} {\scriptsize$\pm$0.124} & 0.102 {\scriptsize$\pm$0.030} & <.001*** & +5.46 \\
-Specificity & 0.543 {\scriptsize$\pm$0.243} & \textbf{0.731} {\scriptsize$\pm$0.309} & 0.002** & -0.67 \\
-Narrative & \textbf{0.551} {\scriptsize$\pm$0.095} & 0.546 {\scriptsize$\pm$0.120} & 0.797 & +0.05 \\
-Pacing & \textbf{0.955} {\scriptsize$\pm$0.052} & 0.950 {\scriptsize$\pm$0.070} & 0.936 & +0.07 \\
-LLM Judge & 0.771 {\scriptsize$\pm$0.134} & \textbf{0.996} {\scriptsize$\pm$0.013} & <.001*** & -2.37 \\
-Aggregate & \textbf{0.777} {\scriptsize$\pm$0.050} & 0.729 {\scriptsize$\pm$0.079} & <.001*** & +0.73 \\
+Schema & \textbf{1.000} {\scriptsize$\pm$0.000} & 0.964 {\scriptsize$\pm$0.131} & 1.000 {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} \\
+Archetype & 0.789 {\scriptsize$\pm$0.196} & 0.770 {\scriptsize$\pm$0.209} & 0.796 {\scriptsize$\pm$0.187} & 0.663 {\scriptsize$\pm$0.284}** & \textbf{0.856} {\scriptsize$\pm$0.131} & 0.804 {\scriptsize$\pm$0.260} \\
+Sequence & \textbf{1.000} {\scriptsize$\pm$0.000} & 0.929 {\scriptsize$\pm$0.262} & 1.000 {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} & 1.000 {\scriptsize$\pm$0.000} \\
+Thread & 0.822 {\scriptsize$\pm$0.239} & 0.720 {\scriptsize$\pm$0.240} & 0.661 {\scriptsize$\pm$0.338} & 0.833 {\scriptsize$\pm$0.205} & 0.844 {\scriptsize$\pm$0.239} & \textbf{0.922} {\scriptsize$\pm$0.143} \\
+Red Flags & 0.755 {\scriptsize$\pm$0.128} & 0.759 {\scriptsize$\pm$0.118} & \textbf{0.825} {\scriptsize$\pm$0.112}* & 0.705 {\scriptsize$\pm$0.092} & 0.820 {\scriptsize$\pm$0.121}* & 0.705 {\scriptsize$\pm$0.083} \\
+Length & 0.993 {\scriptsize$\pm$0.023} & 0.979 {\scriptsize$\pm$0.066} & \textbf{1.000} {\scriptsize$\pm$0.000} & 0.894 {\scriptsize$\pm$0.085}*** & 1.000 {\scriptsize$\pm$0.000} & 0.960 {\scriptsize$\pm$0.038}*** \\
+Lex. Fit & 0.416 {\scriptsize$\pm$0.167} & 0.346 {\scriptsize$\pm$0.171} & 0.272 {\scriptsize$\pm$0.112}*** & 0.243 {\scriptsize$\pm$0.110}*** & \textbf{0.554} {\scriptsize$\pm$0.146}** & 0.453 {\scriptsize$\pm$0.212} \\
+Coherence & \textbf{0.588} {\scriptsize$\pm$0.130} & 0.102 {\scriptsize$\pm$0.030}*** & 0.486 {\scriptsize$\pm$0.136}** & 0.488 {\scriptsize$\pm$0.132}** & 0.509 {\scriptsize$\pm$0.102}* & 0.559 {\scriptsize$\pm$0.178} \\
+Specificity & 0.535 {\scriptsize$\pm$0.243} & \textbf{0.731} {\scriptsize$\pm$0.309}** & 0.688 {\scriptsize$\pm$0.240}** & 0.706 {\scriptsize$\pm$0.195}*** & 0.583 {\scriptsize$\pm$0.234} & 0.538 {\scriptsize$\pm$0.311} \\
+Marine & \textbf{0.719} {\scriptsize$\pm$0.033} & 0.679 {\scriptsize$\pm$0.083} & 0.688 {\scriptsize$\pm$0.061} & 0.706 {\scriptsize$\pm$0.051}* & 0.687 {\scriptsize$\pm$0.088} & 0.711 {\scriptsize$\pm$0.043} \\
+Narrative & 0.550 {\scriptsize$\pm$0.092} & 0.546 {\scriptsize$\pm$0.120} & 0.449 {\scriptsize$\pm$0.123}** & 0.488 {\scriptsize$\pm$0.113}* & 0.572 {\scriptsize$\pm$0.073} & \textbf{0.656} {\scriptsize$\pm$0.091}*** \\
+LLM Judge & 0.770 {\scriptsize$\pm$0.129} & 0.996 {\scriptsize$\pm$0.013}*** & 0.975 {\scriptsize$\pm$0.076}*** & \textbf{1.000} {\scriptsize$\pm$0.000}*** & 0.975 {\scriptsize$\pm$0.076}*** & 1.000 {\scriptsize$\pm$0.000}*** \\
+Pacing & 0.951 {\scriptsize$\pm$0.058} & 0.950 {\scriptsize$\pm$0.070} & 0.920 {\scriptsize$\pm$0.099} & 0.865 {\scriptsize$\pm$0.146}** & 0.889 {\scriptsize$\pm$0.125}* & \textbf{0.964} {\scriptsize$\pm$0.059} \\
+\textbf{Aggregate} & 0.775 {\scriptsize$\pm$0.049} & 0.729 {\scriptsize$\pm$0.079}*** & 0.773 {\scriptsize$\pm$0.049} & 0.758 {\scriptsize$\pm$0.057} & \textbf{0.815} {\scriptsize$\pm$0.060}*** & 0.809 {\scriptsize$\pm$0.065}*** \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}

@@ -240,6 +240,9 @@ class OllamaAdapter(LLMAdapter):
             payload["options"]["seed"] = self.config.seed
 
         if system_prompt:
+            # Disable thinking mode for qwen3/qwen3.5 to get clean JSON output
+            if "qwen3" in self.model.lower() and not system_prompt.startswith("/no_think"):
+                system_prompt = "/no_think\n" + system_prompt
             payload["system"] = system_prompt
 
         # Aggiungi opzioni extra
