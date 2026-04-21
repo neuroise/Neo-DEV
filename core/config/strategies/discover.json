@@ -1,0 +1,11 @@
+{
+  "strategy_id": "discover",
+  "name": "Invite to Explore",
+  "intent": "Spark curiosity and invite the viewer to discover new perspectives",
+  "prompt_modifiers": {
+    "emphasis": ["discovery", "curiosity", "new perspectives", "wonder"],
+    "camera_preference": "wide establishing shots and aerial movements",
+    "pacing_hint": "building momentum, sense of journey"
+  },
+  "soft_constraints": true
+}

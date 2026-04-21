@@ -1,0 +1,168 @@
+{
+  "schema_version": "1.0.0",
+  "archetypes": {
+    "sage": {
+      "display_name": "Sage",
+      "display_name_it": "Il Saggio",
+      "prefix": "S",
+      "aliases": [],
+      "color": "#6B7280",
+      "bpm_range": [60, 80],
+      "visual_keywords": ["contemplative", "minimal", "slow movements"],
+      "subjects": ["horizons", "clouds", "still water", "geometric patterns in nature"],
+      "mood": ["serene", "philosophical", "timeless"],
+      "music_keywords": ["ambient", "modern classical"],
+      "camera": ["static or slow pan", "wide angle", "deep focus"],
+      "lighting": ["diffused", "pre-dawn or dusk", "cool tones"],
+      "negative_biases": ["no urgency", "no chaos", "no aggressive action"],
+      "lexicon": {
+        "high_weight": ["contemplative", "serene", "philosophical", "meditative", "timeless"],
+        "medium_weight": ["calm", "quiet", "peaceful", "still", "gentle", "slow"],
+        "low_weight": ["horizon", "depth", "vast", "infinite", "eternal", "wisdom"]
+      },
+      "consistency_keywords": [
+        "contemplative", "minimal", "serene", "philosophical", "timeless",
+        "still", "calm", "quiet", "peaceful", "meditative", "slow",
+        "horizon", "vastness", "infinite", "reflection"
+      ],
+      "pacing_curves": {
+        "start": [0.1, 0.3],
+        "evolve": [0.2, 0.4],
+        "end": [0.1, 0.3]
+      },
+      "progression_style": "flat"
+    },
+    "lover": {
+      "display_name": "Lover",
+      "display_name_it": "L'Amante",
+      "prefix": "L",
+      "aliases": [],
+      "color": "#EC4899",
+      "bpm_range": [70, 90],
+      "visual_keywords": ["warm", "intimate", "sensual"],
+      "subjects": ["sunset reflections", "gentle waves", "close-up textures"],
+      "mood": ["romantic", "connected", "present"],
+      "music_keywords": ["acoustic", "cinematic pop"],
+      "camera": ["shallow depth of field", "slow zoom", "macro details"],
+      "lighting": ["golden hour", "warm tones", "soft backlight"],
+      "negative_biases": ["no melodrama", "no cliché romance"],
+      "lexicon": {
+        "high_weight": ["intimate", "romantic", "sensual", "warm", "tender"],
+        "medium_weight": ["golden", "soft", "gentle", "embrace", "connected"],
+        "low_weight": ["sunset", "glow", "shimmer", "caress", "beauty", "passion"]
+      },
+      "consistency_keywords": [
+        "warm", "intimate", "sensual", "romantic", "gentle",
+        "soft", "golden", "tender", "close", "embrace",
+        "sunset", "glow", "touch", "delicate", "caress"
+      ],
+      "pacing_curves": {
+        "start": [0.2, 0.4],
+        "evolve": [0.4, 0.6],
+        "end": [0.3, 0.5]
+      },
+      "progression_style": "arc"
+    },
+    "explorer": {
+      "display_name": "Explorer",
+      "display_name_it": "L'Esploratore",
+      "prefix": "E",
+      "aliases": [],
+      "color": "#3B82F6",
+      "bpm_range": [95, 120],
+      "visual_keywords": ["discovery", "distance", "uncharted"],
+      "subjects": ["open sea stretches", "distant coastlines", "marine passages", "light through clouds"],
+      "mood": ["curious", "adventurous", "expansive"],
+      "music_keywords": ["organic electronic", "world fusion", "adventurous ambient"],
+      "camera": ["tracking", "aerial flyover", "wide establishing shots"],
+      "lighting": ["dawn or midday", "natural light", "varying conditions"],
+      "negative_biases": ["no jungle expedition", "no terrestrial hiking", "no desert imagery"],
+      "lexicon": {
+        "high_weight": ["discovery", "journey", "vast", "uncharted", "distant"],
+        "medium_weight": ["course", "path", "navigate", "expanding", "horizon"],
+        "low_weight": ["drift", "passage", "open", "beyond", "chart", "route"]
+      },
+      "consistency_keywords": [
+        "discovery", "distance", "journey", "uncharted", "distant",
+        "vast", "expansive", "navigate", "path", "course",
+        "horizon", "open", "beyond", "exploration"
+      ],
+      "pacing_curves": {
+        "start": [0.2, 0.4],
+        "evolve": [0.4, 0.6],
+        "end": [0.3, 0.5]
+      },
+      "progression_style": "rising"
+    },
+    "visionary": {
+      "display_name": "Visionary",
+      "display_name_it": "Il Visionario",
+      "prefix": "V",
+      "aliases": [],
+      "color": "#8B5CF6",
+      "bpm_range": [90, 115],
+      "visual_keywords": ["luminous", "future-facing", "layered"],
+      "subjects": ["light refractions", "geometric water patterns", "atmospheric layers", "bioluminescence"],
+      "mood": ["awe-inspiring", "transcendent", "forward-looking"],
+      "music_keywords": ["cinematic electronic", "modern ambient"],
+      "camera": ["slow motion", "timelapse", "abstract close-ups"],
+      "lighting": ["backlit", "ethereal", "chromatic"],
+      "negative_biases": ["no fantasy", "no magic", "no supernatural", "no mystical symbolism"],
+      "lexicon": {
+        "high_weight": ["luminous", "transcendent", "ethereal", "visionary", "future"],
+        "medium_weight": ["light", "refraction", "abstract", "geometric", "iridescent"],
+        "low_weight": ["glow", "prism", "layer", "spectrum", "evolve", "emerge"]
+      },
+      "consistency_keywords": [
+        "luminous", "transcendent", "ethereal", "visionary", "future",
+        "light", "refraction", "abstract", "geometric", "iridescent",
+        "glow", "prism", "evolve", "emergence"
+      ],
+      "pacing_curves": {
+        "start": [0.2, 0.4],
+        "evolve": [0.5, 0.7],
+        "end": [0.3, 0.5]
+      },
+      "progression_style": "arc"
+    },
+    "catalyst": {
+      "display_name": "Catalyst",
+      "display_name_it": "Il Catalizzatore",
+      "prefix": "C",
+      "aliases": ["rebel"],
+      "color": "#EF4444",
+      "bpm_range": [118, 140],
+      "visual_keywords": ["dynamic", "kinetic", "high-contrast"],
+      "subjects": ["wave impact", "spray", "wind force", "rapid surface motion", "directional lines"],
+      "mood": ["momentum", "liberation", "activation"],
+      "music_keywords": ["electronic", "breakbeat", "pulse-driven"],
+      "camera": ["handheld", "tracking", "fast cuts"],
+      "lighting": ["high contrast", "stormy or blazing sun"],
+      "negative_biases": ["no protest", "no riot", "no destruction", "no violence", "no urban unrest"],
+      "lexicon": {
+        "high_weight": ["dynamic", "powerful", "fierce", "bold", "dramatic"],
+        "medium_weight": ["intense", "wild", "free", "adventurous", "thrilling"],
+        "low_weight": ["wave", "crash", "wind", "speed", "energy", "force"]
+      },
+      "consistency_keywords": [
+        "dynamic", "bold", "powerful", "energetic", "dramatic",
+        "crashing", "intense", "wild", "freedom", "adventure",
+        "speed", "motion", "force", "breaking", "rush"
+      ],
+      "pacing_curves": {
+        "start": [0.3, 0.5],
+        "evolve": [0.6, 0.9],
+        "end": [0.4, 0.7]
+      },
+      "progression_style": "build"
+    }
+  },
+  "prefix_map": {
+    "S": "sage",
+    "L": "lover",
+    "E": "explorer",
+    "V": "visionary",
+    "C": "catalyst",
+    "R": "catalyst"
+  }
+}

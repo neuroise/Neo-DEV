@@ -15,6 +15,8 @@ Different archetypes have different expected pacing curves.
 from typing import Any, Dict, List, Tuple
 import re
 
+from core.config import get_pacing_curves, resolve_archetype, get_archetype
+
 
 # Intensity markers by level
 INTENSITY_MARKERS = {
@@ -49,24 +51,8 @@ CAMERA_INTENSITY = {
     "very_fast": ["shake", "handheld", "chaotic", "frenetic"]
 }
 
-# Expected pacing curves by archetype
-ARCHETYPE_CURVES = {
-    "sage": {
-        "start": (0.1, 0.3),    # Low, contemplative
-        "evolve": (0.2, 0.4),   # Gentle build
-        "end": (0.1, 0.3)       # Return to calm
-    },
-    "rebel": {
-        "start": (0.3, 0.5),    # Medium start
-        "evolve": (0.6, 0.9),   # High intensity
-        "end": (0.4, 0.7)       # Strong resolution
-    },
-    "lover": {
-        "start": (0.2, 0.4),    # Warm introduction
-        "evolve": (0.4, 0.6),   # Emotional build
-        "end": (0.3, 0.5)       # Tender resolution
-    }
-}
+# Expected pacing curves by archetype (loaded from centralized config)
+ARCHETYPE_CURVES = get_pacing_curves()
 
 
 class PacingMetrics:
@@ -80,7 +66,9 @@ class PacingMetrics:
         self.triptych = output.get("video_triptych", [])
 
         user_profile = profile.get("user_profile", profile)
-        self.archetype = user_profile.get("primary_archetype", "sage").lower()
+        self.archetype = resolve_archetype(
+            user_profile.get("primary_archetype", "sage")
+        )
 
     def compute(self) -> float:
         """
@@ -196,6 +184,12 @@ class PacingMetrics:
         """
         Check if intensity progression makes narrative sense.
 
+        Uses config-driven progression_style per archetype:
+        - flat: low variance, contemplative
+        - build: rises to peak in evolve, strong resolution
+        - arc: emotional peak in middle, gentle resolution
+        - rising: monotonic increase across all scenes
+
         Returns bonus score (0-1) for good progression.
         """
         if len(intensities) < 3:
@@ -203,14 +197,15 @@ class PacingMetrics:
 
         start, evolve, end = intensities
 
-        # Different archetypes have different expected progressions
-        if self.archetype == "sage":
-            # Sage: relatively flat, contemplative
+        style = get_archetype(self.archetype).get("progression_style", "arc")
+
+        if style == "flat":
+            # Relatively flat, contemplative
             variance = max(intensities) - min(intensities)
             return 1.0 if variance < 0.3 else max(0.0, 1.0 - variance)
 
-        elif self.archetype == "rebel":
-            # Rebel: should build to high point
+        elif style == "build":
+            # Should build to high point
             if evolve > start and evolve >= end:
                 return 1.0  # Good build
             elif evolve > start:
@@ -218,12 +213,21 @@ class PacingMetrics:
             else:
                 return 0.3
 
-        elif self.archetype == "lover":
-            # Lover: gentle arc, emotional peak in middle
+        elif style == "arc":
+            # Gentle arc, emotional peak in middle
             if evolve >= start and evolve >= end:
                 return 1.0  # Good emotional arc
             else:
                 return 0.5
+
+        elif style == "rising":
+            # Monotonic increase across scenes
+            if end >= evolve >= start:
+                return 1.0  # Perfect rising progression
+            elif end > start:
+                return 0.7  # Overall upward trend
+            else:
+                return 0.3
 
         return 0.5
 

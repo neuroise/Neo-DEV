@@ -9,13 +9,10 @@ import streamlit as st
 from pathlib import Path
 
 
-ARCHETYPES = ["sage", "rebel", "lover"]
+from core.config import get_archetype_names, get_bpm_ranges
 
-BPM_DEFAULTS = {
-    "sage": 70,
-    "rebel": 130,
-    "lover": 80,
-}
+ARCHETYPES = get_archetype_names()
+BPM_DEFAULTS = {name: (lo + hi) // 2 for name, (lo, hi) in get_bpm_ranges().items()}
 
 
 def _get_profiles_dir():

@@ -128,7 +128,7 @@ class TestP1_Stats:
 
         by_arch = results.get_summary_by_archetype()
         assert "sage" in by_arch
-        assert "rebel" in by_arch
+        assert "catalyst" in by_arch  # R-01 resolves to catalyst
         assert "lover" in by_arch
         assert by_arch["sage"]["aggregate_score"]["mean"] == 0.8
 
@@ -301,13 +301,13 @@ class TestP5_PromptPacks:
         from core.llm.prompt_packs import load_prompt_pack
         system_prompt, schema = load_prompt_pack("concise")
         assert "NEURØISE" in system_prompt
-        assert len(system_prompt) < 1000  # Should be much shorter
+        assert len(system_prompt) < 3000  # Concise but includes 5 archetypes
 
     def test_load_detailed(self):
         from core.llm.prompt_packs import load_prompt_pack
         system_prompt, schema = load_prompt_pack("detailed")
         assert "NEURØISE" in system_prompt
-        assert "Rubric" in system_prompt or "rubric" in system_prompt.lower()
+        assert "Camera" in system_prompt or "Lighting" in system_prompt
 
     def test_load_unknown_raises(self):
         from core.llm.prompt_packs import load_prompt_pack

@@ -60,6 +60,10 @@ class ExperimentConfig:
     # Prompt pack for ablation
     prompt_pack: str = "default"
 
+    # Brand & Strategy governance
+    brand_id: Optional[str] = None
+    strategy_id: Optional[str] = None
+
     # Paths
     profiles_dir: str = "data/profiles/official"
     output_dir: str = "data/experiments"
@@ -175,8 +179,9 @@ class ExperimentResults:
         Returns:
             Dict mapping archetype -> metric_name -> stats dict
         """
+        from core.config import get_prefix_map
         by_archetype: Dict[str, Dict[str, List[float]]] = {}
-        prefix_map = {"S": "sage", "R": "rebel", "L": "lover"}
+        prefix_map = get_prefix_map()
 
         for result in self.results:
             if not result.get("success"):
@@ -330,7 +335,11 @@ class ExperimentRunner:
                     except (ImportError, ValueError) as e:
                         logger.warning("Failed to load prompt pack '%s': %s", self.config.prompt_pack, e)
 
-                director = Director(adapter, system_prompt=system_prompt)
+                director = Director(
+                    adapter, system_prompt=system_prompt,
+                    brand_id=self.config.brand_id,
+                    strategy_id=self.config.strategy_id,
+                )
             except Exception as e:
                 if self.config.verbose:
                     print(f"Failed to initialize {model}: {e}")
@@ -414,7 +423,11 @@ class ExperimentRunner:
             output_dict = output.to_dict()
 
             # Policy check
-            policy_result = self.policy_gate.check(output_dict, profile)
+            policy_result = self.policy_gate.check(
+                output_dict, profile,
+                brand_id=self.config.brand_id,
+                strategy_id=self.config.strategy_id,
+            )
 
             # Compute metrics
             metrics = compute_all_automatic_metrics(

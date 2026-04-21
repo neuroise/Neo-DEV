@@ -15,12 +15,24 @@ Based on LLM-as-Judge literature (2024-2025).
 import json
 from typing import Any, Dict, List, Optional
 
+from core.config import resolve_archetype
+
 # Import LLM adapter
 try:
     from core.llm import create_adapter
     HAS_LLM = True
 except ImportError:
     HAS_LLM = False
+
+
+def _archetype_hints_for_judge() -> str:
+    """Build dynamic archetype description hints for the judge prompt."""
+    from core.config import load_archetypes
+    parts = []
+    for name, data in load_archetypes()["archetypes"].items():
+        kws = "/".join(data["visual_keywords"][:2])
+        parts.append(f"{data['display_name']}={kws}")
+    return ", ".join(parts)
 
 
 JUDGE_SYSTEM_PROMPT = """/no_think
@@ -71,7 +83,7 @@ Score each dimension 1-5:
 
 1. **visual_clarity**: Are the prompts specific enough for AI video generation? Do they include camera angles, lighting, subjects, movement?
 
-2. **archetype_alignment**: Do the prompts match the {archetype} archetype characteristics? (Sage=contemplative/minimal, Rebel=dynamic/bold, Lover=warm/intimate)
+2. **archetype_alignment**: Do the prompts match the {archetype} archetype characteristics? ({archetype_hints})
 
 3. **narrative_coherence**: Does the triptych tell a coherent visual story with beginning, development, and resolution?
 
@@ -123,9 +135,11 @@ class LLMJudge:
         self.triptych = output.get("video_triptych", [])
         self.ost = output.get("ost_prompt", {})
 
-        # Extract profile info
+        # Extract profile info (archetype resolved via centralized config)
         user_profile = profile.get("user_profile", profile)
-        self.archetype = user_profile.get("primary_archetype", "sage")
+        self.archetype = resolve_archetype(
+            user_profile.get("primary_archetype", "sage")
+        )
         self.story_thread = user_profile.get("story_thread_hint", "none")
         self.music_genre = user_profile.get("music_seed", {}).get("top_genre", "ambient")
 
@@ -207,6 +221,7 @@ class LLMJudge:
         # Build evaluation prompt
         user_prompt = JUDGE_USER_TEMPLATE.format(
             archetype=self.archetype,
+            archetype_hints=_archetype_hints_for_judge(),
             story_thread=self.story_thread,
             music_genre=self.music_genre,
             start_prompt=self.triptych[0].get("prompt", "N/A"),

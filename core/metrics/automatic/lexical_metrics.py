@@ -9,25 +9,10 @@ Metrics:
 from typing import Any, Dict, Set
 import re
 
+from core.config import get_archetype_lexicon, resolve_archetype
 
-# Extended archetype vocabulary
-ARCHETYPE_LEXICON = {
-    "sage": {
-        "high_weight": ["contemplative", "serene", "philosophical", "meditative", "timeless"],
-        "medium_weight": ["calm", "quiet", "peaceful", "still", "gentle", "slow"],
-        "low_weight": ["horizon", "depth", "vast", "infinite", "eternal", "wisdom"]
-    },
-    "rebel": {
-        "high_weight": ["dynamic", "powerful", "fierce", "bold", "dramatic"],
-        "medium_weight": ["intense", "wild", "free", "adventurous", "thrilling"],
-        "low_weight": ["wave", "crash", "wind", "speed", "energy", "force"]
-    },
-    "lover": {
-        "high_weight": ["intimate", "romantic", "sensual", "warm", "tender"],
-        "medium_weight": ["golden", "soft", "gentle", "embrace", "connected"],
-        "low_weight": ["sunset", "glow", "shimmer", "caress", "beauty", "passion"]
-    }
-}
+# Extended archetype vocabulary (loaded from centralized config)
+ARCHETYPE_LEXICON = get_archetype_lexicon()
 
 # Marine/coastal vocabulary
 MARINE_VOCABULARY = {
@@ -68,7 +53,9 @@ class LexicalMetrics:
         self.ost = output.get("ost_prompt", {})
 
         user_profile = profile.get("user_profile", profile)
-        self.archetype = user_profile.get("primary_archetype", "sage").lower()
+        self.archetype = resolve_archetype(
+            user_profile.get("primary_archetype", "sage")
+        )
 
         # Precompute all text
         self.all_prompts = " ".join(s.get("prompt", "") for s in self.triptych)

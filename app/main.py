@@ -17,6 +17,8 @@ import sys
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from core.config import get_archetype_colors, get_archetype_names, prefix_to_archetype
+
 # Page modules
 from app.views.analysis import render_analysis
 from app.views.evaluate import render_evaluate
@@ -53,9 +55,10 @@ st.markdown("""
         border-radius: 10px;
         color: white;
     }
-    .archetype-sage { border-left: 4px solid #6B7280; }
-    .archetype-rebel { border-left: 4px solid #EF4444; }
-    .archetype-lover { border-left: 4px solid #EC4899; }
+    """ + "\n".join(
+        f"    .archetype-{name} {{ border-left: 4px solid {color}; }}"
+        for name, color in get_archetype_colors().items()
+    ) + """
 </style>
 """, unsafe_allow_html=True)
 
@@ -169,11 +172,11 @@ def render_home():
     col1, col2 = st.columns(2)
 
     with col1:
-        st.metric("Test Profiles", "30")
-        st.caption("Sage · Rebel · Lover")
+        st.metric("Test Profiles", "50")
+        st.caption(" · ".join(n.capitalize() for n in get_archetype_names()))
 
     with col2:
-        st.metric("Archetypes", "3")
+        st.metric("Archetypes", str(len(get_archetype_names())))
         st.caption("Jungian archetypes")
 
     st.markdown("---")
@@ -311,8 +314,9 @@ def render_generate(model: str):
 
             with col1:
                 archetype = user_profile.get("primary_archetype", "unknown")
-                color = {"sage": "gray", "rebel": "red", "lover": "pink"}.get(archetype, "blue")
-                st.markdown(f"**Archetype**: :{color}[{archetype.upper()}]")
+                from core.config import resolve_archetype
+                arch_resolved = resolve_archetype(archetype)
+                st.markdown(f"**Archetype**: {arch_resolved.upper()}")
 
             with col2:
                 st.markdown(f"**Genre**: {music_seed.get('top_genre', 'N/A')}")

@@ -1,5 +1,5 @@
 """Default prompt pack — re-exports from Director."""
 
-from core.llm.director import DIRECTOR_SYSTEM_PROMPT, OUTPUT_SCHEMA
+from core.llm.director import build_director_system_prompt, OUTPUT_SCHEMA
 
-SYSTEM_PROMPT = DIRECTOR_SYSTEM_PROMPT
+SYSTEM_PROMPT = build_director_system_prompt("default")

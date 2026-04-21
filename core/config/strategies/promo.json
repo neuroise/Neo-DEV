@@ -1,0 +1,11 @@
+{
+  "strategy_id": "promo",
+  "name": "Soft Promotion",
+  "intent": "Subtly showcase the yacht experience quality without explicit selling",
+  "prompt_modifiers": {
+    "emphasis": ["premium quality", "exclusivity", "aspirational lifestyle"],
+    "camera_preference": "polished, cinematic compositions",
+    "pacing_hint": "confident, measured rhythm"
+  },
+  "soft_constraints": true
+}

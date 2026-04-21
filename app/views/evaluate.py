@@ -198,8 +198,8 @@ def _render_automatic_metrics(run, selected_profile, selected_exp):
         st.plotly_chart(fig, use_container_width=True)
 
     with col_info:
-        prefix = selected_profile.split("-")[0]
-        archetype = {"S": "sage", "R": "rebel", "L": "lover"}.get(prefix, "unknown")
+        from core.config import prefix_to_archetype
+        archetype = prefix_to_archetype(selected_profile)
         st.markdown(f"**Profile**: {selected_profile}")
         st.markdown(f"**Archetype**: {archetype.capitalize()}")
         st.markdown(f"**Model**: {run.get('model', 'unknown')}")

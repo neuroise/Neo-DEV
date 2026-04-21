@@ -21,6 +21,8 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Set
 import re
 
+from core.config import get_bpm_ranges, get_consistency_keywords, resolve_archetype
+
 
 class PolicyFlag(Enum):
     """Flag di policy per decisioni gating."""
@@ -132,31 +134,6 @@ class PolicyGate:
         "calm", "ripple", "foam", "spray", "salt", "breeze", "wind"
     }
 
-    # Expected BPM ranges per archetype
-    ARCHETYPE_BPM_RANGE: Dict[str, tuple] = {
-        "sage": (60, 80),
-        "rebel": (120, 140),
-        "lover": (70, 90),
-    }
-
-    # Archetype keywords for consistency check
-    ARCHETYPE_KEYWORDS: Dict[str, Set[str]] = {
-        "sage": {
-            "contemplative", "minimal", "serene", "philosophical", "timeless",
-            "still", "calm", "quiet", "peaceful", "meditative", "slow",
-            "horizon", "vastness", "infinite", "reflection"
-        },
-        "rebel": {
-            "dynamic", "bold", "powerful", "energetic", "dramatic",
-            "crashing", "intense", "wild", "freedom", "adventure",
-            "speed", "motion", "force", "breaking", "rush"
-        },
-        "lover": {
-            "warm", "intimate", "sensual", "romantic", "gentle",
-            "soft", "golden", "tender", "close", "embrace",
-            "sunset", "glow", "touch", "delicate", "caress"
-        }
-    }
 
     def __init__(self, strict_mode: bool = False):
         """
@@ -170,7 +147,9 @@ class PolicyGate:
     def check(
         self,
         output: Dict[str, Any],
-        profile: Optional[Dict[str, Any]] = None
+        profile: Optional[Dict[str, Any]] = None,
+        brand_id: Optional[str] = None,
+        strategy_id: Optional[str] = None,
     ) -> PolicyResult:
         """
         Valuta un output del Director.
@@ -248,6 +227,22 @@ class PolicyGate:
                 warnings.append(item)
         if not bpm_result:
             passed.append("R008_bpm")
+
+        # Rule 9: Brand compliance (hard constraints from brand config)
+        if brand_id:
+            brand_result = self._check_brand_compliance(all_text, brand_id)
+            if brand_result:
+                violations.extend(brand_result)
+            else:
+                passed.append("R009_brand")
+
+        # Rule 10: Strategy alignment (soft constraints from strategy config)
+        if strategy_id and strategy_id != "default":
+            strategy_result = self._check_strategy_alignment(all_text, strategy_id)
+            if strategy_result:
+                warnings.extend(strategy_result)
+            else:
+                passed.append("R010_strategy")
 
         # Determine final flag
         if violations:
@@ -396,21 +391,24 @@ class PolicyGate:
         """Verifica coerenza con archetipo del profilo."""
         warnings = []
 
-        # Estrai archetipo dal profilo
+        # Estrai archetipo dal profilo e risolvi alias -> canonical
         user_profile = profile.get("user_profile", profile)
-        archetype = user_profile.get("primary_archetype", "").lower()
+        archetype = resolve_archetype(
+            user_profile.get("primary_archetype", "").lower()
+        )
 
-        if archetype not in self.ARCHETYPE_KEYWORDS:
+        all_keywords = get_consistency_keywords()
+        if archetype not in all_keywords:
             return []  # Can't check unknown archetype
 
         # Conta keyword dell'archetipo corretto vs altri
         text = self._extract_all_text(output)
-        correct_keywords = self.ARCHETYPE_KEYWORDS[archetype]
+        correct_keywords = all_keywords[archetype]
         correct_count = sum(1 for kw in correct_keywords if kw in text)
 
-        # Conta keyword di altri archetipi
+        # Conta keyword di altri archetipi (all 5)
         other_count = 0
-        for other_arch, keywords in self.ARCHETYPE_KEYWORDS.items():
+        for other_arch, keywords in all_keywords.items():
             if other_arch != archetype:
                 other_count += sum(1 for kw in keywords if kw in text)
 
@@ -470,8 +468,10 @@ class PolicyGate:
         # Validate against archetype range if profile available
         if profile:
             user_profile = profile.get("user_profile", profile)
-            archetype = user_profile.get("primary_archetype", "").lower()
-            bpm_range = self.ARCHETYPE_BPM_RANGE.get(archetype)
+            archetype = resolve_archetype(
+                user_profile.get("primary_archetype", "").lower()
+            )
+            bpm_range = get_bpm_ranges().get(archetype)
             if bpm_range:
                 lo, hi = bpm_range
                 if not (lo <= bpm <= hi):
@@ -484,12 +484,52 @@ class PolicyGate:
 
         return issues
 
+    def _check_brand_compliance(
+        self, all_text: str, brand_id: str
+    ) -> List[PolicyViolation]:
+        """R009: Check content against brand forbidden terms (hard constraint)."""
+        from core.config import load_brand
+        brand = load_brand(brand_id)
+        rules = brand.get("rules", {})
+        forbidden = rules.get("forbidden_terms", [])
+        issues = []
+        text_lower = all_text.lower()
+        for term in forbidden:
+            if re.search(rf'\b{re.escape(term)}\b', text_lower):
+                issues.append(PolicyViolation(
+                    rule_id="R009",
+                    rule_name="brand_violation",
+                    severity=PolicyFlag.RED,
+                    message=f"Brand-forbidden term: '{term}'",
+                    context=self._get_context(all_text, term),
+                ))
+        return issues
+
+    def _check_strategy_alignment(
+        self, all_text: str, strategy_id: str
+    ) -> List[PolicyViolation]:
+        """R010: Check content alignment with strategy emphasis (soft constraint)."""
+        from core.config import load_strategy
+        strategy = load_strategy(strategy_id)
+        mods = strategy.get("prompt_modifiers", {})
+        emphasis = mods.get("emphasis", [])
+        if not emphasis:
+            return []
+        text_lower = all_text.lower()
+        found = sum(1 for kw in emphasis if kw.lower() in text_lower)
+        if found == 0:
+            return [PolicyViolation(
+                rule_id="R010",
+                rule_name="strategy_misalignment",
+                severity=PolicyFlag.YELLOW,
+                message=f"No strategy emphasis keywords found. Expected: {', '.join(emphasis)}",
+            )]
+        return []
+
     def _get_context(self, text: str, term: str, window: int = 50) -> str:
-        """Estrae contesto attorno a un termine."""
         idx = text.lower().find(term.lower())
         if idx == -1:
             return ""
-
         start = max(0, idx - window)
         end = min(len(text), idx + len(term) + window)
         return f"...{text[start:end]}..."

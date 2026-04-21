@@ -1,0 +1,11 @@
+{
+  "strategy_id": "engage",
+  "name": "Engage & Connect",
+  "intent": "Maximize emotional engagement and personal connection with the viewer",
+  "prompt_modifiers": {
+    "emphasis": ["emotional resonance", "personal connection", "intimacy"],
+    "camera_preference": "close-up and medium shots preferred",
+    "pacing_hint": "slower, more deliberate pacing"
+  },
+  "soft_constraints": true
+}

@@ -37,8 +37,9 @@ class ExperimentComparator:
         with open(results_path) as f:
             data = json.load(f)
 
+        from core.config import get_prefix_map
         rows = []
-        prefix_map = {"S": "sage", "R": "rebel", "L": "lover"}
+        prefix_map = get_prefix_map()
 
         for run in data.get("results", []):
             if not run.get("success"):

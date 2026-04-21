@@ -22,7 +22,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
-ARCHETYPE_MAP = {"S": "Sage", "R": "Rebel", "L": "Lover"}
+from core.config import get_display_prefix_map
+ARCHETYPE_MAP = get_display_prefix_map()
 
 METRIC_LABELS = {
     "M_AUTO_01_schema_compliance": "Schema Compliance",

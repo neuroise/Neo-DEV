@@ -37,17 +37,7 @@ DIM_CONFIG = {
     "archetype_alignment": {
         "label": "Archetype Fit",
         "short": "Does it match the archetype?",
-        "guide": (
-            "Does the visual language match the archetype shown in the header?\n\n"
-            "**Sage** = contemplative, minimal, slow, still water, horizons, geometric patterns\n"
-            "**Rebel** = dynamic, bold, high energy, crashing waves, dramatic weather, speed\n"
-            "**Lover** = warm, intimate, sensual, sunset reflections, gentle waves, textures\n\n"
-            "- **5** = Unmistakably this archetype; someone could guess it from the prompts alone\n"
-            "- **4** = Clearly this archetype, minor overlap with another\n"
-            "- **3** = Generic marine scene, could be any archetype\n"
-            "- **2** = Leans toward a different archetype\n"
-            "- **1** = Completely wrong archetype (e.g. 'crashing waves' for Sage)"
-        ),
+        "guide": None,  # built dynamically in _build_archetype_guide()
     },
     "narrative_coherence": {
         "label": "Story Coherence",
@@ -97,8 +87,9 @@ DIM_CONFIG = {
     },
 }
 
-ARCHETYPE_COLORS = {"sage": "#6B7280", "rebel": "#EF4444", "lover": "#EC4899"}
-ARCHETYPE_MAP = {"S": "sage", "R": "rebel", "L": "lover"}
+from core.config import get_archetype_colors, get_prefix_map
+ARCHETYPE_COLORS = get_archetype_colors()
+ARCHETYPE_MAP = get_prefix_map()
 
 PAPER_EXPERIMENTS = [
     "baseline_30_llama70b_v3",
@@ -122,6 +113,21 @@ def _list_experiments() -> List[str]:
         d.name for d in exp_dir.iterdir()
         if d.is_dir() and (d / "results.json").exists()
     ])
+
+
+def _build_archetype_guide() -> str:
+    from core.config import load_archetypes
+    lines = ["Does the visual language match the archetype shown in the header?\n"]
+    for name, data in load_archetypes()["archetypes"].items():
+        kws = ", ".join(data["visual_keywords"] + data["subjects"][:2])
+        lines.append(f"**{data['display_name']}** = {kws}")
+    lines.append("")
+    lines.append("- **5** = Unmistakably this archetype; someone could guess it from the prompts alone")
+    lines.append("- **4** = Clearly this archetype, minor overlap with another")
+    lines.append("- **3** = Generic marine scene, could be any archetype")
+    lines.append("- **2** = Leans toward a different archetype")
+    lines.append("- **1** = Completely wrong archetype")
+    return "\n".join(lines)
 
 
 def _load_experiment_runs(experiment: str) -> List[dict]:
@@ -344,7 +350,10 @@ def render_annotate():
 
         with col_info:
             with st.popover("?"):
-                st.markdown(cfg["guide"])
+                guide = cfg["guide"]
+                if guide is None and dim == "archetype_alignment":
+                    guide = _build_archetype_guide()
+                st.markdown(guide or "")
 
         scores[dim] = st.session_state[score_key]
 

@@ -1,0 +1,7 @@
+{
+  "strategy_id": "default",
+  "name": "Default",
+  "intent": "Balanced storytelling without specific campaign emphasis",
+  "prompt_modifiers": {},
+  "soft_constraints": false
+}

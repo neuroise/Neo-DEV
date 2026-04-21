@@ -13,25 +13,10 @@ Metrics M_AUTO_01 to M_AUTO_06:
 from typing import Any, Dict, List
 import re
 
+from core.config import get_consistency_keywords, resolve_archetype
 
-# Archetype keywords for consistency checking
-ARCHETYPE_KEYWORDS = {
-    "sage": [
-        "contemplative", "minimal", "serene", "philosophical", "calm",
-        "horizon", "still", "peaceful", "quiet", "meditative",
-        "slow", "gentle", "timeless", "eternal", "reflective"
-    ],
-    "rebel": [
-        "dynamic", "bold", "powerful", "energetic", "dramatic",
-        "waves", "crashing", "wind", "speed", "intense",
-        "adventure", "freedom", "wild", "fierce", "thrilling"
-    ],
-    "lover": [
-        "warm", "intimate", "romantic", "sensual", "tender",
-        "sunset", "golden", "soft", "close", "connected",
-        "gentle", "embrace", "touch", "beauty", "passion"
-    ]
-}
+# Archetype keywords for consistency checking (loaded from centralized config)
+ARCHETYPE_KEYWORDS = get_consistency_keywords()
 
 # Red flag terms that should not appear
 RED_FLAG_TERMS = [
@@ -64,9 +49,11 @@ class SchemaMetrics:
         self.ost = output.get("ost_prompt", {})
         self.metadata = output.get("metadata", {})
 
-        # Extract archetype from profile
+        # Extract archetype from profile (resolved via centralized config)
         user_profile = profile.get("user_profile", profile)
-        self.archetype = user_profile.get("primary_archetype", "sage").lower()
+        self.archetype = resolve_archetype(
+            user_profile.get("primary_archetype", "sage")
+        )
         self.story_thread = user_profile.get("story_thread_hint", "")
 
     def compute_all(self) -> Dict[str, float]:

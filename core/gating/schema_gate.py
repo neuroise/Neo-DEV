@@ -12,41 +12,67 @@ Example:
 from typing import Any, Dict, List, Optional, Tuple
 import json
 
+from core.config import get_prefix_map, get_archetype_names, get_archetype
 
-# Schema per profili input NoNoise
-PROFILE_SCHEMA = {
-    "type": "object",
-    "required": ["meta", "user_profile"],
-    "properties": {
-        "meta": {
-            "type": "object",
-            "required": ["case_id"],
-            "properties": {
-                "case_id": {"type": "string", "pattern": "^[SRL]-\\d{2}$"}
-            }
-        },
-        "user_profile": {
-            "type": "object",
-            "required": ["primary_archetype", "music_seed"],
-            "properties": {
-                "primary_archetype": {
-                    "type": "string",
-                    "enum": ["sage", "rebel", "lover"]
-                },
-                "music_seed": {
-                    "type": "object",
-                    "required": ["top_genre", "bpm", "mood_tag"],
-                    "properties": {
-                        "top_genre": {"type": "string"},
-                        "bpm": {"type": "integer", "minimum": 40, "maximum": 200},
-                        "mood_tag": {"type": "string"}
-                    }
-                },
-                "story_thread_hint": {"type": "string"}
+
+def _build_profile_schema() -> Dict[str, Any]:
+    """Build PROFILE_SCHEMA dynamically from centralized config."""
+    # Build regex char class from all prefix letters (sorted for stability)
+    prefixes = sorted(set(get_prefix_map().keys()))
+    prefix_chars = "".join(prefixes)
+    case_id_pattern = f"^[{prefix_chars}]-\\d{{2}}$"
+
+    # Build enum: canonical names + all aliases
+    archetype_enum: List[str] = []
+    for name in get_archetype_names():
+        archetype_enum.append(name)
+        archetype_enum.extend(get_archetype(name).get("aliases", []))
+
+    return {
+        "type": "object",
+        "required": ["meta", "user_profile"],
+        "properties": {
+            "meta": {
+                "type": "object",
+                "required": ["case_id"],
+                "properties": {
+                    "case_id": {"type": "string", "pattern": case_id_pattern}
+                }
+            },
+            "user_profile": {
+                "type": "object",
+                "required": ["primary_archetype", "music_seed"],
+                "properties": {
+                    "primary_archetype": {
+                        "type": "string",
+                        "enum": archetype_enum
+                    },
+                    "music_seed": {
+                        "type": "object",
+                        "required": ["top_genre", "bpm", "mood_tag"],
+                        "properties": {
+                            "top_genre": {"type": "string"},
+                            "bpm": {"type": "integer", "minimum": 40, "maximum": 200},
+                            "mood_tag": {"type": "string"}
+                        }
+                    },
+                    "story_thread_hint": {"type": "string"}
+                }
             }
         }
     }
-}
+
+
+# Lazy-initialized module-level reference (preserves backward compat)
+PROFILE_SCHEMA: Optional[Dict[str, Any]] = None
+
+
+def get_profile_schema() -> Dict[str, Any]:
+    """Return the profile schema, building it on first call."""
+    global PROFILE_SCHEMA
+    if PROFILE_SCHEMA is None:
+        PROFILE_SCHEMA = _build_profile_schema()
+    return PROFILE_SCHEMA
 
 # Schema per output Director
 OUTPUT_SCHEMA = {
@@ -228,7 +254,7 @@ def validate_profile(profile: Dict[str, Any]) -> Tuple[bool, List[str]]:
     Returns:
         (is_valid, errors)
     """
-    gate = SchemaGate(PROFILE_SCHEMA)
+    gate = SchemaGate(get_profile_schema())
     return gate.validate(profile)
 
 

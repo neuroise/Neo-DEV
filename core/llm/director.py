@@ -21,10 +21,14 @@ from dataclasses import dataclass
 logger = logging.getLogger(__name__)
 
 from .base import LLMAdapter, LLMResponse
+from core.config import load_archetypes
 
 
-# Template per system prompt del Director
-DIRECTOR_SYSTEM_PROMPT = '''You are the Creative Director for NEURØISE, an intelligent storytelling engine for luxury yacht experiences.
+# ---------------------------------------------------------------------------
+# Dynamic system-prompt builder
+# ---------------------------------------------------------------------------
+
+_PROMPT_INTRO = '''You are the Creative Director for NEURØISE, an intelligent storytelling engine for luxury yacht experiences.
 
 Your role is to create deeply personalized, emotionally resonant video and music prompts based on user archetypes and preferences.
 
@@ -32,25 +36,9 @@ Your role is to create deeply personalized, emotionally resonant video and music
 
 Each user has a PRIMARY ARCHETYPE that shapes their experience:
 
-**SAGE** (Il Saggio)
-- Visual language: contemplative, minimal, slow movements
-- Subjects: horizons, clouds, still water, geometric patterns in nature
-- Mood: serene, philosophical, timeless
-- Music: ambient, modern classical, low BPM (60-80)
+'''
 
-**REBEL** (Il Ribelle)
-- Visual language: dynamic, bold, high energy
-- Subjects: waves crashing, wind, speed, dramatic weather
-- Mood: powerful, liberating, adventurous
-- Music: electronic, breakbeat, high BPM (120-140)
-
-**LOVER** (L'Amante)
-- Visual language: warm, intimate, sensual
-- Subjects: sunset reflections, gentle waves, close-up textures
-- Mood: romantic, connected, present
-- Music: acoustic, cinematic pop, medium BPM (70-90)
-
-## Video Triptych Structure
+_PROMPT_TRIPTYCH = '''## Video Triptych Structure
 
 You must generate THREE scenes forming a narrative arc:
 
@@ -60,15 +48,19 @@ You must generate THREE scenes forming a narrative arc:
 
 Each scene must flow naturally into the next while maintaining archetype consistency.
 
-## Output Requirements
+'''
+
+_PROMPT_OUTPUT_REQS_TEMPLATE = '''## Output Requirements
 
 - Prompts must be SPECIFIC and VISUAL (camera angles, lighting, subjects, movement)
 - Prompts must be MARINE/COASTAL only (no urban, no people faces)
 - Prompts must be PRODUCTION-READY for text-to-video AI
 - OST must complement the visual mood and archetype
-- OST **MUST** include a numeric `bpm` value matching the archetype range (Sage 60-80, Rebel 120-140, Lover 70-90)
+- OST **MUST** include a numeric `bpm` value matching the archetype range ({bpm_summary})
 
-## PROMPT FORMAT RULES (for video prompts)
+'''
+
+_PROMPT_FORMAT_RULES = '''## PROMPT FORMAT RULES (for video prompts)
 
 Each scene prompt must be a concise **shot description** (2-3 sentences max):
 - State the SUBJECT, FRAMING, CAMERA MOVEMENT, and LIGHTING
@@ -79,7 +71,9 @@ Each scene prompt must be a concise **shot description** (2-3 sentences max):
 
 **BAD example**: "We witness the eternal dance of the ocean as it whispers secrets to the shore. The viewer is transported into a realm of peace and wonder, accompanied by the gentle soundtrack of the deep."
 
-## Red Flags (NEVER include)
+'''
+
+_PROMPT_RED_FLAGS = '''## Red Flags (NEVER include)
 
 - Urban/city elements
 - Recognizable faces or identifiable people
@@ -87,6 +81,124 @@ Each scene prompt must be a concise **shot description** (2-3 sentences max):
 - Violence, danger, or distressing imagery
 - Non-marine environments (forests, deserts, mountains)
 '''
+
+
+def _build_bpm_summary(archetypes: Dict[str, Any]) -> str:
+    """Build inline BPM summary like 'Sage 60-80, Lover 70-90, ...'."""
+    parts = []
+    for data in archetypes.values():
+        lo, hi = data["bpm_range"]
+        parts.append(f"{data['display_name']} {lo}-{hi}")
+    return ", ".join(parts)
+
+
+def _build_archetype_block_default(name: str, data: Dict[str, Any]) -> str:
+    """Full block per archetype: visual language, subjects, mood, music + BPM."""
+    lo, hi = data["bpm_range"]
+    lines = [
+        f"**{data['display_name'].upper()}** ({data['display_name_it']})",
+        f"- Visual language: {', '.join(data['visual_keywords'])}",
+        f"- Subjects: {', '.join(data['subjects'])}",
+        f"- Mood: {', '.join(data['mood'])}",
+        f"- Music: {', '.join(data['music_keywords'])}, BPM ({lo}-{hi})",
+    ]
+    return "\n".join(lines)
+
+
+def _build_archetype_block_concise(name: str, data: Dict[str, Any]) -> str:
+    """One-liner: name + 2 keywords + BPM."""
+    lo, hi = data["bpm_range"]
+    kw = data["visual_keywords"][:2]
+    return f"{data['display_name'].upper()} ({data['display_name_it']}): {', '.join(kw)} | {lo}-{hi} BPM"
+
+
+def _build_archetype_block_detailed(name: str, data: Dict[str, Any]) -> str:
+    """Extended block with camera and lighting hints."""
+    lo, hi = data["bpm_range"]
+    lines = [
+        f"**{data['display_name'].upper()}** ({data['display_name_it']})",
+        f"- Visual language: {', '.join(data['visual_keywords'])}",
+        f"- Subjects: {', '.join(data['subjects'])}",
+        f"- Mood: {', '.join(data['mood'])}",
+        f"- Music: {', '.join(data['music_keywords'])}, BPM ({lo}-{hi})",
+        f"- Camera: {', '.join(data['camera'])}",
+        f"- Lighting: {', '.join(data['lighting'])}",
+    ]
+    return "\n".join(lines)
+
+
+def build_director_system_prompt(
+    style: str = "default",
+    brand_id: str = None,
+    strategy_id: str = None,
+) -> str:
+    """Build the Director system prompt dynamically from config.
+
+    Args:
+        style: One of "default", "concise", "detailed".
+        brand_id: Optional brand config to append as rules section.
+        strategy_id: Optional strategy config to append as campaign section.
+
+    Returns:
+        Complete system prompt string.
+    """
+    cfg = load_archetypes()
+    archetypes = cfg["archetypes"]
+
+    builders = {
+        "default": _build_archetype_block_default,
+        "concise": _build_archetype_block_concise,
+        "detailed": _build_archetype_block_detailed,
+    }
+    builder = builders.get(style)
+    if builder is None:
+        raise ValueError(f"Unknown prompt style: {style!r}. Expected one of {list(builders)}")
+
+    archetype_blocks = []
+    for name, data in archetypes.items():
+        archetype_blocks.append(builder(name, data))
+    archetype_section = "\n\n".join(archetype_blocks) + "\n\n"
+
+    bpm_summary = _build_bpm_summary(archetypes)
+    output_reqs = _PROMPT_OUTPUT_REQS_TEMPLATE.format(bpm_summary=bpm_summary)
+
+    prompt = (
+        _PROMPT_INTRO
+        + archetype_section
+        + _PROMPT_TRIPTYCH
+        + output_reqs
+        + _PROMPT_FORMAT_RULES
+        + _PROMPT_RED_FLAGS
+    )
+
+    if brand_id:
+        from core.config import load_brand
+        brand = load_brand(brand_id)
+        rules = brand.get("rules", {})
+        prompt += "\n## Brand Rules\n"
+        prompt += f"- Environment: {rules.get('environment', 'marine_coastal_only')}\n"
+        if rules.get("forbidden_subjects"):
+            prompt += f"- Forbidden: {', '.join(rules['forbidden_subjects'])}\n"
+        prompt += f"- Tone: {rules.get('tone', 'luxury_premium')}\n"
+
+    if strategy_id and strategy_id != "default":
+        from core.config import load_strategy
+        strategy = load_strategy(strategy_id)
+        mods = strategy.get("prompt_modifiers", {})
+        prompt += f"\n## Campaign Strategy: {strategy.get('name', strategy_id)}\n"
+        prompt += f"- Intent: {strategy.get('intent', '')}\n"
+        if mods.get("emphasis"):
+            prompt += f"- Emphasis: {', '.join(mods['emphasis'])}\n"
+        if mods.get("camera_preference"):
+            prompt += f"- Camera preference: {mods['camera_preference']}\n"
+        if mods.get("pacing_hint"):
+            prompt += f"- Pacing: {mods['pacing_hint']}\n"
+
+    return prompt
+
+
+# Backward-compatible alias — tests and imports use this name
+DIRECTOR_SYSTEM_PROMPT = build_director_system_prompt()
 
 # Schema JSON per output strutturato
 OUTPUT_SCHEMA = {
@@ -189,17 +301,19 @@ class Director:
     def __init__(
         self,
         adapter: LLMAdapter,
-        system_prompt: Optional[str] = None
+        system_prompt: Optional[str] = None,
+        brand_id: Optional[str] = None,
+        strategy_id: Optional[str] = None,
     ):
-        """
-        Inizializza il Director.
-
-        Args:
-            adapter: LLM adapter (Anthropic o OpenAI)
-            system_prompt: Override del system prompt default
-        """
         self.adapter = adapter
-        self.system_prompt = system_prompt or DIRECTOR_SYSTEM_PROMPT
+        self.brand_id = brand_id
+        self.strategy_id = strategy_id
+        if system_prompt:
+            self.system_prompt = system_prompt
+        else:
+            self.system_prompt = build_director_system_prompt(
+                brand_id=brand_id, strategy_id=strategy_id
+            )
 
     def generate(
         self,

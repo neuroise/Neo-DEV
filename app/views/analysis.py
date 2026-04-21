@@ -30,11 +30,8 @@ METRIC_LABELS = {
     "M_AUTO_13_pacing_progression": "Pacing",
 }
 
-ARCHETYPE_COLORS = {
-    "sage": "#6B7280",
-    "rebel": "#EF4444",
-    "lover": "#EC4899",
-}
+from core.config import get_archetype_colors, get_prefix_map, get_archetype_names, resolve_archetype
+ARCHETYPE_COLORS = get_archetype_colors()
 
 
 def get_experiments_dir():
@@ -80,7 +77,7 @@ def build_dataframe(results):
         }
         # Determine archetype from profile ID prefix
         prefix = run["profile_id"].split("-")[0]
-        row["archetype"] = {"S": "sage", "R": "rebel", "L": "lover"}.get(prefix, "unknown")
+        row["archetype"] = get_prefix_map().get(prefix, "unknown")
 
         # Add metrics
         for k, v in run.get("metrics", {}).items():
@@ -266,7 +263,7 @@ def _render_archetype_breakdown(df):
 
     # Bar chart comparison
     fig = go.Figure()
-    for archetype in ["sage", "rebel", "lover"]:
+    for archetype in get_archetype_names():
         if archetype not in archetype_means.index:
             continue
         values = archetype_means.loc[archetype]
@@ -291,7 +288,7 @@ def _render_archetype_breakdown(df):
     # Per-archetype radar
     st.markdown("#### Per-Archetype Radar")
     fig2 = go.Figure()
-    for archetype in ["sage", "rebel", "lover"]:
+    for archetype in get_archetype_names():
         if archetype not in archetype_means.index:
             continue
         values = archetype_means.loc[archetype]

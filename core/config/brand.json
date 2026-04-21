@@ -1,0 +1,23 @@
+{
+  "brand_id": "neuroise_default",
+  "name": "NEUROISE Luxury Yacht",
+  "version": "2.0",
+  "rules": {
+    "environment": "marine_coastal_only",
+    "forbidden_terms": [
+      "city", "urban", "building", "car", "traffic", "street", "skyscraper",
+      "blood", "death", "violence", "weapon", "nude",
+      "forest", "mountain", "desert", "snow", "ice", "jungle"
+    ],
+    "forbidden_subjects": ["recognizable faces", "brand logos", "text overlays", "crowds"],
+    "tone": "luxury_premium",
+    "required_domain_terms_min": 5,
+    "marine_vocabulary": [
+      "sea", "ocean", "wave", "water", "shore", "coast", "beach",
+      "horizon", "tide", "marine", "nautical", "boat", "yacht",
+      "sunset", "sunrise", "sky", "cloud", "reflection", "blue",
+      "calm", "ripple", "foam", "spray", "salt", "breeze", "wind"
+    ]
+  },
+  "immutable": true
+}

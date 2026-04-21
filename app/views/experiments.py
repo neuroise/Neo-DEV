@@ -99,20 +99,22 @@ def _render_new_experiment():
     with col2:
         # Profile selection
         all_profiles = _list_profiles()
+        from core.config import load_archetypes
+        _cfg = load_archetypes()["archetypes"]
+        _filter_opts = [f"{d['display_name']} ({d['prefix']}-*)" for d in _cfg.values()]
         archetype_filter = st.multiselect(
-            "Archetype Filter",
-            ["Sage (S-*)", "Rebel (R-*)", "Lover (L-*)"],
-            default=["Sage (S-*)", "Rebel (R-*)", "Lover (L-*)"],
+            "Archetype Filter", _filter_opts, default=_filter_opts,
         )
 
         # Filter profiles
         prefixes = []
-        if "Sage (S-*)" in archetype_filter:
-            prefixes.append("S-")
-        if "Rebel (R-*)" in archetype_filter:
+        for d in _cfg.values():
+            label = f"{d['display_name']} ({d['prefix']}-*)"
+            if label in archetype_filter:
+                prefixes.append(f"{d['prefix']}-")
+        # Also include R- if Catalyst is selected (backward compat)
+        if any("Catalyst" in f for f in archetype_filter):
             prefixes.append("R-")
-        if "Lover (L-*)" in archetype_filter:
-            prefixes.append("L-")
 
         filtered_profiles = [p for p in all_profiles if any(p.startswith(px) for px in prefixes)]
         st.caption(f"{len(filtered_profiles)} profiles selected")
