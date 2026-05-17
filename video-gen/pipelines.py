@@ -146,14 +146,15 @@ class PipelineManager:
                 torch.cuda.empty_cache()
                 torch.cuda.synchronize()
 
-    def load(self, model: VideoModel, use_fp8: bool = False):
+    def load(self, model: VideoModel, use_fp8: bool = False, force: bool = False):
         """
         Load a pipeline for the given model.
 
         If a different model is already loaded, unloads it first.
         For LTX models, use_fp8 controls quantization.
+        Use force=True to reload even if the same model is loaded (clears memory leaks).
         """
-        if self._current_model == model and self._pipeline is not None:
+        if self._current_model == model and self._pipeline is not None and not force:
             if model.value.startswith("ltx") and self._ltx_use_fp8 != use_fp8:
                 logger.info(f"FP8 setting changed, reloading {model.value}")
             else:
@@ -483,10 +484,14 @@ class PipelineManager:
         with torch.no_grad():
             video, audio = self._pipeline(**kwargs)
 
+        # Free GPU memory from intermediate tensors before encoding
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
         if progress_callback:
             progress_callback(0.8)
 
-        # Save video+audio to muxed mp4 using ltx_pipelines encoder
         logger.info("Encoding video output...")
         try:
             from ltx_pipelines.utils.media_io import encode_video
@@ -514,6 +519,12 @@ class PipelineManager:
 
         if not os.path.exists(output_path):
             raise RuntimeError(f"LTX pipeline did not produce output at {output_path}")
+
+        # Cleanup references to large tensors
+        del video, audio
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
         return GenerationResult(
             video_path=Path(output_path),

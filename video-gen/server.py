@@ -179,9 +179,9 @@ def _run_triptych(triptych_id: str, req: TriptychRequest):
     tri.state = JobState.RUNNING
 
     try:
-        pipeline_manager.load(req.model, use_fp8=req.use_fp8)
-
         for i, scene in enumerate(req.scenes):
+            # Force reload between scenes to prevent GPU memory accumulation
+            pipeline_manager.load(req.model, use_fp8=req.use_fp8, force=(i > 0))
             sub_job = tri.scenes[i]
             sub_job.state = JobState.RUNNING
 
