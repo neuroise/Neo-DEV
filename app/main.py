@@ -452,10 +452,11 @@ def render_generate(model: str):
                     "1s (25 frames)": 25,
                     "2s (49 frames)": 49,
                     "3s (73 frames)": 73,
-                    "4s (97 frames)": 97,
                     "5s (121 frames)": 121,
                     "8s (201 frames)": 201,
                     "10s (249 frames)": 249,
+                    "15s (377 frames)": 377,
+                    "20s (501 frames)": 501,
                 }
                 duration_label = st.selectbox("Duration", list(duration_opts.keys()),
                                                index=2, key="ltx_duration")
