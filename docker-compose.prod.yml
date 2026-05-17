@@ -102,7 +102,7 @@ services:
     restart: "no"
 
   # ============================================================================
-  # Video Generation Service (Wan2.2 / TurboWan)
+  # Video Generation Service (Wan2.2 / TurboWan / LTX-2.3)
   # ============================================================================
   video-gen:
     build:

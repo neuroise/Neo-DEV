@@ -136,12 +136,29 @@ def main():
         vc = VideoClient(video_gen_url)
         video_models_info = vc.list_models()
         video_model_names = [m["id"] for m in video_models_info]
+        video_model_labels = []
+        for m in video_models_info:
+            label = m["id"]
+            caps = m.get("capabilities", [])
+            badges = []
+            if "audio" in caps:
+                badges.append("audio")
+            if "i2v" in caps:
+                badges.append("I2V")
+            if badges:
+                label += f" ({', '.join(badges)})"
+            video_model_labels.append(label)
     except Exception:
         video_model_names = [
             "wan2.2-ti2v-5b", "wan2.2-t2v-a14b",
             "turbowanv2-t2v-1.3b", "turbowanv2-t2v-14b",
+            "ltx-2.3-distilled", "ltx-2.3-full",
         ]
-    video_model = st.sidebar.selectbox("Video Model", video_model_names, key="video_model")
+        video_model_labels = video_model_names
+    selected_label = st.sidebar.selectbox("Video Model", video_model_labels, key="video_model_label")
+    video_model_idx = video_model_labels.index(selected_label) if selected_label in video_model_labels else 0
+    video_model = video_model_names[video_model_idx]
+    st.session_state["video_model_id"] = video_model
 
     st.sidebar.markdown("---")
     st.sidebar.caption("NEURØISE Playground v0.1.0")
@@ -396,7 +413,66 @@ def render_generate(model: str):
         st.caption("Generate actual videos from the triptych prompts above.")
 
         video_gen_url = st.session_state.get("video_gen_url", os.environ.get("VIDEO_GEN_URL", "http://localhost:8000"))
-        video_model = st.session_state.get("video_model", "wan2.2-ti2v-5b")
+        video_model = st.session_state.get("video_model_id", "wan2.2-ti2v-5b")
+        is_ltx = video_model.startswith("ltx")
+
+        # LTX-specific options
+        audio_enabled = True
+        use_fp8 = False
+        ltx_width, ltx_height = 768, 512
+        ltx_num_frames = 25
+        i2v_mode = False
+        reference_image_b64 = None
+
+        if is_ltx:
+            st.markdown("#### LTX 2.3 Options")
+            ltx_col1, ltx_col2 = st.columns(2)
+            with ltx_col1:
+                audio_enabled = st.checkbox("Include audio", value=True, key="ltx_audio")
+                use_fp8 = st.checkbox("FP8 quantization", value=False, key="ltx_fp8",
+                                      help="Less VRAM (~18GB), 90% quality")
+            with ltx_col2:
+                resolution = st.selectbox("Resolution", [
+                    "Landscape 768x512",
+                    "Portrait 512x768",
+                    "Square 512x512",
+                    "HD 1024x576",
+                ], key="ltx_resolution")
+                res_map = {
+                    "Landscape 768x512": (768, 512),
+                    "Portrait 512x768": (512, 768),
+                    "Square 512x512": (512, 512),
+                    "HD 1024x576": (1024, 576),
+                }
+                ltx_width, ltx_height = res_map.get(resolution, (768, 512))
+
+            ltx_col3, ltx_col4 = st.columns(2)
+            with ltx_col3:
+                duration_opts = {
+                    "1s (25 frames)": 25,
+                    "2s (49 frames)": 49,
+                    "3s (73 frames)": 73,
+                    "4s (97 frames)": 97,
+                    "5s (121 frames)": 121,
+                    "8s (201 frames)": 201,
+                    "10s (249 frames)": 249,
+                }
+                duration_label = st.selectbox("Duration", list(duration_opts.keys()),
+                                               index=2, key="ltx_duration")
+                ltx_num_frames = duration_opts[duration_label]
+            with ltx_col4:
+                fps_choice = st.selectbox("Frame rate", [25, 16, 12], key="ltx_fps",
+                                           help="25fps standard, 16/12 for slower motion")
+
+            i2v_mode = st.radio("Mode", ["Text-to-Video", "Image-to-Video"],
+                                 key="ltx_mode", horizontal=True) == "Image-to-Video"
+            if i2v_mode:
+                uploaded = st.file_uploader("Reference Image", type=["png", "jpg", "jpeg"],
+                                            key="ltx_ref_image")
+                if uploaded:
+                    import base64
+                    reference_image_b64 = base64.b64encode(uploaded.read()).decode("utf-8")
+                    st.image(uploaded, caption="Reference", width=200)
 
         if st.button("Generate Videos from Triptych", type="secondary"):
             last_output = st.session_state["last_output"]
@@ -405,14 +481,30 @@ def render_generate(model: str):
                 vc = VideoClient(video_gen_url)
 
                 scenes = []
+                ost = last_output.ost_prompt if hasattr(last_output, "ost_prompt") else {}
                 for scene in last_output.video_triptych:
+                    visual_prompt = scene.get("prompt", "")
+                    if is_ltx and audio_enabled:
+                        prompt = vc.compose_ltx_prompt(visual_prompt, ost)
+                    else:
+                        prompt = visual_prompt
                     scenes.append({
                         "role": scene.get("scene_role", "start"),
-                        "prompt": scene.get("prompt", ""),
+                        "prompt": prompt,
+                    })
+
+                gen_kwargs = {"model": video_model}
+                if is_ltx:
+                    gen_kwargs.update({
+                        "audio_enabled": audio_enabled,
+                        "use_fp8": use_fp8,
+                        "width": ltx_width,
+                        "height": ltx_height,
+                        "num_frames": ltx_num_frames,
                     })
 
                 with st.spinner(f"Submitting triptych to {video_model}..."):
-                    tri = vc.submit_triptych(scenes, model=video_model)
+                    tri = vc.submit_triptych(scenes, **gen_kwargs)
                     triptych_id = tri["triptych_id"]
                     st.info(f"Triptych job submitted: `{triptych_id}`")
 
@@ -427,13 +519,18 @@ def render_generate(model: str):
                         break
 
                 if status["state"] == "completed":
-                    st.success("All 3 videos generated!")
+                    audio_note = " with audio" if any(
+                        s.get("audio_included") for s in status.get("scenes", [])
+                    ) else ""
+                    st.success(f"All 3 videos generated{audio_note}!")
                     vid_cols = st.columns(3)
                     for i, scene in enumerate(status.get("scenes", [])):
                         with vid_cols[i]:
                             if scene.get("video_url"):
                                 local_path = vc.download(scene["job_id"])
                                 st.video(str(local_path))
+                                if scene.get("audio_included"):
+                                    st.caption("Audio included")
                 else:
                     st.error("Triptych generation failed")
                     for scene in status.get("scenes", []):

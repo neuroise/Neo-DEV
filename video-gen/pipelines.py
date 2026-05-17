@@ -6,6 +6,8 @@ Supports:
 - Wan2.2-T2V-A14B (diffusers WanPipeline with CPU offloading)
 - TurboWanV2-T2V-1.3B (turbodiffusion)
 - TurboWanV2-T2V-14B (turbodiffusion)
+- LTX-2.3 Distilled (ltx-pipelines, video+audio)
+- LTX-2.3 Full (ltx-pipelines, video+audio)
 """
 
 import argparse
@@ -13,7 +15,10 @@ import gc
 import logging
 import math
 import os
+import tempfile
 import time
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional, Callable
 
 import numpy as np
@@ -21,6 +26,14 @@ import torch
 from PIL import Image
 
 from models import VideoModel
+
+
+@dataclass
+class GenerationResult:
+    """Output from video generation. Wan/Turbo produce frames; LTX produces a muxed mp4."""
+    frames: Optional[list] = None
+    video_path: Optional[Path] = None
+    audio_included: bool = False
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +51,23 @@ DEFAULT_STEPS = {
     VideoModel.WAN_T2V_A14B: 50,
     VideoModel.TURBO_1_3B: 4,
     VideoModel.TURBO_14B: 8,
+    VideoModel.LTX_23_DISTILLED: 8,
+    VideoModel.LTX_23_FULL: 40,
 }
+
+# LTX Video 2.3 configuration
+LTX_CHECKPOINT_DIR = "ltx"
+LTX_GEMMA_DIR = "gemma/gemma-3-12b"
+LTX_CHECKPOINTS = {
+    VideoModel.LTX_23_DISTILLED: "ltx-2.3-22b-distilled-1.1.safetensors",
+    VideoModel.LTX_23_FULL: "ltx-2.3-22b-dev.safetensors",
+}
+LTX_FP8_CHECKPOINTS = {
+    VideoModel.LTX_23_DISTILLED: "ltx-2.3-22b-distilled-fp8.safetensors",
+    VideoModel.LTX_23_FULL: "ltx-2.3-22b-dev-fp8.safetensors",
+}
+LTX_DISTILLED_LORA = "ltx-2.3-22b-distilled-lora-384-1.1.safetensors"
+LTX_UPSCALER = "ltx-2.3-spatial-upscaler-x2-1.1.safetensors"
 
 # TurboDiffusion checkpoint directory (under cache_dir)
 TURBO_CHECKPOINT_DIR = "turbo"
@@ -87,6 +116,8 @@ class PipelineManager:
         self._turbo_net = None
         self._turbo_tokenizer = None
         self._turbo_args = None
+        # LTX state
+        self._ltx_use_fp8 = False
 
     @property
     def loaded_model(self) -> Optional[str]:
@@ -105,6 +136,8 @@ class PipelineManager:
                 self._turbo_tokenizer = None
             self._turbo_args = None
             _clear_turbo_text_encoder()
+            # Clean up LTX-specific state
+            self._ltx_use_fp8 = False
             del self._pipeline
             self._pipeline = None
             self._current_model = None
@@ -113,15 +146,19 @@ class PipelineManager:
                 torch.cuda.empty_cache()
                 torch.cuda.synchronize()
 
-    def load(self, model: VideoModel):
+    def load(self, model: VideoModel, use_fp8: bool = False):
         """
         Load a pipeline for the given model.
 
         If a different model is already loaded, unloads it first.
+        For LTX models, use_fp8 controls quantization.
         """
         if self._current_model == model and self._pipeline is not None:
-            logger.info(f"Model {model.value} already loaded")
-            return
+            if model.value.startswith("ltx") and self._ltx_use_fp8 != use_fp8:
+                logger.info(f"FP8 setting changed, reloading {model.value}")
+            else:
+                logger.info(f"Model {model.value} already loaded")
+                return
 
         self.unload()
         logger.info(f"Loading model {model.value}...")
@@ -129,6 +166,8 @@ class PipelineManager:
 
         if model in (VideoModel.TURBO_1_3B, VideoModel.TURBO_14B):
             self._load_turbo(model)
+        elif model in (VideoModel.LTX_23_DISTILLED, VideoModel.LTX_23_FULL):
+            self._load_ltx(model, use_fp8=use_fp8)
         else:
             self._load_wan(model)
 
@@ -321,6 +360,166 @@ class PipelineManager:
         del state_dict
         return net
 
+    def _load_ltx(self, model: VideoModel, use_fp8: bool = False):
+        """Load LTX Video 2.3 pipeline via ltx-pipelines."""
+        try:
+            from ltx_pipelines import TI2VidTwoStagesPipeline
+        except ImportError as e:
+            raise RuntimeError(
+                f"ltx-pipelines not available: {e}. "
+                "Ensure the container was built with LTX-2 repo installed."
+            )
+
+        ltx_dir = os.path.join(self.cache_dir, LTX_CHECKPOINT_DIR)
+        gemma_root = os.path.join(self.cache_dir, LTX_GEMMA_DIR)
+
+        # FP8: use bf16 checkpoint + runtime quantization (not the pre-quantized checkpoint)
+        ckpt_name = LTX_CHECKPOINTS[model]
+        ckpt_path = os.path.join(ltx_dir, ckpt_name)
+
+        lora_path = os.path.join(ltx_dir, LTX_DISTILLED_LORA)
+        upscaler_path = os.path.join(ltx_dir, LTX_UPSCALER)
+
+        for path, name in [
+            (ckpt_path, "Checkpoint"),
+            (lora_path, "Distilled LoRA"),
+            (upscaler_path, "Spatial Upscaler"),
+        ]:
+            if not os.path.exists(path):
+                raise FileNotFoundError(
+                    f"LTX {name} not found at {path}. "
+                    "Run: docker exec <container> bash /app/scripts/download_ltx_checkpoints.sh"
+                )
+        if not os.path.isdir(gemma_root):
+            raise FileNotFoundError(
+                f"Gemma text encoder not found at {gemma_root}. "
+                "Run: docker exec <container> bash /app/scripts/download_ltx_checkpoints.sh"
+            )
+
+        logger.info(f"Loading LTX-2.3 from {ckpt_path} (fp8={use_fp8})")
+
+        kwargs = {
+            "checkpoint_path": ckpt_path,
+            "spatial_upsampler_path": upscaler_path,
+            "gemma_root": gemma_root,
+            "loras": [],
+        }
+
+        try:
+            from ltx_core.loader import LoraPathStrengthAndSDOps
+            kwargs["distilled_lora"] = [
+                LoraPathStrengthAndSDOps(lora_path, 0.8, None)
+            ]
+        except ImportError:
+            kwargs["distilled_lora"] = [(lora_path, 0.8)]
+
+        if use_fp8:
+            try:
+                from ltx_core.quantization import QuantizationPolicy
+                kwargs["quantization"] = QuantizationPolicy.fp8_cast()
+                logger.info("FP8 runtime quantization enabled")
+            except (ImportError, Exception) as e:
+                logger.warning(f"FP8 quantization not available ({e}), loading bf16")
+
+        pipe = TI2VidTwoStagesPipeline(**kwargs)
+        self._pipeline = pipe
+        self._ltx_use_fp8 = use_fp8
+
+    def _generate_ltx(
+        self,
+        prompt: str,
+        num_frames: int,
+        width: int,
+        height: int,
+        steps: int,
+        seed: Optional[int],
+        progress_callback: Optional[Callable[[float], None]],
+        audio_enabled: bool = True,
+        reference_image: Optional[Image.Image] = None,
+        frame_rate: float = 25.0,
+    ) -> GenerationResult:
+        """Generate video (+audio) using LTX 2.3. Returns path to muxed mp4."""
+        output_dir = tempfile.mkdtemp(prefix="ltx_")
+        output_path = os.path.join(output_dir, "output.mp4")
+
+        kwargs = {
+            "prompt": prompt,
+            "negative_prompt": "",
+            "height": height,
+            "width": width,
+            "num_frames": num_frames,
+            "num_inference_steps": steps,
+            "frame_rate": frame_rate,
+            "seed": seed if seed is not None else 42,
+            "images": [],
+        }
+
+        try:
+            from ltx_core.components.guiders import MultiModalGuiderParams
+            kwargs["video_guider_params"] = MultiModalGuiderParams(cfg_scale=3.0)
+            if audio_enabled:
+                kwargs["audio_guider_params"] = MultiModalGuiderParams(
+                    cfg_scale=3.0, modality_scale=1.5,
+                )
+        except ImportError:
+            logger.warning("MultiModalGuiderParams not available, using pipeline defaults")
+
+        if reference_image is not None:
+            try:
+                from ltx_pipelines.utils.args import ImageConditioningInput
+                img_path = os.path.join(output_dir, "reference.png")
+                reference_image.save(img_path)
+                kwargs["images"] = [ImageConditioningInput(
+                    path=img_path, frame_idx=0, strength=1.0, crf=33,
+                )]
+            except ImportError:
+                logger.warning("ImageConditioningInput not available, falling back to T2V")
+
+        if progress_callback:
+            progress_callback(0.0)
+
+        logger.info(f"LTX generating: {width}x{height}, {num_frames}f, {steps} steps")
+
+        with torch.no_grad():
+            video, audio = self._pipeline(**kwargs)
+
+        if progress_callback:
+            progress_callback(0.8)
+
+        # Save video+audio to muxed mp4 using ltx_pipelines encoder
+        logger.info("Encoding video output...")
+        try:
+            from ltx_pipelines.utils.media_io import encode_video
+            encode_video(
+                video=video,
+                fps=kwargs["frame_rate"],
+                audio=audio if audio_enabled else None,
+                output_path=output_path,
+                video_chunks_number=1,
+            )
+        except ImportError:
+            # Fallback: save frames only using diffusers/imageio
+            logger.warning("encode_video not available, saving frames without audio")
+            frames = []
+            for chunk in video:
+                chunk_np = (chunk.float().cpu().clamp(0, 1).numpy() * 255).astype(np.uint8)
+                for i in range(chunk_np.shape[0]):
+                    frames.append(Image.fromarray(chunk_np[i].transpose(1, 2, 0)))
+            import shutil
+            shutil.rmtree(output_dir, ignore_errors=True)
+            return GenerationResult(frames=frames, audio_included=False)
+
+        if progress_callback:
+            progress_callback(1.0)
+
+        if not os.path.exists(output_path):
+            raise RuntimeError(f"LTX pipeline did not produce output at {output_path}")
+
+        return GenerationResult(
+            video_path=Path(output_path),
+            audio_included=audio_enabled,
+        )
+
     def generate(
         self,
         prompt: str,
@@ -332,23 +531,16 @@ class PipelineManager:
         num_inference_steps: Optional[int] = None,
         seed: Optional[int] = None,
         progress_callback: Optional[Callable[[float], None]] = None,
-    ) -> list:
+        audio_enabled: bool = True,
+        reference_image: Optional[Image.Image] = None,
+        use_fp8: bool = False,
+        frame_rate: float = 25.0,
+    ) -> GenerationResult:
         """
-        Generate video frames from a text prompt.
-
-        Args:
-            prompt: Text description of the video
-            negative_prompt: What to avoid
-            num_frames: Number of frames (must be 4k+1 for Wan)
-            width: Video width
-            height: Video height
-            guidance_scale: CFG scale
-            num_inference_steps: Override default steps
-            seed: Random seed for reproducibility
-            progress_callback: Called with float 0.0-1.0 during generation
+        Generate video from a text prompt.
 
         Returns:
-            List of PIL Image frames
+            GenerationResult with either frames (Wan/Turbo) or video_path (LTX).
         """
         if self._pipeline is None:
             raise RuntimeError("No model loaded. Call load() first.")
@@ -356,17 +548,24 @@ class PipelineManager:
         model = self._current_model
         steps = num_inference_steps or DEFAULT_STEPS.get(model, 50)
 
-        # Dispatch turbo models to dedicated generation path
         if model in (VideoModel.TURBO_1_3B, VideoModel.TURBO_14B):
-            return self._generate_turbo(
+            frames = self._generate_turbo(
                 prompt, num_frames, width, height, steps, seed, progress_callback,
+            )
+            return GenerationResult(frames=frames)
+
+        if model in (VideoModel.LTX_23_DISTILLED, VideoModel.LTX_23_FULL):
+            if self._ltx_use_fp8 != use_fp8:
+                self.load(model, use_fp8=use_fp8)
+            return self._generate_ltx(
+                prompt, num_frames, width, height, steps, seed,
+                progress_callback, audio_enabled, reference_image, frame_rate,
             )
 
         generator = None
         if seed is not None:
             generator = torch.Generator(device=self._device).manual_seed(seed)
 
-        # Build callback for progress tracking
         def step_callback(pipe, step, timestep, kwargs):
             if progress_callback:
                 progress_callback(step / steps)
@@ -387,7 +586,6 @@ class PipelineManager:
         with torch.inference_mode():
             output = self._pipeline(**kwargs)
 
-        # Extract frames - diffusers returns .frames[0] as list of PIL images
         if hasattr(output, "frames"):
             frames = output.frames[0]
         else:
@@ -396,7 +594,7 @@ class PipelineManager:
         if progress_callback:
             progress_callback(1.0)
 
-        return frames
+        return GenerationResult(frames=frames)
 
     def _generate_turbo(
         self,

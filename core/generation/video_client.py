@@ -38,6 +38,8 @@ class VideoClient:
         "wan2.2-t2v-a14b",
         "turbowanv2-t2v-1.3b",
         "turbowanv2-t2v-14b",
+        "ltx-2.3-distilled",
+        "ltx-2.3-full",
     ]
 
     def __init__(self, base_url: Optional[str] = None):
@@ -78,6 +80,11 @@ class VideoClient:
         guidance_scale: float = 5.0,
         num_inference_steps: Optional[int] = None,
         seed: Optional[int] = None,
+        audio_enabled: bool = True,
+        reference_image_b64: Optional[str] = None,
+        mode: str = "t2v",
+        use_fp8: bool = False,
+        frame_rate: float = 25.0,
     ) -> Dict[str, Any]:
         """
         Submit a single video generation job.
@@ -91,6 +98,10 @@ class VideoClient:
             "width": width,
             "height": height,
             "guidance_scale": guidance_scale,
+            "audio_enabled": audio_enabled,
+            "mode": mode,
+            "use_fp8": use_fp8,
+            "frame_rate": frame_rate,
         }
         if negative_prompt is not None:
             payload["negative_prompt"] = negative_prompt
@@ -98,6 +109,8 @@ class VideoClient:
             payload["num_inference_steps"] = num_inference_steps
         if seed is not None:
             payload["seed"] = seed
+        if reference_image_b64 is not None:
+            payload["reference_image_b64"] = reference_image_b64
 
         r = requests.post(f"{self.base_url}/generate", json=payload, timeout=30)
         r.raise_for_status()
@@ -107,6 +120,9 @@ class VideoClient:
         self,
         scenes: List[Dict[str, str]],
         model: str = "wan2.2-ti2v-5b",
+        audio_enabled: bool = True,
+        use_fp8: bool = False,
+        frame_rate: float = 25.0,
         **kwargs,
     ) -> Dict[str, Any]:
         """
@@ -115,6 +131,8 @@ class VideoClient:
         Args:
             scenes: List of 3 dicts with 'role' and 'prompt' keys
             model: Model to use
+            audio_enabled: Generate audio with video (LTX models)
+            use_fp8: Use FP8 quantization
             **kwargs: Additional generation params
 
         Returns:
@@ -123,6 +141,9 @@ class VideoClient:
         payload = {
             "scenes": scenes,
             "model": model,
+            "audio_enabled": audio_enabled,
+            "use_fp8": use_fp8,
+            "frame_rate": frame_rate,
             **kwargs,
         }
         r = requests.post(
@@ -258,3 +279,30 @@ class VideoClient:
                 path = self.download(job_id, "output.mp4", dest_path=dest_dir)
                 paths.append(path)
         return paths
+
+    @staticmethod
+    def compose_ltx_prompt(
+        visual_prompt: str,
+        ost_prompt: Optional[Dict[str, Any]] = None,
+    ) -> str:
+        """Compose a single LTX prompt from visual description + OST metadata."""
+        if not ost_prompt:
+            return visual_prompt
+
+        parts = [visual_prompt]
+        audio_parts = []
+        if ost_prompt.get("prompt"):
+            audio_parts.append(ost_prompt["prompt"])
+        if ost_prompt.get("genre"):
+            audio_parts.append(f"Genre: {ost_prompt['genre']}")
+        if ost_prompt.get("bpm"):
+            audio_parts.append(f"{ost_prompt['bpm']} BPM")
+        if ost_prompt.get("mood"):
+            audio_parts.append(f"Mood: {ost_prompt['mood']}")
+        if ost_prompt.get("instruments_hint"):
+            audio_parts.append(f"Instruments: {ost_prompt['instruments_hint']}")
+
+        if audio_parts:
+            parts.append("Background music: " + ", ".join(audio_parts))
+
+        return ". ".join(parts)

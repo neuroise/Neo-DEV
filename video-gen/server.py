@@ -18,6 +18,7 @@ Usage:
 
 import logging
 import os
+import tempfile
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
@@ -39,7 +40,7 @@ from models import (
     VideoModel,
     MODEL_INFO,
 )
-from pipelines import PipelineManager
+from pipelines import PipelineManager, GenerationResult
 
 # -- Config -------------------------------------------------------------------
 
@@ -77,9 +78,6 @@ def _save_video(frames: list, output_path: Path, fps: int = 16):
 
     try:
         from diffusers.utils import export_to_video
-        # export_to_video handles float32 numpy arrays natively (it does * 255 internally).
-        # Do NOT pre-convert to uint8 — that causes double-conversion overflow.
-        # If frames are already uint8, wrap as PIL to prevent the internal * 255.
         processed = []
         for frame in frames:
             arr = np.array(frame)
@@ -101,6 +99,25 @@ def _save_video(frames: list, output_path: Path, fps: int = 16):
         writer.close()
 
 
+def _save_outputs(result: GenerationResult, job_dir: Path, fps: int = 16) -> bool:
+    """Save generation result. Returns True if audio is included."""
+    import shutil
+    out_path = job_dir / "output.mp4"
+
+    if result.video_path is not None:
+        shutil.copy2(str(result.video_path), str(out_path))
+        # Clean up the temp directory created by _generate_ltx
+        temp_dir = result.video_path.parent
+        if str(temp_dir).startswith(tempfile.gettempdir()):
+            shutil.rmtree(str(temp_dir), ignore_errors=True)
+    elif result.frames is not None:
+        _save_video(result.frames, out_path, fps=fps)
+    else:
+        raise RuntimeError("GenerationResult has neither frames nor video_path")
+
+    return result.audio_included
+
+
 def _run_generation(job_id: str, req: GenerateRequest):
     """Background worker for a single generation job."""
     job = jobs[job_id]
@@ -108,12 +125,21 @@ def _run_generation(job_id: str, req: GenerateRequest):
     start = time.time()
 
     try:
-        pipeline_manager.load(req.model)
+        pipeline_manager.load(req.model, use_fp8=req.use_fp8)
 
         def on_progress(p: float):
             job.progress = round(p, 3)
 
-        frames = pipeline_manager.generate(
+        # Decode reference image for I2V mode
+        reference_image = None
+        if req.reference_image_b64:
+            import base64
+            import io
+            from PIL import Image
+            img_bytes = base64.b64decode(req.reference_image_b64)
+            reference_image = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+
+        result = pipeline_manager.generate(
             prompt=req.prompt,
             negative_prompt=req.negative_prompt,
             num_frames=req.num_frames,
@@ -123,19 +149,22 @@ def _run_generation(job_id: str, req: GenerateRequest):
             num_inference_steps=req.num_inference_steps,
             seed=req.seed,
             progress_callback=on_progress,
+            audio_enabled=req.audio_enabled,
+            reference_image=reference_image,
+            use_fp8=req.use_fp8,
+            frame_rate=req.frame_rate,
         )
 
-        # Save video
         job_dir = OUTPUT_DIR / job_id
         job_dir.mkdir(parents=True, exist_ok=True)
-        out_path = job_dir / "output.mp4"
-        _save_video(frames, out_path)
+        audio_included = _save_outputs(result, job_dir)
 
         job.state = JobState.COMPLETED
         job.progress = 1.0
         job.video_url = f"/videos/{job_id}/output.mp4"
+        job.audio_included = audio_included
         job.elapsed_seconds = round(time.time() - start, 1)
-        logger.info(f"Job {job_id} completed in {job.elapsed_seconds}s")
+        logger.info(f"Job {job_id} completed in {job.elapsed_seconds}s (audio={audio_included})")
 
     except Exception as e:
         job.state = JobState.FAILED
@@ -150,7 +179,7 @@ def _run_triptych(triptych_id: str, req: TriptychRequest):
     tri.state = JobState.RUNNING
 
     try:
-        pipeline_manager.load(req.model)
+        pipeline_manager.load(req.model, use_fp8=req.use_fp8)
 
         for i, scene in enumerate(req.scenes):
             sub_job = tri.scenes[i]
@@ -161,7 +190,7 @@ def _run_triptych(triptych_id: str, req: TriptychRequest):
                 tri.progress = round((i + p) / 3, 3)
 
             start = time.time()
-            frames = pipeline_manager.generate(
+            result = pipeline_manager.generate(
                 prompt=scene.prompt,
                 negative_prompt=req.negative_prompt,
                 num_frames=req.num_frames,
@@ -171,16 +200,19 @@ def _run_triptych(triptych_id: str, req: TriptychRequest):
                 num_inference_steps=req.num_inference_steps,
                 seed=req.seed,
                 progress_callback=on_progress,
+                audio_enabled=req.audio_enabled,
+                use_fp8=req.use_fp8,
+                frame_rate=req.frame_rate,
             )
 
             job_dir = OUTPUT_DIR / sub_job.job_id
             job_dir.mkdir(parents=True, exist_ok=True)
-            out_path = job_dir / "output.mp4"
-            _save_video(frames, out_path)
+            audio_included = _save_outputs(result, job_dir)
 
             sub_job.state = JobState.COMPLETED
             sub_job.progress = 1.0
             sub_job.video_url = f"/videos/{sub_job.job_id}/output.mp4"
+            sub_job.audio_included = audio_included
             sub_job.elapsed_seconds = round(time.time() - start, 1)
 
         tri.state = JobState.COMPLETED
@@ -189,7 +221,6 @@ def _run_triptych(triptych_id: str, req: TriptychRequest):
 
     except Exception as e:
         tri.state = JobState.FAILED
-        # Mark remaining scenes as failed
         for scene_job in tri.scenes:
             if scene_job.state != JobState.COMPLETED:
                 scene_job.state = JobState.FAILED
@@ -292,14 +323,18 @@ def get_video(job_id: str, filename: str):
     if "/" in filename or "\\" in filename or ".." in filename:
         raise HTTPException(status_code=400, detail="Invalid filename")
 
-    video_path = OUTPUT_DIR / job_id / filename
-    if not video_path.exists():
-        raise HTTPException(status_code=404, detail="Video not found")
-    return FileResponse(
-        video_path,
-        media_type="video/mp4",
-        filename=filename,
-    )
+    file_path = OUTPUT_DIR / job_id / filename
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+
+    media_types = {
+        ".mp4": "video/mp4",
+        ".wav": "audio/wav",
+        ".webm": "video/webm",
+    }
+    ext = Path(filename).suffix.lower()
+    media_type = media_types.get(ext, "application/octet-stream")
+    return FileResponse(file_path, media_type=media_type, filename=filename)
 
 
 @app.on_event("startup")
