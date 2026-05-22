@@ -1,4 +1,5 @@
 # NEURØISE Playground 🌊
+> **Prototype note:** this branch contains the Anchor Grammar Director prototype, including continuity anchors, archetype-specific visual grammar, Gemini support and export tooling. See [`docs/ANCHOR_GRAMMAR_PROTOTYPE.md`](docs/ANCHOR_GRAMMAR_PROTOTYPE.md).
 
 > Intelligent Storytelling Engine for Luxury Yacht Experiences
 
