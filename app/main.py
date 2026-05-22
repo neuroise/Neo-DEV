@@ -95,14 +95,14 @@ def main():
     st.sidebar.subheader("Model Settings")
     model_provider = st.sidebar.selectbox(
         "Provider",
-        ["Ollama (Local)", "Anthropic (Claude)", "OpenAI (GPT)"]
+        ["Ollama (Local)", "Google (Gemini)", "Anthropic (Claude)", "OpenAI (GPT)"]
     )
 
     if model_provider == "Ollama (Local)":
         # Fetch available models from Ollama
         ollama_url = st.sidebar.text_input(
             "Ollama URL",
-            value="http://localhost:11434"
+            value="http://ollama:11434"
         )
         try:
             import requests
@@ -110,17 +110,22 @@ def main():
             available_models = sorted([m["name"] for m in r.json().get("models", [])
                                        if m.get("size", 0) > 1e9])
         except Exception:
-            available_models = ["llama3.3:70b", "qwen3:32b", "gemma3:27b", "qwen3:14b"]
+            available_models = ["llama3.2:1b", "llama3.2:3b", "llama3.3:70b", "qwen3:32b", "gemma3:27b", "qwen3:14b"]
         model = st.sidebar.selectbox("Model", available_models)
     elif model_provider == "Anthropic (Claude)":
         model = st.sidebar.selectbox(
             "Model",
             ["claude-sonnet-4-20250514", "claude-opus-4-20250514", "claude-3-haiku-20240307"]
         )
-    else:
+    elif model_provider == "OpenAI (GPT)":
         model = st.sidebar.selectbox(
             "Model",
             ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"]
+        )
+    else:
+        model = st.sidebar.selectbox(
+            "Model",
+            ["gemini-2.5-flash", "gemini-2.5-pro"]
         )
 
     # Video model selector
@@ -224,7 +229,7 @@ def render_home():
         # Check Ollama
         try:
             import requests
-            r = requests.get("http://localhost:11434/api/tags", timeout=2)
+            r = requests.get("http://ollama:11434/api/tags", timeout=2)
             if r.status_code == 200:
                 models = [m["name"] for m in r.json().get("models", [])]
                 st.write(f"✅ Ollama: {len(models)} models")
@@ -255,6 +260,28 @@ def render_home():
             st.write("✅ OpenAI API key set")
         else:
             st.write("⚠️ OpenAI API key not set")
+
+
+
+def _get_output_thread_anchor(output, metadata=None):
+    """Return the real generated sequence_thread anchor for UI display."""
+    metadata = metadata or {}
+
+    sequence_thread = getattr(output, "sequence_thread", None)
+
+    if isinstance(sequence_thread, dict):
+        return (
+            sequence_thread.get("anchor")
+            or sequence_thread.get("name")
+            or sequence_thread.get("physical_description")
+            or metadata.get("story_thread_used")
+            or "N/A"
+        )
+
+    if isinstance(sequence_thread, str) and sequence_thread.strip():
+        return sequence_thread.strip()
+
+    return metadata.get("story_thread_used") or "N/A"
 
 
 def render_generate(model: str):
@@ -335,12 +362,23 @@ def render_generate(model: str):
                 # Determine kwargs based on model
                 kwargs = {"temperature": temperature}
                 if "llama" in model.lower() or "mistral" in model.lower():
-                    kwargs["base_url"] = "http://localhost:11434"
+                    kwargs["base_url"] = "http://ollama:11434"
 
                 adapter = create_adapter(model, **kwargs)
                 director = Director(adapter)
 
                 output = director.generate(profile)
+                try:
+                    from core.utils.run_exporter import save_generation_run
+                    export_paths = save_generation_run(
+                        output=output,
+                        profile=profile,
+                        model=model,
+                        provider=(locals().get('model_provider') or ('Google (Gemini)' if 'gemini' in str(model).lower() else 'Ollama/OpenAI/Anthropic')),
+                    )
+                    st.caption(f"Saved generation export: {export_paths['report']}")
+                except Exception as export_error:
+                    st.warning(f"Export logging failed: {export_error}")
 
                 st.success("Generation complete!")
 
@@ -350,6 +388,12 @@ def render_generate(model: str):
                 cols = st.columns(3)
                 for i, scene in enumerate(output.video_triptych):
                     with cols[i]:
+                        if not isinstance(scene, dict):
+                            scene = {
+                                "scene_role": f"Scene {i+1}",
+                                "visual_prompt": str(scene),
+                                "raw_scene": str(scene),
+                            }
                         role = scene.get("scene_role", f"Scene {i+1}")
                         st.markdown(f"**{role.upper()}**")
                         st.text_area(

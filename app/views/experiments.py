@@ -30,13 +30,13 @@ def _get_available_models():
     """Fetch available models from Ollama."""
     try:
         import requests
-        r = requests.get("http://localhost:11434/api/tags", timeout=3)
+        r = requests.get("http://ollama:11434/api/tags", timeout=3)
         if r.status_code == 200:
             models = r.json().get("models", [])
             return [m["name"] for m in models if m.get("size", 0) > 1e9]
     except Exception:
         pass
-    return ["llama3.3:70b", "qwen3:32b", "gemma3:27b"]
+    return ["llama3.2:1b", "llama3.2:3b", "llama3.3:70b", "qwen3:32b", "gemma3:27b"]
 
 
 def _list_past_experiments():

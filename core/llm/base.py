@@ -229,6 +229,15 @@ def create_adapter(model: str, **kwargs) -> LLMAdapter:
     elif "claude" in model_lower or "anthropic" in model_lower:
         config = LLMConfig(model=model, **kwargs)
         return AnthropicAdapter(config)
+    elif "gemini" in model_lower:
+        import os
+        config = LLMConfig(
+            model=model,
+            api_key=os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"),
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+            **kwargs
+        )
+        return OpenAIAdapter(config)
     elif "gpt" in model_lower or "openai" in model_lower:
         config = LLMConfig(model=model, **kwargs)
         return OpenAIAdapter(config)

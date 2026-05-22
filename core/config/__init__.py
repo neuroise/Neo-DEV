@@ -121,3 +121,46 @@ def list_strategies() -> List[str]:
     if not strategies_dir.exists():
         return []
     return sorted(p.stem for p in strategies_dir.glob("*.json"))
+
+# ---------------------------------------------------------------------------
+# Anchor Grammar Config
+# ---------------------------------------------------------------------------
+
+from pathlib import Path as _Path
+import json as _json
+
+
+def load_anchor_grammar() -> dict:
+    """Load the NEURØISE anchor grammar configuration."""
+    path = _Path(__file__).parent / "anchor_grammar.json"
+    with path.open("r", encoding="utf-8") as f:
+        return _json.load(f)
+
+
+def get_anchor_grammar(archetype: str) -> dict:
+    """Return anchor grammar for a normalized archetype name."""
+    cfg = load_anchor_grammar()
+    key = str(archetype or "").strip().lower()
+
+    aliases = {
+        "s": "sage",
+        "s-01": "sage",
+        "sage": "sage",
+        "e": "explorer",
+        "e-01": "explorer",
+        "explorer": "explorer",
+        "l": "lover",
+        "l-01": "lover",
+        "lover": "lover",
+        "r": "rebel",
+        "r-01": "rebel",
+        "rebel": "rebel",
+        "catalyst": "rebel",
+        "v": "visionary",
+        "v-01": "visionary",
+        "visionary": "visionary",
+        "mage": "visionary"
+    }
+
+    resolved = aliases.get(key, key)
+    return cfg.get("archetypes", {}).get(resolved, {})

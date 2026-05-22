@@ -1,0 +1,482 @@
+{
+  "schema_version": "anchor_config_v1_test",
+  "review_date": "2026-05-22",
+  "global_principles": {
+    "anchor_definition": "A single, physically observable, filmable element that persists across START -> EVOLVE -> END and undergoes physical transformation, perceptual reframing, or both.",
+    "global_visual_constraints": [
+      "marine / coastal / yacht-adjacent context only",
+      "premium, quietly intelligent, cinematic tone",
+      "no fantasy",
+      "no sci-fi unless grounded in real natural phenomena",
+      "anonymous human fragments only if necessary",
+      "no faces",
+      "no full bodies",
+      "no logos",
+      "no brands",
+      "no watches",
+      "no jewelry",
+      "no tattoos",
+      "no sponsor markings",
+      "no yacht names or registration numbers",
+      "no trash, pollution or debris"
+    ],
+    "final_prompt_forbidden_terms": [
+      "luxury",
+      "cinematic",
+      "transcendent",
+      "mystical",
+      "magical",
+      "spiritual",
+      "divine",
+      "ethereal",
+      "infinite",
+      "portal",
+      "sci-fi",
+      "fractal",
+      "submerged city",
+      "architectural network"
+    ]
+  },
+  "archetypes": {
+    "sage": {
+      "reading": "Observation, clarity, hidden order, patience, comprehension. Sage shows a subtle natural structure becoming readable through stillness and attention. The transformation is mainly perceptual: an object or mark is reread at different scales.",
+      "transformation_mode_preference": "perceptual",
+      "anchor_principles": [
+        "Use a tangible object or readable natural sign.",
+        "Prefer detail-to-whole scale shift.",
+        "The same object or mark must be reread across all three scenes.",
+        "Avoid atmospheric revelation.",
+        "Zen references are conceptual only, not a literal style requirement."
+      ],
+      "allowed_thread_anchors": [
+        {
+          "name": "smooth_oval_pebble_suiseki",
+          "physical_description": "dark oval smooth pebble, palm-sized, glossy when wet, matte when dry",
+          "start_state": "macro on anonymous hand lifting the wet pebble from the shoreline, droplets visible",
+          "evolve_state": "the pebble is held in foreground against the sea horizon, its silhouette aligning with a distant curve",
+          "end_state": "the pebble is placed on a larger shore rock; the wide shot reveals a scale rhyme with the sea and distant land",
+          "transformation_type": "perceptual",
+          "generator_prompt_seed": "smooth dark oval pebble, wet surface, anonymous hand, sea horizon alignment, soft diffused daylight"
+        },
+        {
+          "name": "bare_driftwood_branch",
+          "physical_description": "single pale smooth driftwood branch, lightly bifurcated, dry and minimal",
+          "start_state": "the branch rests alone on wet sand with a precise shadow",
+          "evolve_state": "the branch is lifted in anonymous POV and aligned with a distant coastline or promontory",
+          "end_state": "the branch is planted vertically in wet sand, becoming a small measure of the surrounding landscape",
+          "transformation_type": "perceptual",
+          "generator_prompt_seed": "single pale driftwood branch, wet sand, coastline alignment, minimal composition, soft natural light"
+        },
+        {
+          "name": "single_vertical_reed",
+          "physical_description": "one thin straight reed or bamboo-like cane planted in wet sand near the shoreline",
+          "start_state": "detail on the reed grain and nodes, vertical line against horizontal sand",
+          "evolve_state": "medium shot with reed in foreground and calm sea behind, the only vertical element in a horizontal landscape",
+          "end_state": "wide shot where the reed becomes a small but precise mark organizing the empty frame",
+          "transformation_type": "perceptual",
+          "generator_prompt_seed": "single thin vertical reed planted in wet sand, calm sea behind, empty composition, soft diffused light"
+        }
+      ],
+      "preferred_transformations": [
+        "detail -> whole",
+        "object in hand -> object aligned with landscape -> object released into landscape",
+        "small mark -> organizing principle",
+        "fragment -> readable structure"
+      ],
+      "forbidden_thread_anchors": [
+        "cloud gap",
+        "beam of light",
+        "pillar of light",
+        "sacred glow",
+        "spiritual light",
+        "divine opening",
+        "luminous path to horizon",
+        "ethereal revelation",
+        "infinite horizon as main subject"
+      ],
+      "forbidden_terms": [
+        "divine",
+        "sacred",
+        "spiritual",
+        "ethereal",
+        "luminous",
+        "mystical",
+        "epiphany",
+        "revelation",
+        "transcendent",
+        "celestial"
+      ],
+      "known_failure_mode": "cloud gap -> light column -> luminous path to horizon",
+      "top_3_anchors": [
+        "smooth_oval_pebble_suiseki",
+        "bare_driftwood_branch",
+        "single_vertical_reed"
+      ]
+    },
+    "explorer": {
+      "reading": "Threshold, movement, orientation, discovery, passage. Explorer should make route and direction visible through a physical navigational sign or yacht-adjacent object.",
+      "transformation_mode_preference": "hybrid",
+      "anchor_principles": [
+        "Anchor must function as vector, instrument or threshold.",
+        "Prefer contemporary yacht materials: teak, brushed steel, white rope.",
+        "Traditional elements can be accents only.",
+        "The yacht may be implied, not shown as a full product.",
+        "Always imply direction or movement."
+      ],
+      "allowed_thread_anchors": [
+        {
+          "name": "taut_white_nautical_rope",
+          "physical_description": "single clean white nautical rope under load, tied to brushed steel bollard",
+          "start_state": "macro on knot and rope slack at rest",
+          "evolve_state": "the rope tightens into a clean diagonal line across frame, indicating direction",
+          "end_state": "wider shot reveals the rope connecting vessel, dock or shoreline threshold",
+          "transformation_type": "hybrid",
+          "generator_prompt_seed": "single taut white nautical rope, brushed steel bollard, clean diagonal line, natural light, no people"
+        },
+        {
+          "name": "folded_paper_nautical_chart",
+          "physical_description": "folded paper nautical chart opened on teak surface, pencil route visible",
+          "start_state": "macro on pencil route, paper grain and depth markings visible",
+          "evolve_state": "the chart sits on a teak surface while the same coastline is visible through an opening",
+          "end_state": "the chart is closed as the route becomes physical landscape outside",
+          "transformation_type": "hybrid",
+          "generator_prompt_seed": "folded paper nautical chart with pencil route on teak, matching coastline visible through opening, soft daylight"
+        },
+        {
+          "name": "yacht_bow_wake",
+          "physical_description": "clean V-shaped wake from a slow yacht bow on dark calm water",
+          "start_state": "macro on water being cut by the bow, white foam against deep blue",
+          "evolve_state": "aerial low angle reveals a precise V-shape opening behind the hull",
+          "end_state": "wide aerial shot shows the wake as a long route line pointing toward the horizon",
+          "transformation_type": "physical",
+          "generator_prompt_seed": "slow yacht bow wake, clean V-shape on dark calm water, aerial low angle, soft natural light, no speedboat action"
+        }
+      ],
+      "preferred_transformations": [
+        "slack -> taut",
+        "instrument reading -> landscape alignment",
+        "sign -> route -> passage",
+        "trace of movement -> direction"
+      ],
+      "forbidden_thread_anchors": [
+        "generic drone tourism panorama",
+        "postcard coastline",
+        "random island reveal",
+        "empty open sea without navigational sign",
+        "full yacht product shot",
+        "speedboat action shot"
+      ],
+      "forbidden_terms": [
+        "adventure",
+        "epic",
+        "freedom",
+        "limitless",
+        "paradise",
+        "escape",
+        "exotic"
+      ],
+      "known_failure_mode": "open sea -> generic coastline -> pretty cave",
+      "top_3_anchors": [
+        "taut_white_nautical_rope",
+        "yacht_bow_wake",
+        "folded_paper_nautical_chart"
+      ]
+    },
+    "lover": {
+      "reading": "Contact, proximity, softness, care, texture, reciprocity. Lover shows two marine or yacht-adjacent surfaces meeting, altering each other and leaving a brief trace.",
+      "transformation_mode_preference": "physical",
+      "anchor_principles": [
+        "Contact must be reciprocal.",
+        "A visible trace must form and begin to fade.",
+        "Avoid sunset romance and lifestyle advertising.",
+        "Human fragments allowed only if anonymous and non-sensual.",
+        "Materials should show tactile contrast."
+      ],
+      "allowed_thread_anchors": [
+        {
+          "name": "hand_trailing_water_from_yacht",
+          "physical_description": "single anonymous hand reaching beyond teak yacht railing, fingertips touching moving water",
+          "start_state": "dry hand suspended just above water, contact imminent",
+          "evolve_state": "fingertips touch water, ripples open from the contact point",
+          "end_state": "hand retracts, a brief finger trace remains in the moving water before the surface reseals",
+          "transformation_type": "physical",
+          "generator_prompt_seed": "anonymous hand fingertips trailing in water from yacht railing, close-up, slow motion, soft natural light, no jewelry"
+        },
+        {
+          "name": "simple_water_glass_condensation_on_teak",
+          "physical_description": "simple clear water glass with condensation on teak surface, no alcohol, no branding",
+          "start_state": "macro on a condensation drop descending the glass exterior",
+          "evolve_state": "the drop reaches the base and joins a water ring forming on the teak",
+          "end_state": "the glass is lifted by an anonymous hand, leaving a fading water ring on teak",
+          "transformation_type": "physical",
+          "generator_prompt_seed": "simple clear water glass condensation on teak, water ring forming and fading, no alcohol, no logos, soft daylight"
+        },
+        {
+          "name": "wave_meeting_flat_rock",
+          "physical_description": "flat dark smooth partially submerged rock touched by a small, gentle wave",
+          "start_state": "dry rock surface in close-up, texture visible",
+          "evolve_state": "small wave veils the rock in a thin shining film",
+          "end_state": "water retreats, rock remains darker and glossy, a thin foam edge dissolves",
+          "transformation_type": "physical",
+          "generator_prompt_seed": "small gentle wave covering and retreating from flat dark rock, close-up, slow motion, neutral daylight, no sunset"
+        }
+      ],
+      "preferred_transformations": [
+        "dry -> wet -> trace fading",
+        "contact -> imprint -> disappearance",
+        "surface meeting -> surface alteration",
+        "brief touch -> visible memory"
+      ],
+      "forbidden_thread_anchors": [
+        "generic sunset romance",
+        "pastel beach",
+        "two figures embracing",
+        "intertwined hands",
+        "romantic glow",
+        "heart-like symbolism",
+        "wine glasses clinking",
+        "couple silhouette"
+      ],
+      "forbidden_terms": [
+        "romance",
+        "romantic",
+        "sunset",
+        "golden hour",
+        "tender embrace",
+        "love story",
+        "passion",
+        "sensual",
+        "seductive",
+        "pastel"
+      ],
+      "known_failure_mode": "sunset + gentle waves + wet sand",
+      "top_3_anchors": [
+        "hand_trailing_water_from_yacht",
+        "simple_water_glass_condensation_on_teak",
+        "wave_meeting_flat_rock"
+      ]
+    },
+    "rebel": {
+      "reading": "Interruption, rupture, deviation, reconfiguration, activation. Rebel/Catalyst is tension held inside a live system. It should not become aggression or big-wave spectacle.",
+      "transformation_mode_preference": "physical",
+      "anchor_principles": [
+        "Show tension before release.",
+        "Prefer sailing systems, rigging, sail, hull, spray and controlled force.",
+        "Adrenaline is latent, not explosive.",
+        "Body fragments may appear only as anonymous contact points.",
+        "Avoid surf, storm and impact language."
+      ],
+      "allowed_thread_anchors": [
+        {
+          "name": "taut_rigging_cable_under_load",
+          "physical_description": "stainless steel sailing rigging cable under high tension, salt droplets attached",
+          "start_state": "macro on cable as a single vertical line, vibrating slightly",
+          "evolve_state": "the cable crosses frame as a tense diagonal, anchored to deck hardware, tilted horizon behind",
+          "end_state": "wide low shot shows the cable as one force line holding sail, mast and hull in motion",
+          "transformation_type": "perceptual",
+          "generator_prompt_seed": "taut stainless steel sailing rigging cable under load, salt droplets, overcast pearl sky, low angle, choppy sea"
+        },
+        {
+          "name": "sail_in_perfect_tension",
+          "physical_description": "section of white sail fully tensioned by wind, fabric vibrating slightly",
+          "start_state": "macro on sail fabric weave and a single force-line crease",
+          "evolve_state": "medium low shot reveals taut curved sail surface and force direction",
+          "end_state": "wide low-angle shot from beneath the sail shows the wind-held structure dominating frame",
+          "transformation_type": "perceptual",
+          "generator_prompt_seed": "white sail fully tensioned by wind, low-angle close-up, overcast pearl sky, slight fabric vibration, no logos"
+        },
+        {
+          "name": "sea_spray_on_skin_or_glass",
+          "physical_description": "fine sea spray droplets hitting anonymous skin fragment or clear glass surface",
+          "start_state": "dry surface with wind movement implied",
+          "evolve_state": "fine droplets deposit and form small rivulets",
+          "end_state": "wider shot reveals choppy sea and moving vessel context, spray as proof of passage",
+          "transformation_type": "physical",
+          "generator_prompt_seed": "fine sea spray droplets hitting anonymous hand or glass, overcast cool light, motion-blurred sea, no face, no jewelry"
+        }
+      ],
+      "preferred_transformations": [
+        "slack -> maximum tension",
+        "dry -> spray-covered",
+        "single gust -> new tense order",
+        "material detail -> system in motion"
+      ],
+      "forbidden_thread_anchors": [
+        "massive breaking wave",
+        "wave crest",
+        "barrel wave",
+        "curling wave",
+        "crashing wave",
+        "spray explosion",
+        "violent impact",
+        "churning foam",
+        "storm imagery",
+        "surf rider",
+        "jet ski",
+        "speedboat chase"
+      ],
+      "forbidden_terms": [
+        "breaking wave",
+        "wave crest",
+        "barrel",
+        "curl",
+        "crash",
+        "spray explosion",
+        "violent",
+        "aggressive",
+        "storm",
+        "tempest",
+        "fury",
+        "extreme",
+        "thrill",
+        "adrenaline rush",
+        "powerful",
+        "controlled power",
+        "liberation",
+        "kinetic energy",
+        "adrenaline",
+        "explosive"
+      ],
+      "known_failure_mode": "wave crest -> barrel -> crash -> foam aftermath",
+      "top_3_anchors": [
+        "taut_rigging_cable_under_load",
+        "sail_in_perfect_tension",
+        "sea_spray_on_skin_or_glass"
+      ],
+      "preferred_prompt_terms": [
+        "tension",
+        "structural force",
+        "held momentum",
+        "force line",
+        "controlled tension",
+        "reconfiguration",
+        "load",
+        "directional pressure"
+      ],
+      "avoid_prompt_terms": [
+        "powerful",
+        "controlled power",
+        "liberation",
+        "kinetic energy",
+        "adrenaline",
+        "thrill",
+        "explosive",
+        "aggressive"
+      ]
+    },
+    "visionary": {
+      "reading": "Latent order, emergence, perception shift, future pattern becoming visible through natural phenomena. Visionary differs from Sage: Sage reveals an order already present, Visionary shows an order forming in front of us.",
+      "transformation_mode_preference": "physical",
+      "anchor_principles": [
+        "Pattern must form within the scene.",
+        "Phenomenon must be scientifically plausible.",
+        "Underwater is allowed only here.",
+        "Color must stay muted and naturalistic.",
+        "Avoid luminous network, portal and mystical geometry."
+      ],
+      "allowed_thread_anchors": [
+        {
+          "name": "salt_crystallization_on_dark_stone",
+          "physical_description": "dark stone surface wet with seawater, salt depositing into precise dendritic or rosette geometry as water evaporates",
+          "start_state": "top-down macro on wet dark stone, uniform reflective surface",
+          "evolve_state": "contained time-lapse shows small salt crystals appearing at edges and growing inward",
+          "end_state": "water fully evaporates, leaving a white salt drawing on black stone",
+          "transformation_type": "physical",
+          "generator_prompt_seed": "natural salt crystals forming on wet dark stone, macro top-down, dendritic pattern growing, white on black, natural light",
+          "risk_level": "low"
+        },
+        {
+          "name": "fish_school_self_organizing",
+          "physical_description": "small silver fish in medium-depth water forming coordinated collective geometry",
+          "start_state": "scattered fish enter frame from different directions",
+          "evolve_state": "dozens align into a precise three-dimensional formation",
+          "end_state": "the formation rotates briefly then dissolves back into individual movement",
+          "transformation_type": "physical",
+          "generator_prompt_seed": "small silver fish school self-organizing into coordinated shape in deep blue water, natural surface light, no predators",
+          "risk_level": "high"
+        },
+        {
+          "name": "sea_smoke_vertical_columns",
+          "physical_description": "real sea smoke vapor rising in thin vertical columns from warmer sea into cold air",
+          "start_state": "dark calm sea at dawn, surface initially quiet",
+          "evolve_state": "thin vertical vapor filaments begin rising from the surface",
+          "end_state": "wide shot reveals many low vertical fog columns across the water, slightly bent by a breeze then returning upright",
+          "transformation_type": "physical",
+          "generator_prompt_seed": "real sea smoke rising in vertical columns from cold ocean surface at dawn, low camera angle, overcast sky",
+          "risk_level": "medium"
+        }
+      ],
+      "preferred_transformations": [
+        "absent -> forming -> coherent",
+        "uniform surface -> emerging pattern",
+        "scattered -> coordinated -> dissolving",
+        "static material -> living or physical process revealed"
+      ],
+      "forbidden_thread_anchors": [
+        "luminous network",
+        "submerged city",
+        "portal",
+        "fractal",
+        "bioluminescent anomaly",
+        "mystical light",
+        "crystals that glow",
+        "infinite depth",
+        "ethereal architecture",
+        "architectural network"
+      ],
+      "forbidden_terms": [
+        "portal",
+        "transcendent",
+        "fractal",
+        "bioluminescent",
+        "mystical",
+        "ethereal",
+        "magical",
+        "celestial",
+        "iridescent glow",
+        "luminous network",
+        "submerged city",
+        "architectural network",
+        "sacred geometry",
+        "infinite",
+        "otherworldly",
+        "network",
+        "revelation",
+        "luminous",
+        "awe-inspiring",
+        "glow",
+        "city map",
+        "architecture",
+        "architectural"
+      ],
+      "known_failure_mode": "iridescent patch -> glowing network -> submerged city or transcendent grid",
+      "top_3_anchors": [
+        "salt_crystallization_on_dark_stone",
+        "fish_school_self_organizing",
+        "sea_smoke_vertical_columns"
+      ],
+      "preferred_prompt_terms": [
+        "formation",
+        "emergence",
+        "coherence",
+        "crystalline geometry",
+        "mineral pattern",
+        "dendritic formation",
+        "physical process",
+        "self-organizing structure"
+      ],
+      "avoid_prompt_terms": [
+        "network",
+        "luminous network",
+        "revelation",
+        "transcendent",
+        "luminous",
+        "awe-inspiring",
+        "glow",
+        "city map",
+        "architecture",
+        "architectural"
+      ]
+    }
+  }
+}
