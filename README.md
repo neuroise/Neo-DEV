@@ -1,3 +1,8 @@
+> **Prototype branch note — Anchor Grammar Director**
+>
+> This branch includes an experimental Director-generation layer based on continuity anchors, archetype-specific anchor grammar, Gemini provider support and automatic generation exports. For details, see [`docs/ANCHOR_GRAMMAR_PROTOTYPE.md`](docs/ANCHOR_GRAMMAR_PROTOTYPE.md).
+>
+
 # NEURØISE Playground 🌊
 
 > Intelligent Storytelling Engine for Luxury Yacht Experiences
