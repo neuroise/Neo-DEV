@@ -694,6 +694,19 @@ class Director:
                 lines.append(f"- {item}")
             lines.append("")
 
+        if global_cfg.get("video_generation_readiness_rules"):
+            lines.append("### Video-generation readiness rules")
+            for item in global_cfg["video_generation_readiness_rules"]:
+                lines.append(f"- {item}")
+            lines.append("")
+
+        if global_cfg.get("preferred_video_prompt_structure"):
+            lines.append("### Preferred scene prompt structure")
+            lines.append("Each final scene prompt should implicitly cover:")
+            for item in global_cfg["preferred_video_prompt_structure"]:
+                lines.append(f"- {item}")
+            lines.append("")
+
         if grammar.get("preferred_prompt_terms"):
             lines.append("### Preferred final prompt vocabulary")
             lines.append("Use these terms or equivalent physical language when appropriate:")

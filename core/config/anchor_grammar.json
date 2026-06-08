@@ -34,7 +34,42 @@
       "sci-fi",
       "fractal",
       "submerged city",
-      "architectural network"
+      "architectural network",
+      "like glass",
+      "timeless",
+      "awe-inspiring",
+      "revelation",
+      "liberation",
+      "kinetic energy",
+      "pure energy",
+      "sense of wonder",
+      "beautiful",
+      "poetic",
+      "dreamlike",
+      "otherworldly"
+    ],
+    "video_generation_readiness_rules": [
+      "Each scene prompt must describe only visible, filmable content.",
+      "Each scene prompt must include a clear shot type.",
+      "Each scene prompt must include the physical continuity anchor and its current state.",
+      "Each scene prompt must include camera position and camera movement.",
+      "Each scene prompt must describe a visible physical or perceptual transformation.",
+      "Each scene prompt must describe concrete lighting, not symbolic light.",
+      "Avoid metaphors, abstract interpretation, emotional narration and poetic conclusions.",
+      "Avoid generic ocean beauty, generic calmness and generic atmosphere.",
+      "Avoid language that only describes mood rather than what the camera sees.",
+      "Final prompts should be usable directly in video generation tools such as Kling, Veo, Sora or Seed."
+    ],
+    "preferred_video_prompt_structure": [
+      "Shot type",
+      "Physical subject",
+      "Anchor state",
+      "Camera position",
+      "Camera movement",
+      "Visible transformation",
+      "Lighting",
+      "Environment",
+      "Negative constraints"
     ]
   },
   "archetypes": {
@@ -327,7 +362,6 @@
         "storm",
         "tempest",
         "fury",
-        "extreme",
         "thrill",
         "adrenaline rush",
         "powerful",
@@ -335,7 +369,12 @@
         "liberation",
         "kinetic energy",
         "adrenaline",
-        "explosive"
+        "explosive",
+        "extreme sport",
+        "extreme action",
+        "extreme speed",
+        "extreme power",
+        "extreme thrill"
       ],
       "known_failure_mode": "wave crest -> barrel -> crash -> foam aftermath",
       "top_3_anchors": [
@@ -361,7 +400,12 @@
         "adrenaline",
         "thrill",
         "explosive",
-        "aggressive"
+        "aggressive",
+        "extreme sport",
+        "extreme action",
+        "extreme speed",
+        "extreme power",
+        "extreme thrill"
       ]
     },
     "visionary": {
