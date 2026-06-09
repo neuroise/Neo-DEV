@@ -46,7 +46,11 @@
       "beautiful",
       "poetic",
       "dreamlike",
-      "otherworldly"
+      "otherworldly",
+      "water is still",
+      "still sea",
+      "spectral",
+      "ghostly"
     ],
     "video_generation_readiness_rules": [
       "Each scene prompt must describe only visible, filmable content.",
@@ -61,7 +65,10 @@
       "Final prompts should be usable directly in video generation tools such as Kling, Veo, Sora or Seed.",
       "Each scene prompt must be self-contained and usable as an independent video-generation prompt.",
       "Do not rely on previous scenes with phrases such as 'the same object', 'the same pebble', 'this object', 'it', or 'as before' in final scene prompts.",
-      "Repeat the physical continuity anchor explicitly in every scene prompt using concrete visual description."
+      "Repeat the physical continuity anchor explicitly in every scene prompt using concrete visual description.",
+      "Do not include raw anchor IDs with underscores inside final scene prompts.",
+      "Translate anchor IDs into concrete physical visual descriptions in every final scene prompt.",
+      "Avoid stillness clichés such as 'water is still' or 'still sea' unless the visible physical process requires it."
     ],
     "preferred_video_prompt_structure": [
       "Shot type",
@@ -444,12 +451,12 @@
         },
         {
           "name": "sea_smoke_vertical_columns",
-          "physical_description": "real sea smoke vapor rising in thin vertical columns from warmer sea into cold air",
+          "physical_description": "Real sea smoke: thin vertical columns of visible water vapor rising from a warmer dark sea surface into colder air, caused by condensation and thermal contrast.",
           "start_state": "dark calm sea at dawn, surface initially quiet",
           "evolve_state": "thin vertical vapor filaments begin rising from the surface",
           "end_state": "wide shot reveals many low vertical fog columns across the water, slightly bent by a breeze then returning upright",
           "transformation_type": "physical",
-          "generator_prompt_seed": "real sea smoke rising in vertical columns from cold ocean surface at dawn, low camera angle, overcast sky",
+          "generator_prompt_seed": "Use concrete meteorological language: thin vertical vapor columns rising from a warmer dark sea surface into cold air, visible condensation, thermal gradient, low dawn light, slight bending from air currents. Do not use ethereal, spectral, ghostly, mystical, magical, or dreamlike language. Do not write the raw anchor id in final scene prompts.",
           "risk_level": "medium"
         }
       ],
@@ -494,7 +501,10 @@
         "glow",
         "city map",
         "architecture",
-        "architectural"
+        "architectural",
+        "spectral",
+        "ghostly",
+        "dreamlike"
       ],
       "known_failure_mode": "iridescent patch -> glowing network -> submerged city or transcendent grid",
       "top_3_anchors": [
@@ -522,7 +532,12 @@
         "glow",
         "city map",
         "architecture",
-        "architectural"
+        "architectural",
+        "ethereal",
+        "spectral",
+        "ghostly",
+        "mystical",
+        "dreamlike"
       ]
     }
   }

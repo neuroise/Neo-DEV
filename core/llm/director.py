@@ -150,6 +150,33 @@ _PROMPT_RED_FLAGS = '''## Red Flags (NEVER include)
 '''
 
 
+
+def _clean_json_text(text: str) -> str:
+    """Clean common LLM JSON wrappers such as markdown code fences."""
+    if text is None:
+        return ""
+
+    cleaned = str(text).strip()
+
+    if cleaned.startswith("```json"):
+        cleaned = cleaned[len("```json"):].strip()
+    elif cleaned.startswith("```JSON"):
+        cleaned = cleaned[len("```JSON"):].strip()
+    elif cleaned.startswith("```"):
+        cleaned = cleaned[len("```"):].strip()
+
+    if cleaned.endswith("```"):
+        cleaned = cleaned[:-3].strip()
+
+    # If the model added prose before/after JSON, keep the largest JSON object.
+    first = cleaned.find("{")
+    last = cleaned.rfind("}")
+    if first != -1 and last != -1 and last > first:
+        cleaned = cleaned[first:last + 1].strip()
+
+    return cleaned
+
+
 def _build_bpm_summary(archetypes: Dict[str, Any]) -> str:
     """Build inline BPM summary like 'Sage 60-80, Lover 70-90, ...'."""
     parts = []
@@ -478,6 +505,14 @@ class Director:
                 logger.info(f"Fallback response length: {len(response.content)}, content[:200]: {response.content[:200]}")
 
                 parsed = response.parse_json()
+                if not parsed:
+                    try:
+                        cleaned_content = _clean_json_text(response.content)
+                        parsed = json.loads(cleaned_content)
+                    except Exception as parse_error:
+                        logger.error(f"Fallback cleaned JSON parse failed: {parse_error}")
+                        parsed = None
+
                 if parsed:
                     logger.info(f"Fallback parsed keys: {list(parsed.keys())}")
                     return self._parse_result(parsed, raw_response=response, profile=profile)
@@ -617,15 +652,36 @@ class Director:
         except Exception:
             global_cfg = {}
 
-        allowed_anchors = grammar.get("allowed_thread_anchors", [])
+        all_allowed_anchors = grammar.get("allowed_thread_anchors", [])
         top_names = grammar.get("top_3_anchors", [])
 
-        # Prefer top anchors for the current test phase.
-        if top_names:
-            allowed_anchors = [
-                a for a in allowed_anchors
-                if a.get("name") in top_names
-            ] or allowed_anchors
+        user_profile = profile.get("user_profile", {}) if isinstance(profile, dict) else {}
+        requested_anchor = ""
+        if isinstance(profile, dict):
+            requested_anchor = profile.get("anchor_override") or ""
+        if not requested_anchor and isinstance(user_profile, dict):
+            requested_anchor = user_profile.get("anchor_override") or ""
+
+        requested_anchor_valid = False
+
+        if requested_anchor:
+            requested = [
+                a for a in all_allowed_anchors
+                if a.get("name") == requested_anchor
+            ]
+            if requested:
+                allowed_anchors = requested
+                requested_anchor_valid = True
+            else:
+                allowed_anchors = all_allowed_anchors
+        else:
+            allowed_anchors = all_allowed_anchors
+            # Prefer top anchors for the current test phase.
+            if top_names:
+                allowed_anchors = [
+                    a for a in allowed_anchors
+                    if a.get("name") in top_names
+                ] or allowed_anchors
 
         lines = []
         lines.append("## Archetype Anchor Grammar")
@@ -633,10 +689,23 @@ class Director:
         lines.append(f"Primary archetype: {archetype.upper()}")
         lines.append("")
         lines.append("Use the following anchor grammar as a hard creative constraint.")
-        lines.append("You must select exactly ONE continuity anchor from the provided list.")
-        lines.append("Do not invent a new anchor.")
-        lines.append("The selected anchor name must appear exactly in `sequence_thread.anchor`.")
+        if requested_anchor and requested_anchor_valid:
+            lines.append("ANCHOR OVERRIDE ACTIVE.")
+            lines.append(f"You are not choosing an anchor. You must use exactly this anchor: `{requested_anchor}`.")
+            lines.append("Do not use any other anchor from the allowed list.")
+            lines.append(f"`sequence_thread.anchor` must equal exactly `{requested_anchor}`.")
+            lines.append("Every START, EVOLVE and END scene prompt must explicitly describe this requested anchor by its physical features.")
+            lines.append("If another anchor appears in `sequence_thread.anchor`, the output is invalid.")
+        elif requested_anchor and not requested_anchor_valid:
+            lines.append(f"Requested anchor `{requested_anchor}` was not found in the allowed grammar list. Select exactly one allowed anchor.")
+            lines.append("Do not invent a new anchor.")
+            lines.append("The selected anchor name must appear exactly in `sequence_thread.anchor`.")
+        else:
+            lines.append("You must select exactly ONE continuity anchor from the provided list.")
+            lines.append("Do not invent a new anchor.")
+            lines.append("The selected anchor name must appear exactly in `sequence_thread.anchor`.")
         lines.append("")
+
         lines.append("The anchor must drive START, EVOLVE and END.")
         lines.append("Do not turn the three scenes into separate mood boards.")
         lines.append("Do not use generic ocean, generic waves, generic light, generic energy, generic beauty or generic atmosphere as the anchor.")

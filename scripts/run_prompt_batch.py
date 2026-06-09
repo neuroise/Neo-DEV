@@ -1,12 +1,14 @@
+from __future__ import annotations
+
 import argparse
 import csv
 import json
-import os
+import random
 import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,6 +16,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 
+from core.config import get_anchor_grammar
 from core.llm import create_adapter
 from core.llm.director import Director
 
@@ -35,11 +38,7 @@ def jsonable(value: Any) -> Any:
     return value
 
 
-def build_profile(profile_id: str) -> Dict[str, Any]:
-    """
-    Minimal synthetic profiles for batch testing.
-    The Director currently infers archetype from these labels.
-    """
+def build_profile(profile_id: str, requested_anchor: str | None = None) -> Dict[str, Any]:
     mapping = {
         "S-01": {
             "archetype": "sage",
@@ -71,10 +70,16 @@ def build_profile(profile_id: str) -> Dict[str, Any]:
     if profile_id not in mapping:
         raise ValueError(f"Unknown profile_id: {profile_id}")
 
-    return {
+    profile = {
         "profile_id": profile_id,
         "user_profile": mapping[profile_id],
     }
+
+    if requested_anchor:
+        profile["anchor_override"] = requested_anchor
+        profile["user_profile"]["anchor_override"] = requested_anchor
+
+    return profile
 
 
 def infer_archetype(profile_id: str) -> str:
@@ -85,6 +90,29 @@ def infer_archetype(profile_id: str) -> str:
         "R-01": "rebel",
         "V-01": "visionary",
     }.get(profile_id, "unknown")
+
+
+def choose_requested_anchor(profile_id: str, anchor_mode: str, rng: random.Random) -> str:
+    if anchor_mode == "free":
+        return ""
+
+    archetype = infer_archetype(profile_id)
+    grammar = get_anchor_grammar(archetype) or {}
+    allowed = grammar.get("allowed_thread_anchors", [])
+    top_names = grammar.get("top_3_anchors", [])
+
+    if top_names:
+        candidates = [name for name in top_names if name]
+    else:
+        candidates = [a.get("name") for a in allowed if a.get("name")]
+
+    if not candidates:
+        return ""
+
+    if anchor_mode == "random":
+        return rng.choice(candidates)
+
+    raise ValueError(f"Unknown anchor_mode: {anchor_mode}")
 
 
 def extract_anchor(output: Dict[str, Any]) -> str:
@@ -101,11 +129,15 @@ def extract_gate(output: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def write_report_header(f, out_dir: Path, args: argparse.Namespace) -> None:
+    profiles_label = ", ".join(args.profiles)
     f.write("# NEURØISE Prompt Batch Report\n\n")
     f.write(f"- Timestamp UTC: `{utc_timestamp()}`\n")
     f.write(f"- Model: `{args.model}`\n")
     f.write(f"- Runs per profile: `{args.runs}`\n")
-    f.write(f"- Profiles: `{', '.join(args.profiles)}`\n")
+    f.write(f"- Profiles: `{profiles_label}`\n")
+    f.write(f"- Anchor mode: `{args.anchor_mode}`\n")
+    f.write(f"- Seed: `{args.seed}`\n")
+    f.write(f"- Max anchor retries: `{args.max_anchor_retries}`\n")
     f.write(f"- Output dir: `{out_dir}`\n\n")
 
 
@@ -120,10 +152,16 @@ def write_record_to_report(f, record: Dict[str, Any]) -> None:
     f.write(f"## {record['profile_id']} / {record['archetype']} / run {record['run_index']}\n\n")
     f.write(f"- Timestamp UTC: `{record['timestamp_utc']}`\n")
     f.write(f"- Model: `{record['model']}`\n")
-    f.write(f"- Anchor: `{record.get('anchor', 'N/A')}`\n")
+    if record.get("requested_anchor"):
+        f.write(f"- Requested anchor: `{record.get('requested_anchor')}`\n")
+    f.write(f"- Generated anchor: `{record.get('anchor', 'N/A')}`\n")
+    f.write(f"- Anchor override status: `{record.get('anchor_override_status', 'none')}`\n")
+    f.write(f"- Retry count: `{record.get('retry_count', 0)}`\n")
     f.write(f"- ArchetypeGate: `{gate.get('status', 'N/A')}`\n")
     if gate.get("matched_bans"):
         f.write(f"- Matched bans: `{gate.get('matched_bans')}`\n")
+    if record.get("error"):
+        f.write(f"- Error: `{record.get('error')}`\n")
     f.write("\n")
 
     if seq:
@@ -165,14 +203,20 @@ def write_record_to_report(f, record: Dict[str, Any]) -> None:
 
 
 def create_director(model: str) -> Director:
-    """
-    Create Director adapter.
-
-    Gemini credentials/base_url are handled inside core.llm.base.create_adapter().
-    Do not pass api_key/base_url here, otherwise LLMConfig receives duplicates.
-    """
     adapter = create_adapter(model)
     return Director(adapter=adapter)
+
+
+def generate_once(
+    director: Director,
+    profile_id: str,
+    requested_anchor: str,
+) -> Tuple[Dict[str, Any], str]:
+    profile = build_profile(profile_id, requested_anchor=requested_anchor or None)
+    output_obj = director.generate(profile)
+    output = jsonable(output_obj)
+    anchor = extract_anchor(output)
+    return output, anchor
 
 
 def main() -> None:
@@ -181,10 +225,14 @@ def main() -> None:
     parser.add_argument("--profiles", default="S-01,E-01,L-01,R-01,V-01")
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--sleep", type=float, default=1.0)
+    parser.add_argument("--anchor-mode", choices=["free", "random"], default="free")
+    parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--max-anchor-retries", type=int, default=1)
     parser.add_argument("--out", default=None)
     args = parser.parse_args()
 
     args.profiles = [p.strip() for p in args.profiles.split(",") if p.strip()]
+    rng = random.Random(args.seed)
 
     model_slug = args.model.replace(":", "-").replace("/", "-")
     out_dir = Path(args.out) if args.out else ROOT / "runs" / "prompt_batches" / f"{utc_timestamp()}_{model_slug}"
@@ -203,7 +251,10 @@ def main() -> None:
         "model",
         "run_index",
         "status",
+        "requested_anchor",
         "anchor",
+        "anchor_override_status",
+        "retry_count",
         "archetype_gate_status",
         "matched_bans",
         "error",
@@ -221,8 +272,14 @@ def main() -> None:
             for run_index in range(1, args.runs + 1):
                 ts = datetime.now(timezone.utc).isoformat()
                 archetype = infer_archetype(profile_id)
+                requested_anchor = choose_requested_anchor(profile_id, args.anchor_mode, rng)
 
-                print(f"[{ts}] Generating {profile_id} run {run_index}/{args.runs} with {args.model}...")
+                anchor_note = f" / requested anchor: {requested_anchor}" if requested_anchor else ""
+                print(
+                    f"[{ts}] Generating {profile_id} run {run_index}/{args.runs} "
+                    f"with {args.model}{anchor_note}...",
+                    flush=True,
+                )
 
                 record = {
                     "timestamp_utc": ts,
@@ -231,19 +288,55 @@ def main() -> None:
                     "model": args.model,
                     "run_index": run_index,
                     "status": "ok",
+                    "requested_anchor": requested_anchor,
+                    "retry_count": 0,
+                    "error": "",
                 }
 
                 try:
-                    profile = build_profile(profile_id)
-                    output_obj = director.generate(profile)
-                    output = jsonable(output_obj)
+                    output: Dict[str, Any] = {}
+                    generated_anchor = ""
+
+                    for attempt in range(args.max_anchor_retries + 1):
+                        output, generated_anchor = generate_once(
+                            director=director,
+                            profile_id=profile_id,
+                            requested_anchor=requested_anchor,
+                        )
+
+                        if not requested_anchor or generated_anchor == requested_anchor:
+                            record["retry_count"] = attempt
+                            break
+
+                        record["retry_count"] = attempt
+
+                        if attempt < args.max_anchor_retries:
+                            print(
+                                f"ANCHOR MISMATCH: requested `{requested_anchor}`, "
+                                f"got `{generated_anchor}`. Retrying...",
+                                flush=True,
+                            )
+                            time.sleep(max(args.sleep, 0.5))
+
                     record["output"] = output
-                    record["anchor"] = extract_anchor(output)
+                    record["anchor"] = generated_anchor
+
+                    if requested_anchor:
+                        if generated_anchor == requested_anchor:
+                            record["anchor_override_status"] = "pass"
+                        else:
+                            record["anchor_override_status"] = "fail"
+                            record["status"] = "anchor_mismatch"
+                            record["error"] = (
+                                f"Requested anchor `{requested_anchor}` but generated "
+                                f"`{generated_anchor}` after {record['retry_count']} retry attempt(s)."
+                            )
+                    else:
+                        record["anchor_override_status"] = "none"
 
                     gate = extract_gate(output)
                     record["archetype_gate_status"] = gate.get("status", "N/A")
                     record["matched_bans"] = json.dumps(gate.get("matched_bans", []), ensure_ascii=False)
-                    record["error"] = ""
 
                     raw_f.write(json.dumps(record, ensure_ascii=False) + "\n")
                     raw_f.flush()
@@ -258,6 +351,7 @@ def main() -> None:
                     record["status"] = "error"
                     record["error"] = str(e)
                     record["anchor"] = ""
+                    record["anchor_override_status"] = "fail" if requested_anchor else "none"
                     record["archetype_gate_status"] = ""
                     record["matched_bans"] = ""
 
@@ -271,15 +365,15 @@ def main() -> None:
                     report_f.write(f"`{record['error']}`\n\n")
                     report_f.flush()
 
-                    print(f"ERROR: {record['error']}")
+                    print(f"ERROR: {record['error']}", flush=True)
 
                 if args.sleep:
                     time.sleep(args.sleep)
 
-    print("\nBatch complete.")
-    print(f"Raw: {raw_path}")
-    print(f"Report: {report_path}")
-    print(f"Summary: {summary_path}")
+    print("\nBatch complete.", flush=True)
+    print(f"Raw: {raw_path}", flush=True)
+    print(f"Report: {report_path}", flush=True)
+    print(f"Summary: {summary_path}", flush=True)
 
 
 if __name__ == "__main__":

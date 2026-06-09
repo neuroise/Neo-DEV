@@ -404,3 +404,130 @@ It was the seed layer.
 By giving the Director concrete, archetype-specific anchors, the system produces more coherent, more distinctive and more video-ready triptychs.
 
 This branch provides the first working prototype of that direction.
+
+---
+
+## 12. Progress update — 2026-06-09 — Review UI, Flash mode and anchor enforcement
+
+### What changed
+
+The prototype moved from simple prompt batch generation toward a more usable review loop:
+
+Flash batch generation
+→ controlled random anchor selection
+→ hard anchor override
+→ summary-level compliance checks
+→ Prompt Review UI
+→ manual green / yellow / red review
+→ red/yellow JSON export for correction
+
+### Prompt Review UI
+
+A new Streamlit view was added:
+
+app/views/prompt_review.py
+
+The view reads prompt batches from:
+
+runs/prompt_batches/
+
+and allows a reviewer to select a batch, inspect each generated run, view START / EVOLVE / END prompts, see requested anchor vs generated anchor, flag each run manually as green/yellow/red, add review notes, export all reviews, and export only yellow/red items for follow-up analysis.
+
+Review outputs are saved under:
+
+runs/prompt_reviews/<batch_id>/
+  manual_review_all.json
+  manual_review_red_yellow.json
+
+These generated review files remain local and are not committed.
+
+### Default test model
+
+From this point forward, fast development batches should use gemini-2.5-flash.
+
+Gemini Pro remains reserved for milestone validation or partner-facing quality checks.
+
+### Controlled random anchor selection
+
+The batch runner now supports controlled random anchor selection:
+
+--anchor-mode random
+--seed <number>
+
+This allows prompt batches to explore different anchors while remaining reproducible.
+
+### Anchor enforcement
+
+The Director now supports an explicit anchor_override field in the profile.
+
+When active, the model is not allowed to choose another anchor, sequence_thread.anchor must exactly match the requested anchor, and every scene must use that requested anchor as the physical continuity element.
+
+The batch summary now records:
+
+requested_anchor
+anchor
+anchor_override_status
+retry_count
+
+This makes anchor mismatch visible immediately.
+
+### JSON parsing robustness
+
+Gemini Flash sometimes returns valid JSON wrapped in markdown code fences.
+
+The Director fallback parser now cleans common wrappers before attempting json.loads().
+
+This reduced parse failures in Flash mode.
+
+### Current batch result
+
+A Flash random-anchor batch completed with:
+
+15 / 15 generated outputs parsed successfully
+15 / 15 anchor overrides respected
+1 / 15 ArchetypeGate fail
+
+The remaining fail was useful: Visionary generated the banned word ethereal inside a real video prompt for the sea_smoke_vertical_columns anchor.
+
+This confirms that the gate is catching meaningful prompt-language issues rather than only structural failures.
+
+### Important design decision: video prompt gate vs OST gate
+
+The next validation logic should separate video-prompt constraints from OST constraints.
+
+Video prompts should remain strict. If a forbidden keyword appears inside START / EVOLVE / END prompts, the system should either retry the generation with an explicit correction message, or apply a hard substitution / sanitization rule when the replacement is safe and deterministic.
+
+Forbidden terms should not silently pass into final video-generation prompts.
+
+OST prompts should not use the same forbidden-language policy. For music generation, poetic or abstract vocabulary can be useful and is often handled well by downstream music tools.
+
+The OST check should focus on musical control parameters only:
+
+- BPM / tempo range
+- energy level
+- mood family
+- genre / instrumentation coherence
+- archetype consistency
+
+The OST should not fail only because it uses words that would be risky inside a video prompt.
+
+### Next recommended implementation step
+
+Implement a split validation layer:
+
+VideoPromptGate:
+  strict on forbidden visual terms
+  strict on raw anchor IDs in scene prompts
+  strict on anchor continuity
+  strict on visible physical transformation
+
+OSTGate:
+  light validation
+  check BPM, energy, mood and genre only
+
+Then add one of these policies for forbidden video prompt terms:
+
+--forbidden-policy retry
+--forbidden-policy replace
+
+Recommended first implementation: retry first, hard replace only for safe lexical substitutions.

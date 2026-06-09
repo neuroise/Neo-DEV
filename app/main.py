@@ -26,6 +26,7 @@ from app.views.experiments import render_experiments
 from app.views.preview import render_preview
 from app.views.profiles import render_profiles
 from app.views.annotate import render_annotate
+from app.views.prompt_review import render_prompt_review
 
 # Page config
 st.set_page_config(
@@ -83,6 +84,7 @@ def main():
             "🧪 Experiments",
             "📈 Analysis",
             "🎥 Preview",
+            "🟡 Prompt Review",
             "👤 Profiles",
             "✏️ Annotate",
             # "🌊 Simulation"  # Phase 2
@@ -165,6 +167,8 @@ def main():
         render_analysis()
     elif page == "🎥 Preview":
         render_preview()
+    elif page == "🟡 Prompt Review":
+        render_prompt_review()
     elif page == "👤 Profiles":
         render_profiles()
     elif page == "✏️ Annotate":
