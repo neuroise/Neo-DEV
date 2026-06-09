@@ -58,7 +58,10 @@
       "Avoid metaphors, abstract interpretation, emotional narration and poetic conclusions.",
       "Avoid generic ocean beauty, generic calmness and generic atmosphere.",
       "Avoid language that only describes mood rather than what the camera sees.",
-      "Final prompts should be usable directly in video generation tools such as Kling, Veo, Sora or Seed."
+      "Final prompts should be usable directly in video generation tools such as Kling, Veo, Sora or Seed.",
+      "Each scene prompt must be self-contained and usable as an independent video-generation prompt.",
+      "Do not rely on previous scenes with phrases such as 'the same object', 'the same pebble', 'this object', 'it', or 'as before' in final scene prompts.",
+      "Repeat the physical continuity anchor explicitly in every scene prompt using concrete visual description."
     ],
     "preferred_video_prompt_structure": [
       "Shot type",
